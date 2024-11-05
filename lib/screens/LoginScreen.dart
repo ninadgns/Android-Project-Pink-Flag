@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'HelloScreen.dart';
+import '../HelloScreen.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
