@@ -1,14 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:lab/screens/ProfileScreen.dart';
+import 'package:lab/screens/ShoppingScreen.dart';
 
-final menus = [
-  'Search',
-  'Your Library',
-  'Scanner',
-  'Shopping',
-  'Profile',
-];
+import '../screens/LibraryScreen.dart';
+import '../screens/ScannerScreen.dart';
+import '../screens/SearchScreen.dart';
 
 final bottomNavigationItems = [
   const BottomNavigationBarItem(
@@ -28,3 +26,41 @@ final bottomNavigationItems = [
     label: 'Profile',),
 ];
 
+
+final homepageScreens = [
+  const SearchScreen(),
+  const LibraryScreen(),
+  const ScannerScreen(),
+  const Shoppingscreen(),
+  const ProfileScreen(),
+];
+
+
+final List<String> categories = [
+  'Popular',
+  'Breakfast',
+  'Lunch',
+  'Dinner',
+  'Snacks',
+  'Desserts',
+  'Drinks',
+];
+
+final categoryIcons =[
+  FontAwesomeIcons.utensils,
+  FontAwesomeIcons.bacon,
+  FontAwesomeIcons.breadSlice,
+  FontAwesomeIcons.burger,
+  FontAwesomeIcons.cookieBite,
+  FontAwesomeIcons.iceCream,
+  FontAwesomeIcons.martiniGlassCitrus,
+];
+
+
+final colorShades = [
+  Color(0xffadd6ef),
+  Color(0xff9fb693),
+  Color(0xfff8e8c4),
+  Color(0xfff0af93),
+  Color(0xffe48364),
+];

@@ -12,12 +12,13 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Set the system UI overlay style
+    // SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+    //   statusBarColor: Colors.transparent, // Make the status bar transparent
+    //   statusBarIconBrightness: Brightness.dark, // Dark icons for light background
+    //   statusBarBrightness: Brightness.light, // Light status bar for iOS
+    // ));
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
-    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-      statusBarColor: Colors.transparent,
-      statusBarIconBrightness: Brightness.dark,
-      systemNavigationBarColor: Colors.transparent,
-      systemNavigationBarIconBrightness: Brightness.dark,));
 
     return MaterialApp(
       debugShowCheckedModeBanner: false,

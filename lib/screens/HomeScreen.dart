@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:lab/data/constants.dart';
 
 class Homescreen extends StatefulWidget {
@@ -22,12 +23,20 @@ class _HomescreenState extends State<Homescreen> {
     double _height = MediaQuery.of(context).size.height;
 
     return Scaffold(
-      // appBar: AppBar(
-      //   title: const Text('Home Screen'),
-      // ),
+      appBar: AppBar(
+
+        // title: const Text('Home Screen'),
+        backgroundColor: Colors.transparent,
+        systemOverlayStyle: SystemUiOverlayStyle.dark,
+        elevation: 0,
+      ),
+      // backgroundColor: Colors.transparent,
+      extendBodyBehindAppBar: true,
+
       body: Container(
-        child: const Center(
-          child: Text('Home Screen'),
+        margin: EdgeInsets.only(top: _height * 0.01),
+        child: Center(
+          child: homepageScreens[_current_index],
         ),
       ),
       bottomNavigationBar: Container(
@@ -51,7 +60,7 @@ class _HomescreenState extends State<Homescreen> {
               items: bottomNavigationItems,
               onTap: _onItemTapped,
               currentIndex: _current_index,
-              iconSize: _height*0.028,
+              iconSize: _height * 0.028,
               type: BottomNavigationBarType.fixed,
             ),
           )),
