@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 final ThemeData appTheme = ThemeData(
+
   colorScheme: ColorScheme.fromSeed(
     seedColor: const Color(0xFFADD6CF), // Using Pastel Blue as the base seed color
     primary: const Color(0xFFADD6CF), // Pastel Blue
     secondary: const Color(0xFFF0AF9E), // Pastel Pink
     tertiary: const Color(0xFF9FB693), // Laurel Green
-    background: const Color(0xFFF8E8C4), // Lemon Meringue
+    surface: const Color(0xFFF8E8C4), // Lemon Meringue
     error: const Color(0xFFE48364), // Copper
   ),
   scaffoldBackgroundColor: const Color(0xfffaf6f2), // Lemon Meringue
@@ -48,7 +49,7 @@ final ThemeData appTheme = ThemeData(
     ),
     iconTheme: const IconThemeData(color: Colors.white),
   ),
-  bottomNavigationBarTheme:  BottomNavigationBarThemeData(
+  bottomNavigationBarTheme:  const BottomNavigationBarThemeData(
     backgroundColor: Color(0xfffaf6f2), // Lemon Meringue
     selectedItemColor: Color(0xFFE48364), // Copper
     unselectedItemColor: Colors.grey,
