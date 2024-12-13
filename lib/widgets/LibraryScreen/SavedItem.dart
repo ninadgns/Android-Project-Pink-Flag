@@ -23,7 +23,11 @@ class SavedItem extends StatelessWidget {
             child: Center(
               child: CircleAvatar(
                 backgroundColor: Colors.white,
-                radius: _width/8, // Adjust the radius to change the size
+                radius: _width / 8, // Adjust the radius to change the size
+                child: const Text(
+                  'Khabarer chobi',
+                  textAlign: TextAlign.center,
+                ),
               ),
             ),
           ),

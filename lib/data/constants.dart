@@ -11,21 +11,25 @@ import '../screens/SearchScreen.dart';
 final bottomNavigationItems = [
   const BottomNavigationBarItem(
     icon: Icon(CupertinoIcons.search),
-    label: 'Search',),
+    label: 'Search',
+  ),
   const BottomNavigationBarItem(
     icon: Icon(CupertinoIcons.book),
-    label: 'Library',),
+    label: 'Library',
+  ),
   const BottomNavigationBarItem(
     icon: Icon(Icons.camera_alt_outlined),
-    label: 'Scanner',),
+    label: 'Scanner',
+  ),
   const BottomNavigationBarItem(
     icon: Icon(Icons.shopping_cart_outlined),
-    label: 'Shopping',),
+    label: 'Shopping',
+  ),
   const BottomNavigationBarItem(
     icon: Icon(CupertinoIcons.profile_circled),
-    label: 'Profile',),
+    label: 'Profile',
+  ),
 ];
-
 
 final homepageScreens = [
   const SearchScreen(),
@@ -34,7 +38,6 @@ final homepageScreens = [
   const Shoppingscreen(),
   const ProfileScreen(),
 ];
-
 
 final List<String> categories = [
   'Popular',
@@ -46,7 +49,7 @@ final List<String> categories = [
   'Drinks',
 ];
 
-final categoryIcons =[
+final categoryIcons = [
   FontAwesomeIcons.utensils,
   FontAwesomeIcons.bacon,
   FontAwesomeIcons.breadSlice,
@@ -56,11 +59,39 @@ final categoryIcons =[
   FontAwesomeIcons.martiniGlassCitrus,
 ];
 
-
 final colorShades = [
   Color(0xffadd6ef),
   Color(0xff9fb693),
   Color(0xfff8e8c4),
   Color(0xfff0af93),
   Color(0xffe48364),
+];
+
+final difficulty = [
+  'Easy',
+  'Medium',
+  'Like A Pro',
+];
+
+final dishType = [
+  'Breakfast',
+  'Brunch',
+  'Lunch',
+  'Snack',
+  'Dessert',
+  'Dinner',
+  'Appetizer',
+  'Drink',
+];
+
+final suggestedDiets = [
+  'Keto',
+  'Vegan',
+  'Vegetarian',
+  'Gluten Free',
+  'Low Carb',
+  'Low Fat',
+  'High Protein',
+  'Balanced',
+  'Lactose Free',
 ];
