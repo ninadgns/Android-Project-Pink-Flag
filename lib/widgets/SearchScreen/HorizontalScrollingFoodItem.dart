@@ -40,6 +40,7 @@ class HorizontalScrollingFood extends StatelessWidget {
                       ),
                       color: Colors.white,
                       iconSize: 18.0,
+                      highlightColor: Colors.black12,
                       padding: const EdgeInsets.all(0),
                       splashRadius: 14.0,
                       constraints: const BoxConstraints(
@@ -63,12 +64,10 @@ class HorizontalScrollingFood extends StatelessWidget {
                       children: [
                         Text(
                           'Khabar er naam',
-                          style: Theme.of(context)
-                              .textTheme
-                              .labelLarge!
-                              .copyWith(
-                            color: Colors.black,
-                          ),
+                          style:
+                              Theme.of(context).textTheme.labelLarge!.copyWith(
+                                    color: Colors.black,
+                                  ),
                         ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,

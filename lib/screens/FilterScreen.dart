@@ -22,42 +22,48 @@ class _FilterScreenState extends State<FilterScreen> {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        foregroundColor: Colors.black,
-        iconTheme: IconThemeData(color: Colors.black),
-        leading: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10.0),
-          child: IconButton(
-            icon: Icon(CupertinoIcons.clear, size: 25),
-            onPressed: () {
-              Navigator.pop(context);
-            },
-          ),
-        ),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10.0),
-            child: TextButton(
-              onPressed: () {},
-              child: Text(
-                'Clear All',
-                style: Theme.of(context)
-                    .textTheme
-                    .titleSmall!
-                    .copyWith(color: Colors.grey),
-              ),
-            ),
-          ),
-        ],
-        toolbarHeight: 56,
-      ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(20.0),
+          padding: const EdgeInsets.symmetric(
+            horizontal: 20.0,
+            vertical: 16.0,
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  IconButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    icon: Icon(Icons.arrow_back_ios),
+                  ),
+                  IconButton(
+                    onPressed: () {},
+                    icon: const Icon(
+                      Icons.bookmark_border_rounded,
+                    ),
+                    color: Colors.white,
+                    iconSize: 18.0,
+                    padding: const EdgeInsets.all(0),
+                    splashRadius: 14.0,
+                    highlightColor: Colors.black12,
+                    constraints: const BoxConstraints(
+                      minHeight: 36,
+                      minWidth: 36,
+                    ),
+                    style: ButtonStyle(
+                      backgroundColor: WidgetStateProperty.all(
+                        Colors.black.withOpacity(0.15),
+                      ),
+                      shape: WidgetStateProperty.all(const CircleBorder()),
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 4),
               Text(
                 'Filter',
                 style: Theme.of(context)
@@ -86,6 +92,7 @@ class _FilterScreenState extends State<FilterScreen> {
                 items: suggestedDiets,
                 title: 'Suggested diets',
               ),
+              SizedBox(height: height / 10),
             ],
           ),
         ),
