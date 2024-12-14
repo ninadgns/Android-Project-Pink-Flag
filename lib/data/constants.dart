@@ -63,4 +63,36 @@ final colorShades = [
   Color(0xfff8e8c4),
   Color(0xfff0af93),
   Color(0xffe48364),
+<<<<<<< Updated upstream
+=======
+];
+
+final difficulty = [
+  'Easy',
+  'Medium',
+  'Like A Pro',
+];
+
+final dishType = [
+  'Breakfast',
+  'Brunch',
+  'Lunch',
+  'Snack',
+  'Dessert',
+  'Dinner',
+  'Appetizer',
+  'Drink',
+];
+
+final suggestedDiets = [
+  'Keto',
+  'Vegan',
+  'Vegetarian',
+  'Gluten Free',
+  'Low Carb',
+  'Low Fat',
+  'High Protein',
+  'Balanced',
+  'Lactose Free',
+>>>>>>> Stashed changes
 ];
