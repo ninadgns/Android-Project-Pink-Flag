@@ -6,7 +6,15 @@ plugins {
 }
 
 android {
-    namespace = "com.example.lab"
+    namespace "com.example.myapp"
+    compileSdkVersion 33
+    defaultConfig {
+        applicationId "com.example.myapp"
+        minSdkVersion 21
+        targetSdkVersion 33
+        versionCode 1
+        versionName "1.0"
+    }
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
