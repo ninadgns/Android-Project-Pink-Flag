@@ -22,7 +22,7 @@ class LibraryCollections extends StatelessWidget {
           index: index,
         );
       },
-      itemCount: 10,
+      itemCount: 20,
     );
   }
 }

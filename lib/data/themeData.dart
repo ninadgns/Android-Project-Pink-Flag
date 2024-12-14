@@ -10,6 +10,7 @@ final ThemeData appTheme = ThemeData(
     tertiary: const Color(0xFF9FB693), // Laurel Green
     surface: const Color(0xFFF8E8C4), // Lemon Meringue
     error: const Color(0xFFE48364), // Copper
+
   ),
   scaffoldBackgroundColor: const Color(0xfffaf6f2), // Lemon Meringue
   textTheme: TextTheme(

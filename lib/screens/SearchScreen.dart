@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:lab/screens/RecipeIntroScreen.dart';
 
 import '../widgets/SearchScreen/CatFoodList.dart';
 import '../widgets/SearchScreen/HorizontalScrollingCat.dart';
@@ -60,7 +61,9 @@ class _SearchScreenState extends State<SearchScreen> {
                 ),
                 const Spacer(),
                 TextButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.push(context, MaterialPageRoute(builder: (ctx) =>  RecipeIntro()));
+                  },
                   child: Text(
                     'View All',
                     style: Theme.of(context).textTheme.titleMedium!.copyWith(fontSize: _width / 25),
