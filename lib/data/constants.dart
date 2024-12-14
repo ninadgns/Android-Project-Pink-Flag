@@ -63,8 +63,6 @@ final colorShades = [
   Color(0xfff8e8c4),
   Color(0xfff0af93),
   Color(0xffe48364),
-<<<<<<< Updated upstream
-=======
 ];
 
 final difficulty = [
@@ -94,5 +92,4 @@ final suggestedDiets = [
   'High Protein',
   'Balanced',
   'Lactose Free',
->>>>>>> Stashed changes
 ];
