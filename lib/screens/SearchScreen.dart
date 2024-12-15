@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:dim/screens/RecipeIntroScreen.dart';
+import '/screens/RecipeIntroScreen.dart';
 
 import '../widgets/SearchScreen/CatFoodList.dart';
 import '../widgets/SearchScreen/HorizontalScrollingCat.dart';

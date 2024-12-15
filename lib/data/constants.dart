@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:dim/screens/ProfileScreen.dart';
-import 'package:dim/screens/ShoppingScreen.dart';
+import '/screens/ProfileScreen.dart';
+import '/screens/ShoppingScreen.dart';
 
 import '../screens/LibraryScreen.dart';
 import '../screens/ScannerScreen.dart';

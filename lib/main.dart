@@ -1,8 +1,8 @@
-import 'package:dim/screens/ImageAnimationScreen.dart';
+import '/screens/ImageAnimationScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:dim/data/themeData.dart';
-import 'package:dim/screens/HomeScreen.dart';
+import '/data/themeData.dart';
+import '/screens/HomeScreen.dart';
 
 void main() {
   runApp(const MyApp());

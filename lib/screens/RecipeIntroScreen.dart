@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:dim/widgets/RecipeIntroScreen/DetailsInfo.dart';
+import '/widgets/RecipeIntroScreen/DetailsInfo.dart';
 
 import '../widgets/RecipeIntroScreen/IngredientsInfo.dart';
 

@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:dim/data/constants.dart';
-import 'package:dim/widgets/FilterScreen/WarpedList.dart';
+import '/data/constants.dart';
+import '/widgets/FilterScreen/WarpedList.dart';
 import 'package:syncfusion_flutter_sliders/sliders.dart';
 
 import '../widgets/FilterScreen/CookTimeSlider.dart';

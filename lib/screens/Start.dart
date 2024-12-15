@@ -9,7 +9,8 @@ class DemoPage extends StatefulWidget {
   _DemoPageState createState() => _DemoPageState();
 }
 
-class _DemoPageState extends State<DemoPage> with SingleTickerProviderStateMixin {
+class _DemoPageState extends State<DemoPage>
+    with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _scaleAnimation;
   late Animation<Offset> _buttonSlideAnimation;
@@ -32,7 +33,7 @@ class _DemoPageState extends State<DemoPage> with SingleTickerProviderStateMixin
     // Slide Animation for Buttons (from bottom to original position)
     _buttonSlideAnimation = Tween<Offset>(
       begin: Offset(0, 1), // Start below the screen
-      end: Offset(0, 0),   // End at the original position
+      end: Offset(0, 0), // End at the original position
     ).animate(
       CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
     );
@@ -83,23 +84,29 @@ class _DemoPageState extends State<DemoPage> with SingleTickerProviderStateMixin
       body: Stack(
         children: [
           // Background or Centered Content
-          Center(
+          Align(
+            alignment: Alignment(0, -0.2),
             child: Text(
               'Welcome to the Cooking Diary!',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.teal.shade900
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: Colors.teal.shade900,
               ),
+              textAlign: TextAlign.center,
             ),
           ),
 
           // Image 1 Animating from the Center
 
-
           // Image 2 Animating from the Center
-          Center(
+          Align(
+            alignment: Alignment(0, -0.35),
             child: ScaleTransition(
               scale: _scaleAnimation,
               child: Transform.translate(
-                offset: Offset(150, -100), // Adjust position relative to the center
+                offset:
+                    Offset(150, -100), // Adjust position relative to the center
                 child: Image.asset(
                   'assets/chef.gif',
                   width: 150,
@@ -114,7 +121,8 @@ class _DemoPageState extends State<DemoPage> with SingleTickerProviderStateMixin
             child: ScaleTransition(
               scale: _scaleAnimation,
               child: Transform.translate(
-                offset: Offset(-100, 100), // Adjust position relative to the center
+                offset:
+                    Offset(-100, 100), // Adjust position relative to the center
                 child: Image.asset(
                   'assets/pot.gif',
                   width: 150,
@@ -160,7 +168,8 @@ class _DemoPageState extends State<DemoPage> with SingleTickerProviderStateMixin
                       style: ElevatedButton.styleFrom(
                         padding: EdgeInsets.symmetric(vertical: 15),
                         textStyle: TextStyle(fontSize: 18),
-                        backgroundColor: Colors.teal.shade700, // Different color for distinction
+                        backgroundColor: Colors
+                            .teal.shade700, // Different color for distinction
                         foregroundColor: Colors.white, // Text/Icon color
                       ),
                     ),
@@ -177,8 +186,8 @@ class _DemoPageState extends State<DemoPage> with SingleTickerProviderStateMixin
                       style: ElevatedButton.styleFrom(
                         padding: EdgeInsets.symmetric(vertical: 15),
                         textStyle: TextStyle(fontSize: 18),
-                        backgroundColor: Colors.teal.shade900
-                        , // Different color for distinction
+                        backgroundColor: Colors
+                            .teal.shade900, // Different color for distinction
                         foregroundColor: Colors.white, // Text/Icon color
                       ),
                     ),

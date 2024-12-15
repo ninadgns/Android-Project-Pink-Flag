@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:dim/widgets/LibraryScreen/LibraryCollections.dart';
-import 'package:dim/widgets/LibraryScreen/LibrarySaved.dart';
+import '/widgets/LibraryScreen/LibraryCollections.dart';
+import '/widgets/LibraryScreen/LibrarySaved.dart';
 
 class LibraryScreen extends StatefulWidget {
   const LibraryScreen({super.key});

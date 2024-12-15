@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:dim/widgets/LibraryScreen/SavedItem.dart';
+import '/widgets/LibraryScreen/SavedItem.dart';
 
 import '../../data/constants.dart';
 import '../../screens/RecipeIntroScreen.dart';

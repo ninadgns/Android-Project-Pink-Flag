@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:dim/screens/NotificationsScreen.dart';
+import '/screens/NotificationsScreen.dart';
 import '../widgets/menu_item_tile.dart';
 import 'MyPostsScreen.dart';
 import 'SubscriptionScreen.dart';

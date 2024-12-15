@@ -1,8 +1,8 @@
 // Login.dart
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:dim/data/themeData.dart';
-import 'package:dim/screens/HomeScreen.dart';
+import '/data/themeData.dart';
+import '/screens/HomeScreen.dart';
 
 import 'package:flutter/material.dart';
 
@@ -11,8 +11,8 @@ class LoginPage extends StatefulWidget {
   _LoginPageState createState() => _LoginPageState();
 }
 
-class _LoginPageState extends State<LoginPage>
-    with TickerProviderStateMixin { // Changed from SingleTickerProviderStateMixin
+class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
+  // Changed from SingleTickerProviderStateMixin
   late AnimationController _controller;
   late Animation<double> _scaleAnimation;
   late Animation<Offset> _buttonSlideAnimation;
@@ -71,7 +71,8 @@ class _LoginPageState extends State<LoginPage>
     _revealAnimation.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
         setState(() {
-          _currentBackgroundColor = _newBackgroundColor; // Update background to blue
+          _currentBackgroundColor =
+              _newBackgroundColor; // Update background to blue
           _revealCompleted = true; // Remove the overlay
         });
       }
@@ -104,7 +105,6 @@ class _LoginPageState extends State<LoginPage>
     );
   }
 
-
   // Method to handle Forgot Password action
   void _handleForgotPassword() {
     ScaffoldMessenger.of(context).showSnackBar(
@@ -121,7 +121,8 @@ class _LoginPageState extends State<LoginPage>
   Widget build(BuildContext context) {
     // Calculate the maximum radius needed to cover the screen from the center
     double maxRadius = MediaQuery.of(context).size.longestSide * 1.5;
-
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
     return Scaffold(
       body: Stack(
         children: [
@@ -153,7 +154,8 @@ class _LoginPageState extends State<LoginPage>
             ),
 
           // Background or Centered Content
-          Center(
+          Align(
+            alignment: Alignment(0, -0.35),
             child: Text(
               'Welcome Back!',
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
@@ -161,20 +163,20 @@ class _LoginPageState extends State<LoginPage>
           ),
 
           // Animated Images (example placeholders)
-          Center(
+          Align(
+            alignment: Alignment(0, -0.4),
             child: ScaleTransition(
               scale: _scaleAnimation,
               child: Transform.translate(
                 offset: Offset(0, -100),
                 child: Image.asset(
                   'assets/login.gif',
-                  width: 100,
-                  height: 100,
+                  width: width / 3,
+                  height: width / 3,
                 ),
               ),
             ),
           ),
-
 
           // Form and Buttons
           Positioned(
@@ -184,18 +186,21 @@ class _LoginPageState extends State<LoginPage>
             child: SlideTransition(
               position: _buttonSlideAnimation,
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   // Email TextField with reduced size
                   SizedBox(
-                    width: 350, // Set a smaller width
-                    height: 40, // Set a smaller height
+                    width: width * 0.9, // Set a smaller width
+                    height: 50, // Set a smaller height
                     child: TextField(
                       decoration: InputDecoration(
                         labelText: 'Email',
-                        border: OutlineInputBorder(),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
                         contentPadding: EdgeInsets.symmetric(
                           vertical: 10, // Reduce vertical padding
-                          horizontal: 10, // Reduce horizontal padding
+                          horizontal: 20, // Reduce horizontal padding
                         ),
                       ),
                     ),
@@ -204,16 +209,18 @@ class _LoginPageState extends State<LoginPage>
 
                   // Password TextField with reduced size
                   SizedBox(
-                    width: 350, // Set a smaller width
-                    height: 40, // Set a smaller height
+                    width: width * 0.9, // Set a smaller width
+                    height: 50, // Set a smaller height
                     child: TextField(
                       obscureText: true,
                       decoration: InputDecoration(
                         labelText: 'Password',
-                        border: OutlineInputBorder(),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
                         contentPadding: EdgeInsets.symmetric(
                           vertical: 10, // Reduce vertical padding
-                          horizontal: 10, // Reduce horizontal padding
+                          horizontal: 20, // Reduce horizontal padding
                         ),
                       ),
                     ),
@@ -292,7 +299,8 @@ class CircleClipper extends CustomClipper<Path> {
       size.height * (center.y + 1) / 2,
     );
 
-    return Path()..addOval(Rect.fromCircle(center: centerPoint, radius: radius));
+    return Path()
+      ..addOval(Rect.fromCircle(center: centerPoint, radius: radius));
   }
 
   @override

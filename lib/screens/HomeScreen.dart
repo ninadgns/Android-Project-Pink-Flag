@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:dim/data/constants.dart';
+import '/data/constants.dart';
 
 import '../widgets/BottomNavBar.dart';
 

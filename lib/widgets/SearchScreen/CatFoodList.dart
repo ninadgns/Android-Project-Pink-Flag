@@ -1,6 +1,6 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:dim/data/constants.dart';
+import '/data/constants.dart';
 
 import 'HorizontalScrollingFoodItem.dart';
 
