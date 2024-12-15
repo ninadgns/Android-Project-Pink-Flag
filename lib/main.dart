@@ -1,4 +1,4 @@
-import 'package:dim/screens/image_animation_screen.dart';
+import 'package:dim/screens/ImageAnimationScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:dim/data/themeData.dart';

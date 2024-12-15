@@ -1,13 +1,18 @@
-// signup.dart
+// Login.dart
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:dim/data/themeData.dart';
+import 'package:dim/screens/HomeScreen.dart';
 
 import 'package:flutter/material.dart';
 
-class SignUpPage extends StatefulWidget {
+class LoginPage extends StatefulWidget {
   @override
-  _SignUpPageState createState() => _SignUpPageState();
+  _LoginPageState createState() => _LoginPageState();
 }
 
-class _SignUpPageState extends State<SignUpPage> with TickerProviderStateMixin { // Changed from SingleTickerProviderStateMixin
+class _LoginPageState extends State<LoginPage>
+    with TickerProviderStateMixin { // Changed from SingleTickerProviderStateMixin
   late AnimationController _controller;
   late Animation<double> _scaleAnimation;
   late Animation<Offset> _buttonSlideAnimation;
@@ -16,18 +21,14 @@ class _SignUpPageState extends State<SignUpPage> with TickerProviderStateMixin {
   late AnimationController _revealController;
   late Animation<double> _revealAnimation;
 
-  // New AnimationController and Animation for Shaking
-  late AnimationController _shakeController;
-  late Animation<double> _shakeAnimation;
-
   // New color to reveal
-  final Color _newBackgroundColor = Colors.green.shade100; // Desired blue color
+  final Color _newBackgroundColor = Colors.lime.shade50; // Desired blue color
 
   // To track if the reveal is completed
   bool _revealCompleted = false;
 
   // Manage the current background color
-  Color _currentBackgroundColor = Colors.white; // Start with white
+  Color _currentBackgroundColor = Colors.teal.shade100; // Start with white
 
   @override
   void initState() {
@@ -47,7 +48,7 @@ class _SignUpPageState extends State<SignUpPage> with TickerProviderStateMixin {
     // Slide Animation for Buttons (from bottom to original position)
     _buttonSlideAnimation = Tween<Offset>(
       begin: Offset(0, 1), // Start below the screen
-      end: Offset(0, 0),   // End at the original position
+      end: Offset(0, 0), // End at the original position
     ).animate(
       CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
     );
@@ -80,43 +81,39 @@ class _SignUpPageState extends State<SignUpPage> with TickerProviderStateMixin {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _revealController.forward();
     });
-
-    // Initialize Animation Controller for Shaking
-    _shakeController = AnimationController(
-      vsync: this,
-      duration: Duration(milliseconds: 500), // Duration for the shake
-    );
-
-    // Define the shaking animation: oscillate between -10 and 10 pixels on the X-axis
-    _shakeAnimation = Tween<double>(begin: -10.0, end: 10.0).animate(
-      CurvedAnimation(parent: _shakeController, curve: Curves.elasticIn),
-    );
-
-    // Start the shaking animation
-    _shakeController.forward();
-
-    // Optionally, repeat the shaking animation if desired
-    // _shakeController.repeat(reverse: true);
   }
 
   @override
   void dispose() {
     _controller.dispose();
-    _revealController.dispose(); // Dispose the reveal controller
-    _shakeController.dispose();  // Dispose the shake controller
+    _revealController.dispose(); // Dispose the new controller
     super.dispose();
   }
 
-  // Method to handle Sign Up action
-  void _handleSignUp() {
-    // Implement your sign-up logic here
+  // Method to handle Login action
+  void _handleLogin() {
+    // Show a SnackBar
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Sign Up completed!')),
+      SnackBar(content: Text('Logged In successfully!')),
+    );
+
+    // Navigate to the HomeScreen
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => Homescreen()),
     );
   }
 
-  // Method to handle Back to Login action
-  void _handleBackToLogin() {
+
+  // Method to handle Forgot Password action
+  void _handleForgotPassword() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Forgot Password clicked!')),
+    );
+  }
+
+  // Method to handle Back to Sign Up action
+  void _handleBackToSignUp() {
     Navigator.pop(context); // Go back to the previous page
   }
 
@@ -158,30 +155,21 @@ class _SignUpPageState extends State<SignUpPage> with TickerProviderStateMixin {
           // Background or Centered Content
           Center(
             child: Text(
-              'Create Your Account',
+              'Welcome Back!',
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
           ),
 
-          // Animated Images with Shaking Effect
+          // Animated Images (example placeholders)
           Center(
-            child: AnimatedBuilder(
-              animation: _shakeAnimation,
-              builder: (context, child) {
-                return Transform.translate(
-                  offset: Offset(_shakeAnimation.value, 0), // Shakes horizontally
-                  child: child,
-                );
-              },
-              child: ScaleTransition(
-                scale: _scaleAnimation,
-                child: Transform.translate(
-                  offset: Offset(0, -100),
-                  child: Image.asset(
-                    'assets/signup1.gif',
-                    width: 150,
-                    height: 150,
-                  ),
+            child: ScaleTransition(
+              scale: _scaleAnimation,
+              child: Transform.translate(
+                offset: Offset(0, -100),
+                child: Image.asset(
+                  'assets/login.gif',
+                  width: 100,
+                  height: 100,
                 ),
               ),
             ),
@@ -197,27 +185,10 @@ class _SignUpPageState extends State<SignUpPage> with TickerProviderStateMixin {
               position: _buttonSlideAnimation,
               child: Column(
                 children: [
-                  // Name TextField with consistent size
+                  // Email TextField with reduced size
                   SizedBox(
-                    width: 350, // Set a consistent width
-                    height: 40, // Set a consistent height
-                    child: TextField(
-                      decoration: InputDecoration(
-                        labelText: 'Name',
-                        border: OutlineInputBorder(),
-                        contentPadding: EdgeInsets.symmetric(
-                          vertical: 10, // Reduce vertical padding
-                          horizontal: 10, // Reduce horizontal padding
-                        ),
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 10),
-
-                  // Email TextField with consistent size
-                  SizedBox(
-                    width: 350, // Set a consistent width
-                    height: 40, // Set a consistent height
+                    width: 350, // Set a smaller width
+                    height: 40, // Set a smaller height
                     child: TextField(
                       decoration: InputDecoration(
                         labelText: 'Email',
@@ -231,10 +202,10 @@ class _SignUpPageState extends State<SignUpPage> with TickerProviderStateMixin {
                   ),
                   SizedBox(height: 10),
 
-                  // Password TextField with consistent size
+                  // Password TextField with reduced size
                   SizedBox(
-                    width: 350, // Set a consistent width
-                    height: 40, // Set a consistent height
+                    width: 350, // Set a smaller width
+                    height: 40, // Set a smaller height
                     child: TextField(
                       obscureText: true,
                       decoration: InputDecoration(
@@ -249,36 +220,53 @@ class _SignUpPageState extends State<SignUpPage> with TickerProviderStateMixin {
                   ),
                   SizedBox(height: 20),
 
-                  // Sign Up Button with consistent style
+                  // Log In Button
                   SizedBox(
-                    width: 200, // Match the width from LoginPage
+                    width: 200,
                     child: ElevatedButton(
-                      onPressed: _handleSignUp,
-                      child: Text('Sign Up'),
+                      onPressed: _handleLogin,
+                      child: Text('Log In'),
                       style: ElevatedButton.styleFrom(
                         padding: EdgeInsets.symmetric(vertical: 15),
                         textStyle: TextStyle(fontSize: 18),
-                        backgroundColor: Colors.green.shade300, // Match LoginPage color
-                        foregroundColor: Colors.black, // Match LoginPage text color
+                        backgroundColor: Colors.lime.shade500,
+                        foregroundColor: Colors.black,
                       ),
                     ),
                   ),
                   SizedBox(height: 10),
 
-                  // Back to Login Button with consistent style
+                  // Forgot Password Button
                   SizedBox(
-                    width: 200, // Match the width from LoginPage
+                    width: 200,
                     child: ElevatedButton(
-                      onPressed: _handleBackToLogin,
-                      child: Text('Back to Login'),
+                      onPressed: _handleForgotPassword,
+                      child: Text('Forget password?'),
                       style: ElevatedButton.styleFrom(
-                        padding: EdgeInsets.symmetric(vertical: 15),
+                        padding: EdgeInsets.symmetric(vertical: 20),
                         textStyle: TextStyle(fontSize: 18),
-                        backgroundColor: Colors.green.shade400, // Match LoginPage color
-                        foregroundColor: Colors.black, // Match LoginPage text color
+                        backgroundColor: Colors.lime.shade400,
+                        foregroundColor: Colors.black,
                       ),
                     ),
                   ),
+                  SizedBox(height: 10),
+
+                  // Back to Sign Up Button
+                  SizedBox(
+                    width: 200,
+                    child: ElevatedButton(
+                      onPressed: _handleBackToSignUp,
+                      child: Text('Back to Signup'),
+                      style: ElevatedButton.styleFrom(
+                        padding: EdgeInsets.symmetric(vertical: 20),
+                        textStyle: TextStyle(fontSize: 18),
+                        backgroundColor: Colors.lime.shade300,
+                        foregroundColor: Colors.black,
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 10),
                 ],
               ),
             ),

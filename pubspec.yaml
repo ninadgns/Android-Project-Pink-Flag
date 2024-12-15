@@ -71,14 +71,15 @@ flutter:
   assets:
     - assets/image4.png
     - assets/image7.png
-    - assets/image10.png
-    - assets/image16.gif
+    - assets/page1Pan.png
+    - assets/jumpingFoodPan.gif
     - assets/signup1.gif
     - assets/login.gif
-    - assets/image16.gif
+    - assets/jumpingFoodPan.gif
     - assets/shoppinglist.gif
     - assets/chef.gif
     - assets/pot.gif
+    - assets/cooking.png
 
 
   # An image asset can refer to one or more resolution-specific "variants", see

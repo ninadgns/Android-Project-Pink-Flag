@@ -1,8 +1,8 @@
 // page_data.dart
 
 import 'package:flutter/material.dart';
-import 'login.dart'; // Import the LoginPage
-import 'signup.dart'; // Ensure About2Page is defined
+import 'Login.dart'; // Import the LoginPage
+import 'Signup.dart'; // Ensure About2Page is defined
 
 class DemoPage extends StatefulWidget {
   @override

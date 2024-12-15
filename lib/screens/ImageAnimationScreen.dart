@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'start.dart'; // Ensure this file exists and DemoPage is defined
+import 'Start.dart'; // Ensure this file exists and DemoPage is defined
 import '../data/page_data.dart';
 
 class ImageAnimationScreen extends StatefulWidget {
@@ -32,7 +32,8 @@ class _ImageAnimationScreenState extends State<ImageAnimationScreen>
     // Initialize Animation Controller for Circular Reveal
     _colorController = AnimationController(
       vsync: this,
-      duration: Duration(milliseconds: 800), // Duration for the color transition
+      duration:
+          Duration(milliseconds: 800), // Duration for the color transition
     );
 
     // Define the animation for the circle's radius
@@ -83,11 +84,17 @@ class _ImageAnimationScreenState extends State<ImageAnimationScreen>
       _changeBackgroundColor(targetColor);
     } else {
       // Navigate to the next screen (e.g., DemoPage)
-      Navigator.push(
+      _skipToLastPage();
+    }
+  }
+
+  void _skipToLastPage() {
+    setState(() {
+      Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => DemoPage()),
       );
-    }
+    });
   }
 
   void _previousPage() {
@@ -100,58 +107,58 @@ class _ImageAnimationScreenState extends State<ImageAnimationScreen>
     }
   }
 
-  void _skipToLastPage() {
-    setState(() {
-      _currentPage = _totalPages - 1;
-    });
-    Color targetColor = _pageColors[_currentPage];
-    _changeBackgroundColor(targetColor);
-  }
-
   @override
   Widget build(BuildContext context) {
     // Calculate the maximum radius needed to cover the screen from the center
     double maxRadius = MediaQuery.of(context).size.longestSide * 1.5;
+    double height = MediaQuery.of(context).size.height;
+    double width = MediaQuery.of(context).size.width;
 
     return Scaffold(
-      body: Stack(
-        children: [
-          // Base Background Color
-          Container(
-            color: _currentColor,
-            width: double.infinity,
-            height: double.infinity,
-          ),
+      backgroundColor: _currentColor,
+      body: Container(
+        // padding: EdgeInsets.all(20),
+        child: Stack(
+          children: [
+            // Base Background Color
+            // Container(
+            //   color: _currentColor,
+            //   width: double.infinity,
+            //   height: double.infinity,
+            // ),
 
-          // AnimatedBuilder for the circular reveal transition
-          AnimatedBuilder(
-            animation: _radiusAnimation,
-            builder: (context, child) {
-              return (_colorController.isAnimating)
-                  ? ClipOval(
-                clipper: CircleClipper(
-                  radius: _radiusAnimation.value * maxRadius,
-                  center: Alignment.center,
-                ),
-                child: Container(
-                  color: _newColor,
-                  width: double.infinity,
-                  height: double.infinity,
-                ),
-              )
-                  : SizedBox.shrink();
-            },
-          ),
+            // AnimatedBuilder for the circular reveal transition
+            AnimatedBuilder(
+              animation: _radiusAnimation,
+              builder: (context, child) {
+                return (_colorController.isAnimating)
+                    ? ClipOval(
+                        clipper: CircleClipper(
+                          radius: _radiusAnimation.value * maxRadius,
+                          center: Alignment.center,
+                        ),
+                        child: Container(
+                          color: _newColor,
+                          width: double.infinity,
+                          height: double.infinity,
+                        ),
+                      )
+                    : SizedBox.shrink();
+              },
+            ),
 
-          // Main Content
-          SafeArea(
-            child: Stack(
+            // Main Content
+            Stack(
               children: [
                 // Centered Content: Page Number and Description
-                Positioned.fill(
+                Container(
+                  // color: Colors.blue,
+                  width: width,
                   child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
+                      SizedBox(height: height / 3),
                       Text(
                         pageData[_currentPage].title,
                         style: TextStyle(
@@ -159,22 +166,22 @@ class _ImageAnimationScreenState extends State<ImageAnimationScreen>
                           fontWeight: FontWeight.bold,
                           color: pageData[_currentPage].titleColor,
                         ),
+                        softWrap: true,
+                        textAlign: TextAlign.center,
                       ),
-
-
-                      SizedBox(height: 10),
+                      SizedBox(height: 15),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 20.0),
                         child: Text(
                           _getDescription(),
                           textAlign: TextAlign.center,
                           style: TextStyle(
-                            fontSize: pageData[_currentPage].descriptionFontSize,
+                            fontSize:
+                                pageData[_currentPage].descriptionFontSize,
                             color: pageData[_currentPage].descriptionColor,
                           ),
                         ),
                       ),
-
                     ],
                   ),
                 ),
@@ -183,114 +190,130 @@ class _ImageAnimationScreenState extends State<ImageAnimationScreen>
 
                 // Image 1: Top-Left Corner
                 Align(
-                  alignment: Alignment(0.5, 0.5), // Moves the child up by 50% of the available space
+                  alignment: Alignment(0,
+                      0.35), // Moves the child up by 50% of the available space
                   child: AnimatedSwitcher(
                     duration: Duration(milliseconds: 800),
-                    transitionBuilder: (Widget child, Animation<double> animation) {
+                    transitionBuilder:
+                        (Widget child, Animation<double> animation) {
                       return ScaleTransition(scale: animation, child: child);
                     },
                     child: _currentPage == 0
                         ? Image.asset(
-                      'assets/image16.gif',
-                      key: ValueKey<int>(_currentPage),
-                      width: 200,
-                      height: 200,
-                    )
+                            'assets/jumpingFoodPan.gif',
+                            key: ValueKey<int>(_currentPage),
+                            width: 200,
+                            height: 200,
+                          )
                         : SizedBox.shrink(),
                   ),
                 ),
 
-
-
-                Align(
-                  alignment: Alignment(0.0, -0.5),
-                  child: AnimatedSwitcher(
-                    duration: Duration(milliseconds: 800),
-                    transitionBuilder: (Widget child, Animation<double> animation) {
-                      return ScaleTransition(scale: animation, child: child);
-                    },
-                    child: _currentPage == 0
+                if (_currentPage == 0)
+                  Align(
+                    alignment: Alignment(0.0, -0.75),
+                    child: AnimatedSwitcher(
+                      duration: Duration(milliseconds: 800),
+                      transitionBuilder:
+                          (Widget child, Animation<double> animation) {
+                        return ScaleTransition(scale: animation, child: child);
+                      },
+                      child: _currentPage <= _totalPages - 1
+                          ? Image.asset(
+                              'assets/cooking.png',
+                              key: ValueKey<int>(_currentPage),
+                              width: height / 5.5,
+                              height: height / 5.5,
+                            )
+                          : SizedBox.shrink(),
+                    ),
+                  ),
+                if (_currentPage > 0)
+                  Align(
+                    alignment: Alignment(0.0, -0.75),
+                    child: _currentPage <= _totalPages - 1
                         ? Image.asset(
-                      'assets/image10.png',
-                      key: ValueKey<int>(_currentPage),
-                      width: 200,
-                      height: 200,
-                    )
+                            'assets/cooking.png',
+                            key: ValueKey<int>(_currentPage),
+                            width: height / 5.5,
+                            height: height / 5.5,
+                          )
                         : SizedBox.shrink(),
                   ),
-                ),
-
-
                 // Image 2: Bottom-Right Corner
-                Positioned(
-                  bottom: 200,
-                  right: 200,
+                Align(
+                  alignment: Alignment(0, 0.3),
                   child: AnimatedSwitcher(
                     duration: Duration(milliseconds: 800),
-                    transitionBuilder: (Widget child, Animation<double> animation) {
+                    transitionBuilder:
+                        (Widget child, Animation<double> animation) {
                       return ScaleTransition(scale: animation, child: child);
                     },
                     child: _currentPage == 1
                         ? Image.asset(
-                      'assets/image7.png',
-                      key: ValueKey<int>(_currentPage),
-                      width: 100,
-                      height: 100,
-                    )
+                            'assets/image7.png',
+                            key: ValueKey<int>(_currentPage),
+                            width: 150,
+                            height: 150,
+                          )
                         : SizedBox.shrink(),
                   ),
                 ),
 
                 // Image 3: Center-Left
                 Align(
-                  alignment: Alignment(-.5, -0.25),
+                  alignment: Alignment(0, 0.35),
                   child: AnimatedSwitcher(
                     duration: Duration(milliseconds: 800),
-                    transitionBuilder: (Widget child, Animation<double> animation) {
+                    transitionBuilder:
+                        (Widget child, Animation<double> animation) {
                       return ScaleTransition(scale: animation, child: child);
                     },
                     child: _currentPage == 2
                         ? Image.asset(
-                      'assets/image4.png',
-                      key: ValueKey<int>(_currentPage),
-                      width: 120,
-                      height: 120,
-                    )
+                            'assets/image4.png',
+                            key: ValueKey<int>(_currentPage),
+                            width: 120,
+                            height: 120,
+                          )
                         : SizedBox.shrink(),
                   ),
                 ),
 
                 // Image 4: Center-Right
                 Align(
-                  alignment: Alignment(0.7, 0),
+                  alignment: Alignment(0, 0.3),
                   child: AnimatedSwitcher(
                     duration: Duration(milliseconds: 800),
-                    transitionBuilder: (Widget child, Animation<double> animation) {
+                    transitionBuilder:
+                        (Widget child, Animation<double> animation) {
                       return ScaleTransition(scale: animation, child: child);
                     },
                     child: _currentPage == 3
                         ? Image.asset(
-                      'assets/shoppinglist.gif',
-                      key: ValueKey<int>(_currentPage),
-                      width: 100,
-                      height: 100,
-                    )
+                            'assets/shoppinglist.gif',
+                            key: ValueKey<int>(_currentPage),
+                            width: 150,
+                            height: 150,
+                          )
                         : SizedBox.shrink(),
                   ),
                 ),
 
-                // Back Button in the top-left corner
-                Positioned(
-                  top: 20,
-                  left: 10,
-                  child: Visibility(
-                    visible: _currentPage > 0, // Hide back button on the first page
-                    child: IconButton(
-                      icon: Icon(Icons.arrow_back, color: Colors.black, size: 28),
-                      onPressed: _previousPage,
-                    ),
-                  ),
-                ),
+                // // Back Button in the top-left corner
+                // Positioned(
+                //   top: 20,
+                //   left: 10,
+                //   child: Visibility(
+                //     visible:
+                //         _currentPage > 0, // Hide back button on the first page
+                //     child: IconButton(
+                //       icon:
+                //           Icon(Icons.arrow_back, color: Colors.black, size: 28),
+                //       onPressed: _previousPage,
+                //     ),
+                //   ),
+                // ),
 
                 // Circular Progress Button and Skip Button at the bottom
                 Positioned(
@@ -310,9 +333,11 @@ class _ImageAnimationScreenState extends State<ImageAnimationScreen>
                               width: 80,
                               height: 80,
                               child: CircularProgressIndicator(
-                                value: (_currentPage + 1) / _totalPages, // Progress value
+                                value: (_currentPage + 1) /
+                                    _totalPages, // Progress value
                                 backgroundColor: Colors.grey.shade300,
-                                valueColor: AlwaysStoppedAnimation<Color>(Colors.orange),
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                    Colors.orange),
                                 strokeWidth: 6,
                               ),
                             ),
@@ -348,8 +373,8 @@ class _ImageAnimationScreenState extends State<ImageAnimationScreen>
                 ),
               ],
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
