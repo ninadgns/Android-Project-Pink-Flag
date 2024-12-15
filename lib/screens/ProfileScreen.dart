@@ -1,19 +1,24 @@
 import 'package:flutter/material.dart';
-import '../widgets/ProfileScreen/MenuItemTile.dart';
+import 'package:dim/screens/NotificationsScreen.dart';
+import '../widgets/menu_item_tile.dart';
 import 'MyPostsScreen.dart';
 import 'SubscriptionScreen.dart';
 import 'PreferencesScreen.dart';
 import 'SettingsScreen.dart';
-import 'ProfileDetailInfoscreen.dart';
+import 'ProfileDetailInfoScreen.dart';
+import 'FoodPlannerScreen.dart';
+import 'AchievementScreen.dart';
+import 'UsefulArticleScreen.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
 
   @override
-  State createState() => _ProfileScreenState();
+  State<ProfileScreen> createState() => _ProfileScreenState();
 }
 
-class _ProfileScreenState extends State<ProfileScreen> with TickerProviderStateMixin {
+class _ProfileScreenState extends State<ProfileScreen>
+    with TickerProviderStateMixin {
   late AnimationController _mainController;
   late AnimationController _bellController;
   late Animation<double> _bellAnimation;
@@ -22,7 +27,6 @@ class _ProfileScreenState extends State<ProfileScreen> with TickerProviderStateM
   late Animation<double> _achievementFade;
 
   late List<Animation<double>> _menuItemFades;
-
 
   // Track if animations have already run once
   static bool _hasAnimated = false;
@@ -105,8 +109,20 @@ class _ProfileScreenState extends State<ProfileScreen> with TickerProviderStateM
       case 'Settings':
         screen = const SettingsScreen();
         break;
+      case 'Notifications':
+        screen = const NotificationsScreen();
+        break;
+      case 'Achievements':
+        screen = const AchievementScreen();
+        break;
+      case 'Food Planner':
+        screen = const FoodPlannerScreen();
+        break;
+      case 'Useful Articles':
+        screen = const UsefulArticleScreen();
+        break;
       case 'My Profile':
-        screen = const ProfileDetailInfoscreen();
+        screen = const ProfileDetailInfoScreen();
         break;
       case 'Preferences':
         screen = const PreferencesScreen();
@@ -118,8 +134,7 @@ class _ProfileScreenState extends State<ProfileScreen> with TickerProviderStateM
         screen = const SubscriptionScreen();
         break;
       default:
-      //screen = PlaceholderScreen(screenName: screenName);
-        screen= ProfileScreen();
+        screen = ProfileScreen();
     }
 
     Navigator.push(
@@ -146,6 +161,8 @@ class _ProfileScreenState extends State<ProfileScreen> with TickerProviderStateM
 
   @override
   Widget build(BuildContext context) {
+    double height = MediaQuery.of(context).size.height;
+    double width = MediaQuery.of(context).size.width;
     final menuItems = [
       MenuItemTile(
         icon: Icons.calendar_today,
@@ -202,156 +219,172 @@ class _ProfileScreenState extends State<ProfileScreen> with TickerProviderStateM
           Positioned(
             top: -30,
             left: -30,
-            child: _buildColoredCircle(const Color(0xFF26A69A), 120), // Teal circle
+            child: _buildColoredCircle(
+                const Color(0xFF26A69A), 120), // Teal circle
           ),
           Positioned(
             top: 100,
             right: -40,
-            child: _buildColoredCircle(const Color(0xFFEF9A9A), 80), // Pink circle
+            child:
+                _buildColoredCircle(const Color(0xFFEF9A9A), 80), // Pink circle
           ),
           Positioned(
             bottom: 120,
             left: -60,
-            child: _buildColoredCircle(const Color(0xFF81C784), 140), // Green circle
+            child: _buildColoredCircle(
+                const Color(0xFF81C784), 140), // Green circle
           ),
           Positioned(
             bottom: 50,
             right: -30,
-            child: _buildColoredCircle(const Color(0xFFFFB74D), 100), // Amber circle
+            child: _buildColoredCircle(
+                const Color(0xFFFFB74D), 100), // Amber circle
           ),
           Positioned(
             top: 260,
             right: 100,
-            child: _buildColoredCircle(Colors.indigo[300]!, 70), // Indigo circle
+            child:
+                _buildColoredCircle(Colors.indigo[300]!, 70), // Indigo circle
           ),
-          SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                children: [
-                  // Header with Profile text and notification icon
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text(
-                        'Profile',
-                        style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                        ),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              children: [
+                // Header with Profile text and notification icon
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      'Profile',
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
                       ),
-                      RotationTransition(
-                        turns: _bellAnimation,
-                        child: IconButton(
-                          icon: const Icon(
-                            Icons.notifications_outlined,
-                            color: Colors.black,
-                          ),
-                          onPressed: () => _navigateToScreen(context, 'Notifications'),
+                    ),
+                    RotationTransition(
+                      turns: _bellAnimation,
+                      child: IconButton(
+                        icon: const Icon(
+                          Icons.notifications_outlined,
+                          color: Colors.black,
                         ),
+                        onPressed: () =>
+                            _navigateToScreen(context, 'Notifications'),
                       ),
-                    ],
-                  ),
-                  const SizedBox(height: 40),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 40),
 
-                  // Profile image, My Profile button
-                  FadeTransition(
-                    opacity: _profileFade,
-                    child: Center(
-                      child: Hero(
-                        tag: 'profile-hero',
-                        child: Column(
-                          children: [
-                            CircleAvatar(
-                              radius: 50, // larger size
-                              backgroundImage: const AssetImage('assets/images/profile.png'),
+                // Profile image, My Profile button
+                FadeTransition(
+                  opacity: _profileFade,
+                  child: Center(
+                    child: Hero(
+                      tag: 'profile-hero',
+                      child: Column(
+                        children: [
+                          CircleAvatar(
+                            radius: 50, // larger size
+                            backgroundImage:
+                                const AssetImage('assets/images/profile.png'),
+                          ),
+                          const SizedBox(height: 16),
+                          const Text(
+                            'Sofia',
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
                             ),
-                            const SizedBox(height: 16),
-                            const Text(
-                              'Sofia',
+                          ),
+                          InkWell(
+                            onTap: () =>
+                                _navigateToScreen(context, 'My Profile'),
+                            child: Text(
+                              'My Profile',
                               style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
+                                color: Colors.grey[600],
+                                fontSize: 16,
+                                decoration: TextDecoration
+                                    .underline, // indicate it's clickable
                               ),
                             ),
-                            InkWell(
-                              onTap: () => _navigateToScreen(context, 'My Profile'),
-                              child: Text(
-                                'My Profile',
-                                style: TextStyle(
-                                  color: Colors.grey[600],
-                                  fontSize: 16,
-                                  decoration: TextDecoration.underline, // indicate it's clickable
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
-                  const SizedBox(height: 30),
+                ),
+                const SizedBox(height: 30),
 
-                  // Achievements Card
-                  FadeTransition(
-                    opacity: _achievementFade,
-                    child: Container(
-                      padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        color: Colors.blue[50],
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Row(
-                        children: [
-                          _buildAnimatedIcon(Icons.restaurant, Colors.indigo),
-                          const SizedBox(width: 16),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Text(
-                                'Achievements',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.blueAccent,
-                                ),
+                // Achievements Card
+                FadeTransition(
+                  opacity: _achievementFade,
+                  child: Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Colors.blue[50],
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Row(
+                      children: [
+                        _buildAnimatedIcon(Icons.restaurant, Colors.indigo),
+                        const SizedBox(width: 16),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              'Achievements',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.blueAccent,
                               ),
-                              Text(
+                            ),
+                            InkWell(
+                              onTap: () =>
+                                  _navigateToScreen(context, 'Achievements'),
+                              child: Text(
                                 'Review your progress',
                                 style: TextStyle(
                                   color: Colors.grey[600],
                                 ),
                               ),
-                            ],
-                          ),
-                          const Spacer(),
-                          const Icon(Icons.chevron_right),
-                        ],
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-
-                  // Menu Items fade in sequentially
-                  Expanded(
-                    child: SingleChildScrollView(
-                      child: Column(
-                        children: List.generate(menuItems.length, (index) {
-                          return FadeTransition(
-                            opacity: _menuItemFades[index],
-                            child: Column(
-                              children: [
-                                menuItems[index],
-                                const SizedBox(height: 10),
-                              ],
                             ),
-                          );
-                        }),
-                      ),
+                          ],
+                        ),
+                        const Spacer(),
+                      ],
                     ),
                   ),
-                ],
-              ),
+                ),
+                const SizedBox(height: 20),
+
+                // Menu Items fade in sequentially
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        ...List.generate(
+                          menuItems.length,
+                          (index) {
+                            return FadeTransition(
+                              opacity: _menuItemFades[index],
+                              child: Column(
+                                children: [
+                                  menuItems[index],
+                                  const SizedBox(height: 10),
+                                ],
+                              ),
+                            );
+                          },
+                        ),
+                        SizedBox(height: height/7),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
         ],

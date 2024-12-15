@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:dim/widgets/LibraryScreen/SavedItem.dart';
 
 import '../../data/constants.dart';
+import '../../screens/RecipeIntroScreen.dart';
 import 'CollectionItem.dart';
 
 class LibrarySaved extends StatelessWidget {
@@ -16,15 +17,20 @@ class LibrarySaved extends StatelessWidget {
         mainAxisSpacing: 8.0, // Spacing between rows
         crossAxisSpacing: 10.0, // Spacing between columns
         childAspectRatio: 1.0, // Aspe+ct ratio of each item
-        mainAxisExtent: _height/4.2, // Height of each item
+        mainAxisExtent: _height / 4.2, // Height of each item
       ),
       itemBuilder: (context, index) {
-        return SavedItem(
-          index: index,
+        return InkWell(
+          onTap: () {
+            Navigator.push(
+                context, MaterialPageRoute(builder: (ctx) => RecipeIntro()));
+          },
+          child: SavedItem(
+            index: index,
+          ),
         );
       },
       itemCount: 10,
     );
   }
 }
-

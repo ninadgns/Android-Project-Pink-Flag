@@ -29,6 +29,22 @@ class _WarpedListState extends State<WarpedList> {
             ...widget.items.map((item) {
               return FlatButton(item: item);
             }).toList(),
+            TextButton(
+              style: ButtonStyle(
+                  backgroundColor: WidgetStateProperty.all(
+                    Colors.white,
+                  ),
+                  side: WidgetStateProperty.all(
+                    BorderSide(
+                      color: Colors.grey,
+                      width: 0.5,
+                    ),
+                  )),
+              onPressed: () {
+                setState(() {});
+              },
+              child: Text('+', style: Theme.of(context).textTheme.bodyMedium),
+            )
           ],
         ),
       ],

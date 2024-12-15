@@ -62,7 +62,6 @@ class _SearchScreenState extends State<SearchScreen> {
                 const Spacer(),
                 TextButton(
                   onPressed: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (ctx) =>  RecipeIntro()));
                   },
                   child: Text(
                     'View All',

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../data/constants.dart';
+import '../../screens/RecipeIntroScreen.dart';
 import 'CollectionItem.dart';
 
 class LibraryCollections extends StatelessWidget {
@@ -15,15 +16,20 @@ class LibraryCollections extends StatelessWidget {
         mainAxisSpacing: 8.0, // Spacing between rows
         crossAxisSpacing: 10.0, // Spacing between columns
         childAspectRatio: 1.0, // Aspe+ct ratio of each item
-        mainAxisExtent: _height/4.2, // Height of each item
+        mainAxisExtent: _height / 4.2, // Height of each item
       ),
       itemBuilder: (context, index) {
-        return CollectionItem(
-          index: index,
+        return InkWell(
+          onTap: () {
+            Navigator.push(
+                context, MaterialPageRoute(builder: (ctx) => RecipeIntro()));
+          },
+          child: CollectionItem(
+            index: index,
+          ),
         );
       },
       itemCount: 20,
     );
   }
 }
-

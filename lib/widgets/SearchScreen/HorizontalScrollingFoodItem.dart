@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import '../../screens/RecipeIntroScreen.dart';
+
 class HorizontalScrollingFood extends StatelessWidget {
   HorizontalScrollingFood({
     super.key,
@@ -15,26 +17,37 @@ class HorizontalScrollingFood extends StatelessWidget {
     double _height = MediaQuery.of(context).size.height;
 
     return Container(
-      width: 250,
+      width: _width / 1.3,
       child: Stack(
         children: [
           Positioned(
             bottom: 0,
             right: _width / 25,
-            child: Container(
-              height: 190,
-              width: 190,
-              decoration: BoxDecoration(
-                color: color,
-                borderRadius: BorderRadius.circular(40),
-              ),
-              child: Stack(
-                children: [
+            child: InkWell(
+              borderRadius: BorderRadius.circular(40),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => RecipeIntro(),
+                  ),
+                );
+              },
+              child: Container(
+                height: _width / 2,
+                width: _width / 2,
+                decoration: BoxDecoration(
+                  color: color,
+                  borderRadius: BorderRadius.circular(40),
+                ),
+                child: Stack(children: [
                   Positioned(
-                    top: 8,
-                    right: 8,
+                    top: _width / 30,
+                    right: _width / 30,
                     child: IconButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        print(33333);
+                      },
                       icon: const Icon(
                         Icons.bookmark_border_rounded,
                       ),
@@ -55,71 +68,88 @@ class HorizontalScrollingFood extends StatelessWidget {
                       ),
                     ),
                   ),
-                  Positioned(
-                    bottom: _width / 15,
-                    left: _width / 20,
-                    right: _width / 20, // Allow Row to expand to full width
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Khabar er naam',
-                          style:
-                              Theme.of(context).textTheme.labelLarge!.copyWith(
+                  Stack(
+                    children: [
+                      Positioned(
+                        bottom: _width / 15,
+                        left: _width / 20,
+                        right: _width / 20, // Allow Row to expand to full width
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Khabar er naam',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .labelLarge!
+                                  .copyWith(
                                     color: Colors.black,
                                   ),
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
-                              children: [
-                                Icon(
-                                  Icons.star_border_rounded,
-                                  color: Colors.black,
-                                  size: 20,
-                                ),
-                                Text(
-                                  ' 4.5',
-                                  style: TextStyle(fontSize: 14),
-                                ),
-                              ],
                             ),
-                            Row(
+                            const Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text(
-                                  '20 min ',
-                                  style: TextStyle(
-                                    color: Colors.black26,
-                                    fontSize: 14,
-                                  ),
+                                Row(
+                                  children: [
+                                    Icon(
+                                      Icons.star_border_rounded,
+                                      color: Colors.black,
+                                      size: 20,
+                                    ),
+                                    Text(
+                                      ' 4.5',
+                                      style: TextStyle(fontSize: 14),
+                                    ),
+                                  ],
                                 ),
-                                Icon(
-                                  Icons.watch_later_outlined,
-                                  size: 16,
-                                  color: Colors.black38,
+                                Row(
+                                  children: [
+                                    Text(
+                                      '20 min ',
+                                      style: TextStyle(
+                                        color: Colors.black26,
+                                        fontSize: 14,
+                                      ),
+                                    ),
+                                    Icon(
+                                      Icons.watch_later_outlined,
+                                      size: 16,
+                                      color: Colors.black38,
+                                    ),
+                                  ],
                                 ),
                               ],
                             ),
                           ],
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                ],
+                ]),
               ),
             ),
           ),
           Positioned(
-            top: 8,
+            top: 0,
             left: 0,
-            child: CircleAvatar(
-              backgroundColor: Colors.white,
-              radius: _width / 4,
+            child: InkWell(
+              borderRadius: BorderRadius.circular(100),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => RecipeIntro(),
+                  ),
+                );
+              },
               child: CircleAvatar(
-                child: Text('Ami khabarer chobi'),
-                backgroundColor: color,
-                radius: _width / 4.5,
+                backgroundColor: Colors.white,
+                radius: _width / 4,
+                child: CircleAvatar(
+                  child: const Text('Ami khabarer chobi'),
+                  backgroundColor: color,
+                  radius: _width / 4.5,
+                ),
               ),
             ),
           ),
