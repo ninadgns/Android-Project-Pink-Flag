@@ -1,4 +1,4 @@
-import 'dart:io' show File; // This will be conditionally used only on mobile.
+import 'dart:io' show File;
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -17,12 +17,16 @@ class _ProfileDetailInfoScreenState extends State<ProfileDetailInfoScreen>
   String profileImagePath = 'assets/images/profile.png';
   Uint8List? profileImageBytes;
 
+  String userName = 'Sofia';
   String fullName = 'Sofia Anderson';
   String email = 'sofia@example.com';
   String phoneNumber = '+1 234 567 8900';
   String bio = 'Food lover, cook, and traveler.';
   String city = 'New York';
   String workplace = 'Culinary Institute of America';
+  String follower='98';
+  String following='142';
+  String recipes= '23';
 
   List<Map<String, String>> socialMediaIds = [
     {'platform': 'Instagram', 'handle': '@sofiacooks'},
@@ -46,6 +50,7 @@ class _ProfileDetailInfoScreenState extends State<ProfileDetailInfoScreen>
       context: context,
       builder: (_) {
         return AlertDialog(
+          backgroundColor: Color(0xFFB2EBF2),
           title: Text('Edit ${platform['platform']} Handle'),
           content: TextField(
             controller: controller,
@@ -59,6 +64,9 @@ class _ProfileDetailInfoScreenState extends State<ProfileDetailInfoScreen>
                 Navigator.pop(context);
               },
               child: const Text('Cancel'),
+              style: TextButton.styleFrom(
+                foregroundColor: Color(0xFF00ACC1), // Save button text color
+              ),
             ),
             TextButton(
               onPressed: () {
@@ -73,6 +81,9 @@ class _ProfileDetailInfoScreenState extends State<ProfileDetailInfoScreen>
                 Navigator.pop(context);
               },
               child: const Text('Save'),
+              style: TextButton.styleFrom(
+                foregroundColor: Color(0xFF00ACC1), // Save button text color
+              ),
             ),
           ],
         );
@@ -87,6 +98,7 @@ class _ProfileDetailInfoScreenState extends State<ProfileDetailInfoScreen>
       context: context,
       builder: (_) {
         return AlertDialog(
+          backgroundColor: Color(0xFFB2EBF2),
           title: const Text('Add Social Media'),
           content: Column(
             mainAxisSize: MainAxisSize.min,
@@ -109,6 +121,9 @@ class _ProfileDetailInfoScreenState extends State<ProfileDetailInfoScreen>
             TextButton(
               onPressed: () => Navigator.pop(context),
               child: const Text('Cancel'),
+              style: TextButton.styleFrom(
+                foregroundColor: Color(0xFF00ACC1), // Save button text color
+              ),
             ),
             TextButton(
               onPressed: () {
@@ -125,6 +140,9 @@ class _ProfileDetailInfoScreenState extends State<ProfileDetailInfoScreen>
                 }
               },
               child: const Text('Add'),
+              style: TextButton.styleFrom(
+                foregroundColor: Color(0xFF00ACC1), // Save button text color
+              ),
             ),
           ],
         );
@@ -138,11 +156,12 @@ class _ProfileDetailInfoScreenState extends State<ProfileDetailInfoScreen>
       context: context,
       builder: (_) {
         return AlertDialog(
+          backgroundColor: Color(0xFFB2EBF2),
           title: Text('Edit $fieldName'),
           content: TextField(
             controller: controller,
             keyboardType: multiline ? TextInputType.multiline : TextInputType.text,
-            maxLines: multiline ? 3 : 1,
+            maxLines: multiline ? 4 : 1,
             decoration: InputDecoration(
               hintText: 'Enter new $fieldName',
             ),
@@ -151,6 +170,9 @@ class _ProfileDetailInfoScreenState extends State<ProfileDetailInfoScreen>
             TextButton(
               onPressed: () => Navigator.pop(context),
               child: const Text('Cancel'),
+              style: TextButton.styleFrom(
+                foregroundColor: Color(0xFF00ACC1), // Save button text color
+              ),
             ),
             TextButton(
               onPressed: () {
@@ -158,6 +180,9 @@ class _ProfileDetailInfoScreenState extends State<ProfileDetailInfoScreen>
                 Navigator.pop(context);
               },
               child: const Text('Save'),
+              style: TextButton.styleFrom(
+                foregroundColor: Color(0xFF00ACC1), // Save button text color
+              ),
             ),
           ],
         );
@@ -176,15 +201,13 @@ class _ProfileDetailInfoScreenState extends State<ProfileDetailInfoScreen>
     required String value,
     required void Function() onEdit,
     bool isMultiline = false,
-    bool highlight = false,
     IconData icon = Icons.edit,
   }) {
     return Container(
       margin: const EdgeInsets.only(bottom: 16.0),
-      padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 20.0),
       decoration: BoxDecoration(
-        // A soothing pastel background for the field
-        color: highlight ? const Color(0xFFE0F7FA).withOpacity(0.9) : Colors.grey[200],
+        color: const Color(0xFFE0F7FA).withOpacity(0.8),
         borderRadius: BorderRadius.circular(12.0),
       ),
       child: Row(
@@ -192,7 +215,7 @@ class _ProfileDetailInfoScreenState extends State<ProfileDetailInfoScreen>
         children: [
           Expanded(
             child: Padding(
-              padding: EdgeInsets.symmetric(vertical:  0),
+              padding: EdgeInsets.symmetric(vertical: 12.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -210,6 +233,7 @@ class _ProfileDetailInfoScreenState extends State<ProfileDetailInfoScreen>
           ),
           IconButton(
             icon: Icon(icon, color: Colors.grey[600]),
+            iconSize: 20.0,
             onPressed: onEdit,
           ),
         ],
@@ -220,10 +244,9 @@ class _ProfileDetailInfoScreenState extends State<ProfileDetailInfoScreen>
   Widget _buildSocialMediaSection() {
     return Container(
       margin: const EdgeInsets.only(bottom: 16.0),
-      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 12.0),
+      padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 12.0),
       decoration: BoxDecoration(
-        // Soft pastel primary background
-        color: const Color(0xFFE0F7FA).withOpacity(0.9),
+        color: const Color(0xFFE0F7FA).withOpacity(0.8),
         borderRadius: BorderRadius.circular(12.0),
       ),
       child: Column(
@@ -232,24 +255,26 @@ class _ProfileDetailInfoScreenState extends State<ProfileDetailInfoScreen>
           Text('Social Media',
               style: TextStyle(color: Colors.grey[700], fontWeight: FontWeight.bold)),
           const SizedBox(height: 8),
-          Column(
-            children: socialMediaIds.map((platform) {
-              return Row(
+          ...socialMediaIds.map((platform) {
+            return Padding(
+              padding: const EdgeInsets.symmetric(vertical: 4),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Expanded(
-                    child: Text('${platform['platform']}: ${platform['handle']}',
-                        style: const TextStyle(fontSize: 16)),
+                  Text(
+                      '${platform['platform']}: ${platform['handle']}',
+                      style: const TextStyle(fontSize: 16)
                   ),
                   IconButton(
-                    icon: const Icon(Icons.edit, color: Colors.grey),
-                    onPressed: () {
-                      _editSocialMediaHandle(platform);
-                    },
+                    icon: Icon(Icons.edit, color: Colors.grey[600], size: 20),
+                    onPressed: () => _editSocialMediaHandle(platform),
+                    iconSize: 20.0,
+                    constraints: const BoxConstraints(),
                   ),
                 ],
-              );
-            }).toList(),
-          ),
+              ),
+            );
+          }).toList(),
           const SizedBox(height: 8),
           TextButton.icon(
             icon: const Icon(Icons.add),
@@ -262,15 +287,42 @@ class _ProfileDetailInfoScreenState extends State<ProfileDetailInfoScreen>
   }
 
   Widget _buildStat(String number, String label) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        // Could add a slight animation with TweenAnimationBuilder if needed
-        Text(number,
-            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-        const SizedBox(height: 4),
-        Text(label, style: TextStyle(color: Colors.grey[600])),
-      ],
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
+      decoration: BoxDecoration(
+        color: const Color(0xFFE0F7FA).withOpacity(0.8),
+        borderRadius: BorderRadius.circular(14),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.1),
+            spreadRadius: 1,
+            blurRadius: 5,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            number,
+            style: const TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: Color(0xFF00796B),
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            label,
+            style: TextStyle(
+              color: Colors.grey[800],
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -304,18 +356,20 @@ class _ProfileDetailInfoScreenState extends State<ProfileDetailInfoScreen>
 
           SafeArea(
             child: SingleChildScrollView(
-              padding: const EdgeInsets.all(20.0),
+              padding: const EdgeInsets.all(10.0),
               child: Column(
                 children: [
                   Row(
                     children: [
                       IconButton(
                         icon: const Icon(Icons.arrow_back, color: Colors.black),
+                        iconSize: 20.0,
                         onPressed: () => Navigator.pop(context),
                       ),
                       const Spacer(),
                       IconButton(
                         icon: const Icon(Icons.share, color: Colors.black),
+                        iconSize: 20.0,
                         onPressed: _shareProfile,
                       ),
                     ],
@@ -324,7 +378,7 @@ class _ProfileDetailInfoScreenState extends State<ProfileDetailInfoScreen>
                   Text('My Profile',
                       style: const TextStyle(
                           color: Colors.black,
-                          fontSize: 24,
+                          fontSize: 22,
                           fontWeight: FontWeight.bold)),
                   const SizedBox(height: 30),
                   Center(
@@ -355,11 +409,36 @@ class _ProfileDetailInfoScreenState extends State<ProfileDetailInfoScreen>
                       ],
                     ),
                   ),
+                  Container(
+                    margin: const EdgeInsets.symmetric(vertical: 18.0, horizontal: 12.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Expanded(
+                          child: _buildStat(recipes, 'Recipes'),
+                        ),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: _buildStat(following, 'Following'),
+                        ),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: _buildStat(follower, 'Followers'),
+                        ),
+                      ],
+                    ),
+                  ),
                   const SizedBox(height: 30),
                   _buildEditableField(
                     label: 'Full Name',
                     value: fullName,
-                    highlight: true,
+                    onEdit: () => _editField('Full Name', fullName, false, (newVal) {
+                      setState(() => fullName = newVal);
+                    }),
+                  ),
+                  _buildEditableField(
+                    label: 'User Name',
+                    value: userName,
                     onEdit: () => _editField('Full Name', fullName, false, (newVal) {
                       setState(() => fullName = newVal);
                     }),
@@ -367,7 +446,6 @@ class _ProfileDetailInfoScreenState extends State<ProfileDetailInfoScreen>
                   _buildEditableField(
                     label: 'Email',
                     value: email,
-                    highlight: true,
                     onEdit: () => _editField('Email', email, false, (newVal) {
                       setState(() => email = newVal);
                     }),
@@ -375,7 +453,6 @@ class _ProfileDetailInfoScreenState extends State<ProfileDetailInfoScreen>
                   _buildEditableField(
                     label: 'Phone Number',
                     value: phoneNumber,
-                    highlight: true,
                     onEdit: () => _editField('Phone Number', phoneNumber, false, (newVal) {
                       setState(() => phoneNumber = newVal);
                     }),
@@ -383,67 +460,27 @@ class _ProfileDetailInfoScreenState extends State<ProfileDetailInfoScreen>
                   _buildEditableField(
                     label: 'Bio',
                     value: bio,
-                    highlight: true,
                     isMultiline: true,
                     onEdit: () => _editField('Bio', bio, true, (newVal) {
                       setState(() => bio = newVal);
                     }),
                   ),
                   _buildEditableField(
-                    label: 'Living City',
-                    value: city,
-                    highlight: true,
-                    onEdit: () => _editField('Living City', city, false, (newVal) {
-                      setState(() => city = newVal);
-                    }),
-                  ),
-                  _buildEditableField(
                     label: 'Workplace',
                     value: workplace,
-                    highlight: true,
+                    isMultiline: true,
                     onEdit: () => _editField('Workplace', workplace, false, (newVal) {
                       setState(() => workplace = newVal);
                     }),
                   ),
+                  _buildEditableField(
+                    label: 'Living City',
+                    value: city,
+                    onEdit: () => _editField('Living City', city, false, (newVal) {
+                      setState(() => city = newVal);
+                    }),
+                  ),
                   _buildSocialMediaSection(),
-                  Container(
-                    margin: const EdgeInsets.only(bottom: 24.0),
-                    padding: const EdgeInsets.all(16.0),
-                    decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.9),
-                      borderRadius: BorderRadius.circular(12.0),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        _buildStat('23', 'Recipes'),
-                        _buildStat('142', 'Following'),
-                        _buildStat('98', 'Followers'),
-                      ],
-                    ),
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                      // Save changes logic
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Changes saved!'),
-                          backgroundColor: Colors.black87,
-                        ),
-                      );
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.black,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8)),
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 16, horizontal: 32),
-                    ),
-                    child: const Text(
-                      'Save Changes',
-                      style: TextStyle(color: Colors.white, fontSize: 16),
-                    ),
-                  ),
                 ],
               ),
             ),
@@ -460,13 +497,9 @@ class SoftPastelBackgroundPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final pastelBlue = const Color(0xFFADD6CF).withOpacity(0.3);
     final pastelPink = const Color(0xFFF0AF9E).withOpacity(0.3);
-    final pastelGreen = const Color(0xFF9FB693).withOpacity(0.3);
-    final pastelYellow = const Color(0xFFF8E8C4).withOpacity(0.3);
 
     final paintBlue = Paint()..color = pastelBlue..style = PaintingStyle.fill;
     final paintPink = Paint()..color = pastelPink..style = PaintingStyle.fill;
-    final paintGreen = Paint()..color = pastelGreen..style = PaintingStyle.fill;
-    final paintYellow = Paint()..color = pastelYellow..style = PaintingStyle.fill;
 
     Path path1 = Path();
     path1.moveTo(0, size.height * 0.1);

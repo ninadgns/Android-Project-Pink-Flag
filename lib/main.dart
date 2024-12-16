@@ -1,3 +1,7 @@
+import 'package:dim/screens/ProfileDetailInfoScreen.dart';
+import 'package:dim/screens/ProfileScreen.dart';
+import 'package:dim/screens/SubscriptionScreen.dart';
+
 import '/screens/ImageAnimationScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -26,6 +30,8 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       theme: appTheme,
       home: ImageAnimationScreen(),
+       // home: ProfileScreen(),
+
     );
   }
 }

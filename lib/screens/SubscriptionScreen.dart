@@ -1,89 +1,208 @@
 import 'package:flutter/material.dart';
+import '../models/SubscriptionModels.dart';
+import '../widgets/SubscriptionScreen/SubscriptionPlanWidget.dart';
+import '../widgets/SubscriptionScreen/CurrentSubscriptionWidget.dart';
+import '../services/PaymentServices.dart';
+import 'PaymentMethodsScreen.dart';
 
-class SubscriptionScreen extends StatelessWidget {
+
+
+class SubscriptionScreen extends StatefulWidget {
   const SubscriptionScreen({super.key});
 
-  Widget _buildSubscriptionCard(String title, String price, String period,
-      List<String> features, bool isCurrentPlan) {
-    return Card(
-      margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
+  @override
+  State<SubscriptionScreen> createState() => _SubscriptionScreenState();
+}
+
+class _SubscriptionScreenState extends State<SubscriptionScreen> {
+  final PageController _pageController = PageController(viewportFraction: 0.93);
+  final PaymentService _paymentService = PaymentService();
+  int _currentPage = 0;
+  bool _isLoading = true;
+  String? _error;
+
+  // State management
+  late CurrentSubscription _currentSubscription;
+  late List<SubscriptionPlan> _plans;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadInitialData();
+  }
+
+  Future<void> _loadInitialData() async {
+    try {
+      setState(() => _isLoading = true);
+
+      // Load all necessary data
+      final currentPlan = await _paymentService.getCurrentSubscription();
+      final availablePlans = await _paymentService.getAvailablePlans();
+
+      setState(() {
+        _currentSubscription = currentPlan;
+        _plans = availablePlans;
+        _isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        _error = e.toString();
+        _isLoading = false;
+      });
+    }
+  }
+
+  void _navigateToPayments(SubscriptionPlan plan) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => PaymentMethodsScreen(
+          amountToPay: plan.price,
+          planId: plan.id,
+        ),
+      ),
+    ).then((result) {
+      if (result == true) {
+        _loadInitialData(); // Refresh data after successful payment
+      }
+    });
+  }
+
+
+  Widget _buildPageIndicator() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: List.generate(_plans.length, (index) {
+        return Container(
+          width: 8,
+          height: 8,
+          margin: const EdgeInsets.symmetric(horizontal: 4),
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: _currentPage == index
+                ? const Color(0xFF80CBC4)
+                : Colors.grey[300],
+          ),
+        );
+      }),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (_isLoading) {
+      return const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
+
+    if (_error != null) {
+      return Scaffold(
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text('Error: $_error'),
+              ElevatedButton(
+                onPressed: _loadInitialData,
+                child: const Text('Retry'),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    return Scaffold(
+      backgroundColor: const Color(0xFFBBDEFB),
+      appBar: AppBar(
+        toolbarHeight: 50.0,
+        title: const Text(
+          'Choose Your Plan',
+          style: TextStyle(
+            color: Colors.black87,
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        centerTitle: true,
+        elevation: 8,
+        backgroundColor: Colors.transparent,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+      ),
+      body: Container(
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          image: DecorationImage(
+            image: AssetImage('assets/images/cat.png'),
+            repeat: ImageRepeat.repeat,
+            opacity: 0.1,
+          ),
+        ),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  title,
-                  style: const TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
+            Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: CurrentPlanCard(
+                subscription: _currentSubscription,
+              ),
+            ),
+
+
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20.0),
+              child: ElevatedButton(
+                onPressed: () => _navigateToPayments(_plans[_currentPage]),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF80CBC4),
+                  minimumSize: const Size.fromHeight(50),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
                   ),
                 ),
-                if (isCurrentPlan)
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 8,
-                      vertical: 4,
-                    ),
-                    decoration: BoxDecoration(
-                      color: Colors.green[100],
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: const Text(
-                      'Current Plan',
+                child: const Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.payment, color: Colors.white,),
+                    SizedBox(width: 8),
+                    Text(
+                      'Payment Methods',
                       style: TextStyle(
-                        color: Colors.green,
+                        fontSize: 16,
                         fontWeight: FontWeight.bold,
+                        color: Colors.white,
                       ),
                     ),
-                  ),
-              ],
-            ),
-            const SizedBox(height: 8),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Text(
-                  price,
-                  style: const TextStyle(
-                    fontSize: 32,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  ],
                 ),
-                const SizedBox(width: 4),
-                Text(
-                  period,
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: Colors.grey[600],
-                  ),
-                ),
-              ],
+              ),
             ),
             const SizedBox(height: 16),
-            ...features.map((feature) => Padding(
-              padding: const EdgeInsets.only(bottom: 8),
-              child: Row(
-                children: [
-                  const Icon(Icons.check_circle, color: Colors.green),
-                  const SizedBox(width: 8),
-                  Text(feature),
-                ],
+
+            Expanded(
+              child: PageView.builder(
+                controller: _pageController,
+                itemCount: _plans.length,
+                onPageChanged: (index) {
+                  setState(() {
+                    _currentPage = index;
+                  });
+                },
+                itemBuilder: (context, index) {
+                  return SubscriptionPlanCard(
+                    plan: _plans[index],
+                    isSelected: index == _currentPage,
+                    onSubscribe: (plan) => _navigateToPayments(plan),
+                  );
+                },
               ),
-            )),
-            const SizedBox(height: 16),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: isCurrentPlan ? null : () {},
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                ),
-                child: Text(isCurrentPlan ? 'Current Plan' : 'Upgrade Plan'),
-              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(bottom: 32),
+              child: _buildPageIndicator(),
             ),
           ],
         ),
@@ -92,55 +211,8 @@ class SubscriptionScreen extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Subscription Management'),
-        elevation: 0,
-      ),
-      body: ListView(
-        children: [
-          const SizedBox(height: 16),
-          _buildSubscriptionCard(
-            'Free Plan',
-            '\$0',
-            '/month',
-            [
-              'Basic features access',
-              'Limited recipes',
-              'Ad-supported experience',
-            ],
-            false,
-          ),
-          _buildSubscriptionCard(
-            'Pro Plan',
-            '\$9.99',
-            '/month',
-            [
-              'Unlimited recipes access',
-              'Meal planning features',
-              'Ad-free experience',
-              'Premium articles',
-              'Priority support',
-            ],
-            true,
-          ),
-          _buildSubscriptionCard(
-            'Family Plan',
-            '\$19.99',
-            '/month',
-            [
-              'All Pro features',
-              'Up to 6 family members',
-              'Shared meal planning',
-              'Family recipes collection',
-              'Advanced meal tracking',
-              '24/7 Priority support',
-            ],
-            false,
-          ),
-        ],
-      ),
-    );
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
   }
 }

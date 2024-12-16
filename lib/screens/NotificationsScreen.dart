@@ -5,6 +5,20 @@ class NotificationsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Center(child: Text('Notifications'));
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Notifications'),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            // Navigate back to the previous screen
+            Navigator.of(context).pop();
+          },
+        ),
+      ),
+      body: const Center(
+        child: Text('Notifications'),
+      ),
+    );
   }
 }

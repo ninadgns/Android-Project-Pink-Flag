@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '/screens/NotificationsScreen.dart';
-import '../widgets/menu_item_tile.dart';
+import '../widgets/ProfileScreen/MenuItemTile.dart';
 import 'MyPostsScreen.dart';
 import 'SubscriptionScreen.dart';
 import 'PreferencesScreen.dart';
@@ -192,7 +192,6 @@ class _ProfileScreenState extends State<ProfileScreen>
         iconColor: const Color(0xFFFFB74D),
         title: 'Subscription Management',
         titleColor: Colors.amber[600]!,
-        isPro: true,
         onTap: () => _navigateToScreen(context, 'Subscription Management'),
       ),
       MenuItemTile(
@@ -200,6 +199,7 @@ class _ProfileScreenState extends State<ProfileScreen>
         iconColor: const Color(0xFF26A69A),
         title: 'Preferences',
         titleColor: Colors.teal[700]!,
+        isPro: true,
         onTap: () => _navigateToScreen(context, 'Preferences'),
       ),
       MenuItemTile(
