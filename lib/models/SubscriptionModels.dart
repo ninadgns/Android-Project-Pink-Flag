@@ -24,7 +24,21 @@ class SubscriptionPlan {
     'title': title,
     'price': price,
     'period': period,
+    'features': features,
+    'isPopular': isPopular,
   };
+
+  factory SubscriptionPlan.fromJson(Map<String, dynamic> json){
+    return SubscriptionPlan(
+        id: json['plan_id'],
+        title: json['title'],
+        price: json['price'],
+        period: json['period'],
+        features: json['features'],
+        isPopular: json['isPopular'],
+        color: Colors.blue,
+    );
+  }
 }
 
 // Subscription Plans
@@ -74,6 +88,8 @@ final List<SubscriptionPlan> defaultPlans = [
   )
 ];
 
+
+
 class CurrentSubscription {
   final String planId;
   final String planName;
@@ -99,6 +115,17 @@ class CurrentSubscription {
     'is_past_due': isPastDue,
     'days_overdue': daysOverdue,
   };
+
+  factory CurrentSubscription.fromJson(Map<String, dynamic> json) {
+    return CurrentSubscription(
+      planId: json['plan_id'],
+      planName: json['plan_name'],
+      price: json['price'],
+      renewalDate: json['renewal_date'],
+      isPastDue: json['is_past_due'],
+      daysOverdue: json['days_overdue'],
+    );
+  }
 }
 
 
