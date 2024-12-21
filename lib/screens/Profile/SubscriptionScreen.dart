@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import '../models/SubscriptionModels.dart';
-import '../widgets/SubscriptionScreen/SubscriptionPlanWidget.dart';
-import '../widgets/SubscriptionScreen/CurrentSubscriptionWidget.dart';
-import '../services/PaymentServices.dart';
+import 'package:dim/models/SubscriptionModels.dart';
+import 'package:dim/widgets/SubscriptionScreen/SubscriptionPlanWidget.dart';
+import 'package:dim/widgets/SubscriptionScreen/CurrentSubscriptionWidget.dart';
+import 'package:dim/services/PaymentServices.dart';
 import 'PaymentMethodsScreen.dart';
 
 

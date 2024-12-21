@@ -6,7 +6,9 @@ class GroceryItem {
   final String name;
   final double quantity;
   final String unit;
+  final String description;
   final String category;
+  final String? icon;
   bool isPurchased;
   final DateTime addedDate;
   final String userId;
@@ -16,7 +18,9 @@ class GroceryItem {
     required this.name,
     required this.quantity,
     required this.unit,
+    required this.description,
     required this.category,
+    this.icon,
     this.isPurchased = false,
     required this.addedDate,
     required this.userId,
@@ -27,6 +31,7 @@ class GroceryItem {
     'name': name,
     'quantity': quantity,
     'unit': unit,
+    'description': description,
     'category': category,
     'isPurchased': isPurchased,
     'addedDate': addedDate.toIso8601String(),
@@ -39,6 +44,7 @@ class GroceryItem {
       name: json['name'],
       quantity: json['quantity'],
       unit: json['unit'],
+      description: json['description'],
       category: json['category'],
       isPurchased: json['isPurchased'],
       addedDate: DateTime.parse(json['addedDate']),

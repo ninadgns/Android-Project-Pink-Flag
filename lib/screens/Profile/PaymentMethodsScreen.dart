@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import '../widgets/SubscriptionScreen/PaymentWidgets.dart';
-import '../services/PaymentServices.dart';
-import '../models/PaymentModels.dart';
+import 'package:dim/widgets/SubscriptionScreen/PaymentWidgets.dart';
+import 'package:dim/services/PaymentServices.dart';
+import 'package:dim/models/PaymentModels.dart';
 
 class PaymentMethodsScreen extends StatefulWidget {
   final double amountToPay;

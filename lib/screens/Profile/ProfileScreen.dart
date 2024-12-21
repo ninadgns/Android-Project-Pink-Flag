@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-import '/screens/NotificationsScreen.dart';
-import '../widgets/ProfileScreen/MenuItemTile.dart';
+import 'NotificationsScreen.dart';
+import 'package:dim/widgets/ProfileScreen/MenuItemTile.dart';
 import 'MyPostsScreen.dart';
 import 'SubscriptionScreen.dart';
 import 'PreferencesScreen.dart';
 import 'SettingsScreen.dart';
 import 'ProfileDetailInfoScreen.dart';
-import 'FoodPlannerScreen.dart';
 import 'AchievementScreen.dart';
 import 'UsefulArticleScreen.dart';
 
@@ -115,9 +114,6 @@ class _ProfileScreenState extends State<ProfileScreen>
       case 'Achievements':
         screen = const AchievementScreen();
         break;
-      case 'Meal Planner':
-        screen = const FoodPlannerScreen();
-        break;
       case 'Useful Features':
         screen = const UsefulArticleScreen();
         break;
@@ -164,14 +160,6 @@ class _ProfileScreenState extends State<ProfileScreen>
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
     final menuItems = [
-      MenuItemTile(
-        icon: Icons.calendar_today,
-        iconColor: const Color(0xFF26A69A),
-        title: 'Meal Planner',
-        titleColor: Colors.teal[500]!,
-        isPro: true,
-        onTap: () => _navigateToScreen(context, 'Meal Planner'),
-      ),
       MenuItemTile(
         icon: Icons.article_outlined,
         iconColor: const Color(0xFFEF9A9A),

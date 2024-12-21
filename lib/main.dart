@@ -1,12 +1,7 @@
-import 'package:dim/screens/ProfileDetailInfoScreen.dart';
-import 'package:dim/screens/ProfileScreen.dart';
-import 'package:dim/screens/SubscriptionScreen.dart';
-
 import '/screens/ImageAnimationScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '/data/themeData.dart';
-import '/screens/HomeScreen.dart';
 
 void main() {
   runApp(const MyApp());
