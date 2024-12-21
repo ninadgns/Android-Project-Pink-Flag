@@ -115,10 +115,10 @@ class _ProfileScreenState extends State<ProfileScreen>
       case 'Achievements':
         screen = const AchievementScreen();
         break;
-      case 'Food Planner':
+      case 'Meal Planner':
         screen = const FoodPlannerScreen();
         break;
-      case 'Useful Articles':
+      case 'Useful Features':
         screen = const UsefulArticleScreen();
         break;
       case 'My Profile':
@@ -167,18 +167,18 @@ class _ProfileScreenState extends State<ProfileScreen>
       MenuItemTile(
         icon: Icons.calendar_today,
         iconColor: const Color(0xFF26A69A),
-        title: 'Food Planner',
+        title: 'Meal Planner',
         titleColor: Colors.teal[500]!,
         isPro: true,
-        onTap: () => _navigateToScreen(context, 'Food Planner'),
+        onTap: () => _navigateToScreen(context, 'Meal Planner'),
       ),
       MenuItemTile(
         icon: Icons.article_outlined,
         iconColor: const Color(0xFFEF9A9A),
-        title: 'Useful Articles',
+        title: 'Useful Features',
         titleColor: Colors.pinkAccent,
         isPro: true,
-        onTap: () => _navigateToScreen(context, 'Useful Articles'),
+        onTap: () => _navigateToScreen(context, 'Useful Features'),
       ),
       MenuItemTile(
         icon: Icons.post_add,

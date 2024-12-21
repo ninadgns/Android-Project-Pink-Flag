@@ -30,7 +30,7 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       theme: appTheme,
       home: ImageAnimationScreen(),
-       // home: ProfileScreen(),
+       //home: ProfileScreen(),
 
     );
   }

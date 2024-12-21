@@ -1,3 +1,4 @@
+import 'package:dim/screens/FoodPlannerScreen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -26,6 +27,10 @@ final bottomNavigationItems = [
     label: 'Shopping',
   ),
   const BottomNavigationBarItem(
+    icon: Icon(Icons.date_range_outlined),
+    label: 'Meal Planner',
+  ),
+  const BottomNavigationBarItem(
     icon: Icon(CupertinoIcons.profile_circled),
     label: 'Profile',
   ),
@@ -36,6 +41,7 @@ final homepageScreens = [
   const LibraryScreen(),
   const ScannerScreen(),
   const Shoppingscreen(),
+  const FoodPlannerScreen(),
   const ProfileScreen(),
 ];
 

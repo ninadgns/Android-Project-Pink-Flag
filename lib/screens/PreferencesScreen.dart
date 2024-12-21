@@ -10,12 +10,14 @@ class PreferencesScreen extends StatefulWidget {
 class _PreferencesScreenState extends State<PreferencesScreen> with SingleTickerProviderStateMixin {
   final List<String> selectedDiets = [];
   final List<String> selectedAllergies = [];
+  final List<String> selectedMaterials = [];
   final List<String> selectedDishes = [];
 
   // For changing text
   Map<String, bool> showExtra = {
     'diet': false,
     'allergies': false,
+    'materials': false,
     'dishes': false,
   };
 
@@ -23,6 +25,7 @@ class _PreferencesScreenState extends State<PreferencesScreen> with SingleTicker
   final Map<String, bool> showMore = {
     'diet': false,
     'allergies': false,
+    'materials': false,
     'dishes': false,
   };
 
@@ -30,6 +33,7 @@ class _PreferencesScreenState extends State<PreferencesScreen> with SingleTicker
   final Map<String, List<String>> customInputs = {
     'diet': [],
     'allergies': [],
+    'materials': [],
     'dishes': [],
   };
 
@@ -37,6 +41,7 @@ class _PreferencesScreenState extends State<PreferencesScreen> with SingleTicker
   final Map<String, bool> showInputField = {
     'diet': false,
     'allergies': false,
+    'materials': false,
     'dishes': false,
   };
 
@@ -44,32 +49,42 @@ class _PreferencesScreenState extends State<PreferencesScreen> with SingleTicker
   final Map<String, TextEditingController> inputControllers = {
     'diet': TextEditingController(),
     'allergies': TextEditingController(),
+    'materials': TextEditingController(),
     'dishes': TextEditingController(),
   };
 
 
   final Map<String, List<String>> extendedOptions = {
     'diet': [
-      'Vegetarian', 'Gluten Free', 'Lactose Free', 'Low Fat', 'Sugar Free', 'Appetizers',
-      'Vegan', 'Keto', 'Paleo', 'Mediterranean', 'Pescatarian', 'Low Carb',
-      'Dairy Free', 'Kosher', 'Halal', 'Raw Food'
+      'Vegetarian', 'Vegan', 'Gluten Free', 'Sugar Free', 'Halal', 'Keto',
+      'Paleo', 'Lactose Free', 'Low Fat', 'Mediterranean', 'Pescatarian',
+      'Low Carb', 'Dairy Free', 'Kosher', 'Raw Food',
+      'High Protein', 'Low Sodium', 'Diabetic-Friendly'
     ],
     'allergies': [
-      'Cows\' milk', 'Eggs', 'Peanut', 'Soy', 'Prawns', 'Walnuts', 'Cashews',
-      'Tree Nuts', 'Fish', 'Shellfish', 'Wheat', 'Sesame', 'Mustard',
-      'Celery', 'Lupin', 'Sulfites'
+      'Peanut', 'Soy', 'Prawns', 'Walnuts', 'Cashews', 'Cows\' milk',
+      'Tree Nuts', 'Shellfish', 'Wheat', 'Eggs', 'Fish', 'Seafood',
+      'Sesame', 'Mustard', 'Celery', 'Lupin', 'Sulfites', 'Mushrooms',
+      'Garlic', 'Onions'
+    ],
+    'materials': [
+      'Meat', 'Cabbage', 'Carrot', 'Sweet Potato', 'Eggs', 'Prawns',
+      'Fish', 'Broccoli', 'Corn', 'Wheat', 'Tomatoes', 'Cheese', 'Tofu',
+      'Lentils', 'Chickpeas', 'Rice', 'Potatoes', 'Spinach', 'Mushrooms', 'Peppers'
     ],
     'dishes': [
-      'Pasta', 'Soup', 'Salad', 'Pizza', 'Bowl', 'Dessert', 'Stew', 'Sandwiches',
-      'Curry', 'Stir Fry', 'Roast', 'Grill', 'Casserole', 'Sushi',
-      'Tacos', 'Burgers', 'Rice Dishes', 'Noodles'
-    ],
+      'Pasta', 'Soup', 'Salad', 'Pizza', 'Bowl', 'Dessert', 'Stew',
+      'Sandwiches', 'Curry', 'Stir Fry', 'Roast', 'Grill', 'Casserole',
+      'Sushi', 'Tacos', 'Burgers', 'Rice Dishes', 'Noodles', 'Wraps',
+      'Fritters'
+    ]
   };
 
   // Animation
   late AnimationController _controller;
   late Animation<double> _dietFade;
   late Animation<double> _allergiesFade;
+  late Animation<double> _materialsFade;
   late Animation<double> _dishesFade;
 
   static bool _hasAnimated = false;
@@ -87,6 +102,8 @@ class _PreferencesScreenState extends State<PreferencesScreen> with SingleTicker
     _dietFade = Tween(begin: 0.0, end: 1.0).animate(
         CurvedAnimation(parent: _controller, curve: const Interval(0.0, 0.33, curve: Curves.easeIn)));
     _allergiesFade = Tween(begin: 0.0, end: 1.0).animate(
+        CurvedAnimation(parent: _controller, curve: const Interval(0.33, 0.66, curve: Curves.easeIn)));
+    _materialsFade = Tween(begin: 0.0, end: 1.0).animate(
         CurvedAnimation(parent: _controller, curve: const Interval(0.33, 0.66, curve: Curves.easeIn)));
     _dishesFade = Tween(begin: 0.0, end: 1.0).animate(
         CurvedAnimation(parent: _controller, curve: const Interval(0.66, 1.0, curve: Curves.easeIn)));
@@ -360,6 +377,7 @@ class _PreferencesScreenState extends State<PreferencesScreen> with SingleTicker
                 setState(() {
                   selectedDiets.clear();
                   selectedAllergies.clear();
+                  selectedMaterials.clear();
                   selectedDishes.clear();
                   customInputs.forEach((key, value) => value.clear());
                 });
@@ -438,6 +456,10 @@ class _PreferencesScreenState extends State<PreferencesScreen> with SingleTicker
                     child: _buildSection('Do you have allergies?', 'allergies', selectedAllergies),
                   ),
 
+                  FadeTransition(
+                    opacity: _materialsFade,
+                    child: _buildSection('What\'s your favourite materials?', 'materials', selectedMaterials),
+                  ),
                   // Dishes section fade in
                   FadeTransition(
                     opacity: _dishesFade,

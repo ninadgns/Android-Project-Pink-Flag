@@ -53,12 +53,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
+        backgroundColor: Color(0xFFFFE6E8),
         title: const Text('Clear Cache'),
         content: const Text('Are you sure you want to clear the cache?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
             child: const Text('Cancel'),
+            style: TextButton.styleFrom(
+              foregroundColor: Color(0xFFFF8A80),
+            ),
           ),
           TextButton(
             onPressed: () {
@@ -69,8 +73,69 @@ class _SettingsScreenState extends State<SettingsScreen> {
               );
             },
             child: const Text('Clear'),
+            style: TextButton.styleFrom(
+              foregroundColor: Color(0xFFFF8A80),
+            ),
           ),
         ],
+      ),
+    );
+  }
+
+  void _showRatingDialog() {
+    int selectedRating = 0;
+
+    showDialog(
+      context: context,
+      builder: (context) => StatefulBuilder(
+        builder: (context, setState) => AlertDialog(
+          backgroundColor: Color(0xFFFFE6E8),
+          title: const Text('Rate Our App'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text('How would you rate your experience?'),
+              const SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: List.generate(5, (index) {
+                  return IconButton(
+                    icon: Icon(
+                      index < selectedRating ? Icons.star : Icons.star_border,
+                      color: Colors.amber,
+                      size: 32,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        selectedRating = index + 1;
+                      });
+                    },
+                  );
+                }),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Cancel'),
+              style: TextButton.styleFrom(
+                foregroundColor: Color(0xFFFF8A80),
+              ),
+            ),
+            TextButton(
+              onPressed: () async {
+                if (selectedRating>0) {
+                  Navigator.pop(context);
+                }
+              },
+              child: const Text('Submit'),
+              style: TextButton.styleFrom(
+                foregroundColor: Color(0xFFFF8A80),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -79,24 +144,178 @@ class _SettingsScreenState extends State<SettingsScreen> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
+        backgroundColor: Color(0xFFFFE6E8),
         title: const Text('Logout'),
         content: const Text('Are you sure you want to logout?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
             child: const Text('Cancel'),
+            style: TextButton.styleFrom(
+              foregroundColor: Color(0xFFFF8A80),
+            ),
           ),
           TextButton(
             onPressed: () {
               // Implement logout logic
               Navigator.pop(context);
             },
-            child: const Text('Logout', style: TextStyle(color: Colors.red)),
+            child: const Text('Logout'),
+            style: TextButton.styleFrom(
+              foregroundColor: Color(0xFFFF8A80),
+            ),
           ),
         ],
       ),
     );
   }
+
+  void _showFeedbackDialog() {
+    final TextEditingController feedbackController = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: Color(0xFFFFE6E8),
+        title: const Text('Send Feedback'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text('Share your thoughts with us:'),
+            const SizedBox(height: 16),
+            TextField(
+              controller: feedbackController,
+              maxLines: 5,
+              cursorColor: Color(0xFFFF8A80),
+              decoration: InputDecoration(
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: const BorderSide(color: Color(0xFFFF8A80), width: 1),
+                ),
+                hintText: 'Enter your feedback here...',
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+            style: TextButton.styleFrom(
+              foregroundColor: Color(0xFFFF8A80),
+            ),
+          ),
+          TextButton(
+            onPressed: () async {
+              if (feedbackController.text.isNotEmpty) {
+                Navigator.pop(context);
+              }
+            },
+            child: const Text('Submit'),
+            style: TextButton.styleFrom(
+              foregroundColor: Color(0xFFFF8A80),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showHelpCenterDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: Color(0xFFFFE6E8),
+        title: const Text('Help Center'),
+        content: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: const [
+              Text('Frequently Asked Questions',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              SizedBox(height: 16),
+              Text('1. How do I update my profile?',
+                  style: TextStyle(fontWeight: FontWeight.bold)),
+              Text('Go to Profile > Edit Profile to update your information.'),
+              SizedBox(height: 12),
+              Text('2. How can I change my password?',
+                  style: TextStyle(fontWeight: FontWeight.bold)),
+              Text('Go to Settings > Account Privacy > Change Password.'),
+              SizedBox(height: 12),
+              Text('3. How do I report a problem?',
+                  style: TextStyle(fontWeight: FontWeight.bold)),
+              Text('Use the Feedback option in Settings to report any issues.'),
+              SizedBox(height: 16),
+              Text('Contact Support',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              SizedBox(height: 8),
+              Text('Email: support@app.com\nPhone: 1-800-APP'),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Close'),
+            style: TextButton.styleFrom(
+              foregroundColor: Color(0xFFFF8A80),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+
+  void _showAboutDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: Color(0xFFFFE6E8),
+        title: const Text('About Us'),
+        content: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: const [
+              Text('Our Mission',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              SizedBox(height: 8),
+              Text('We strive to create innovative solutions that make people\'s lives easier and more connected.'),
+              SizedBox(height: 16),
+              Text('Our Goals',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              SizedBox(height: 8),
+              Text('• Provide exceptional user experience\n'
+                  '• Maintain highest security standards\n'
+                  '• Continuous innovation and improvement\n'
+                  '• Build a strong, supportive community'),
+              SizedBox(height: 16),
+              Text('App Version: 1.0.0\n'
+                  'Developer: A\n'
+                  'Website: www.a.com'),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Close'),
+            style: TextButton.styleFrom(
+              foregroundColor: Color(0xFFFF8A80),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -179,9 +398,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       icon: Icons.star,
                       title: 'Rate App',
                       subtitle: 'Rate us on the app store and share feedback.',
-                      onTap: () {
-                        // rate app logic
-                      },
+                      onTap:  _showRatingDialog,
                       iconColor: Colors.amber
                     ),
 
@@ -189,9 +406,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       icon: Icons.feedback,
                       title: 'Feedback',
                       subtitle: 'Share your thoughts to help improve the app.',
-                      onTap: () {
-                        // feedback screen
-                      },
+                      onTap: _showFeedbackDialog,
                       iconColor: Colors.teal
                     ),
 
@@ -199,9 +414,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         icon: Icons.help,
                         title: 'Help Center',
                         subtitle: 'Get assistance with frequently asked questions.',
-                        onTap: () {
-                          // help center
-                        },
+                        onTap: _showHelpCenterDialog,
                         iconColor: Colors.deepOrangeAccent
                     ),
 
@@ -209,9 +422,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       icon: Icons.info,
                       title: 'About Us',
                       subtitle: 'Learn more about our mission.',
-                      onTap: () {
-                        // about screen
-                      },
+                      onTap: _showAboutDialog,
                       iconColor: Colors.blue
                     ),
 
