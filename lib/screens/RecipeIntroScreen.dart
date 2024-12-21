@@ -1,3 +1,5 @@
+import 'package:dim/screens/RecipeDirectionScreen.dart';
+import 'package:dim/widgets/VideoPlayer.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '/widgets/RecipeIntroScreen/DetailsInfo.dart';
@@ -17,45 +19,48 @@ class _RecipeIntroState extends State<RecipeIntro> {
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
     return Scaffold(
-      // appBar: AppBar(
-      //   backgroundColor: Colors.transparent,
-      //   shadowColor: Colors.transparent,
-      //   foregroundColor: Colors.black,
-      //   surfaceTintColor: Colors.transparent,
-      //   iconTheme: IconThemeData(color: Colors.black),
-      //   actions: [
-      //     Padding(
-      //       padding: EdgeInsets.only(
-      //         right: 10,
-      //         top: 5,
-      //       ),
-      //       child: IconButton(
-      //         onPressed: () {},
-      //         icon: const Icon(
-      //           Icons.bookmark_border_rounded,
-      //         ),
-      //         color: Colors.white,
-      //         iconSize: 18.0,
-      //         padding: const EdgeInsets.all(0),
-      //         splashRadius: 14.0,
-      //         constraints: const BoxConstraints(
-      //           minHeight: 36,
-      //           minWidth: 36,
-      //         ),
-      //         style: ButtonStyle(
-      //           backgroundColor: WidgetStateProperty.all(
-      //             Colors.black.withOpacity(0.15),
-      //           ),
-      //           shape: WidgetStateProperty.all(const CircleBorder()),
-      //         ),
-      //       ),
-      //     ),
-      //   ],
-      // ),
       body: Stack(
         children: [
-          // Background content
+          // Background Image
+          Hero(
+            tag: 'pumpkin_soup',
+            child: Container(
+              width: double.infinity,
+              height: height * 0.44,
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage('assets/pumpkin_soup.jpg'),
+                  fit: BoxFit.cover,
+                ),
+              ),
+              child: Center(
+                child: Container(
+                  height: 100,
+                  width: 100,
+                  decoration: BoxDecoration(
+                    color: Colors.transparent,
+                    shape: BoxShape.circle,
+                  ),
+                  child: IconButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => VideoPlayerWindow(),
+                        ),
+                      );
+                    },
+                    icon: Image.asset(
+                      'assets/play_icon.png',
+                      fit: BoxFit.contain,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
           Align(
             alignment: Alignment.topCenter,
             child: Padding(
@@ -67,7 +72,10 @@ class _RecipeIntroState extends State<RecipeIntro> {
                       onPressed: () {
                         Navigator.pop(context);
                       },
-                      icon: Icon(Icons.arrow_back_ios),
+                      icon: Icon(
+                        Icons.arrow_back_ios,
+                        color: Colors.black,
+                      ),
                     ),
                     IconButton(
                       onPressed: () {},
@@ -95,9 +103,9 @@ class _RecipeIntroState extends State<RecipeIntro> {
           ),
           // DraggableScrollableSheet with CustomScrollView
           DraggableScrollableSheet(
-            initialChildSize: 0.5,
-            minChildSize: 0.4,
-            maxChildSize: 0.8,
+            initialChildSize: 0.6,
+            minChildSize: 0.6,
+            maxChildSize: 0.65,
             builder: (BuildContext context, ScrollController scrollController) {
               return Container(
                 decoration: BoxDecoration(
@@ -346,6 +354,47 @@ class _RecipeIntroState extends State<RecipeIntro> {
           ),
         ],
       ),
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.only(bottom: 4.0),
+        child: TextButton(
+          style: ButtonStyle(
+            backgroundColor: WidgetStateProperty.all(
+              Colors.black,
+            ),
+          ),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => RecipeDirectionScreen(),
+              ),
+            );
+          },
+          child: Container(
+            padding: const EdgeInsets.all(8),
+            width: width * 0.75,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  CupertinoIcons.play,
+                  color: Colors.white,
+                ),
+                SizedBox(width: 8),
+                Text(
+                  'Show Direction',
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyMedium!
+                      .copyWith(color: Colors.white),
+                  textAlign: TextAlign.center,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
 }
