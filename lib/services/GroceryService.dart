@@ -18,6 +18,13 @@ class GroceryService {
     _groceryItems.removeWhere((item) => item.id == itemId);
   }
 
+  Future<void> updateItem(GroceryItem updatedItem) async {
+    final index = _groceryItems.indexWhere((item) => item.id == updatedItem.id);
+    if (index != -1) {
+      _groceryItems[index] = updatedItem;
+    }
+  }
+
   Future<void> toggleItemStatus(String itemId) async {
     final item = _groceryItems.firstWhere((item) => item.id == itemId);
     item.isPurchased = !item.isPurchased;

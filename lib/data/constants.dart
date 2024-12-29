@@ -142,3 +142,16 @@ final recipe = Recipe(
   titlePhoto: "https://e...content-available-to-author-only...e.com/spaghetti.jpg",
   videoInstruction: "https://e...content-available-to-author-only...e.com/video/spaghetti",
 );
+
+const List<String> Units = ['kg', 'g', 'L', 'ml', 'pieces', 'packs'];
+const Map<String, Color> categoryColors = {
+  'Meat, Poultry and Fish': Color(0xFFFFE4E1),
+  'Dairy': Color(0xFFBBDEFB),
+  'Fruits': Color(0xFFFFDAB9),
+  'Vegetables': Color(0xFFB2DFDB),
+  'Pantry': Color(0xFFE0E0E0),
+  'Spices & Seasonings': Color(0xFFE6E6FA),
+  'Baking Essentials': Color(0xFFFFECB3),
+  'Oils & Vinegars': Color(0xFFFFCFD0),
+  'Sauces & Condiments': Color(0xFFE6D3B4),
+};
