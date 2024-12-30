@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:share_plus/share_plus.dart';
 import 'dart:typed_data';
+import 'package:dim/models/ProfileInfoModel.dart';
+
 
 class ProfileDetailInfoScreen extends StatefulWidget {
   const ProfileDetailInfoScreen({super.key});
@@ -14,23 +16,21 @@ class ProfileDetailInfoScreen extends StatefulWidget {
 
 class _ProfileDetailInfoScreenState extends State<ProfileDetailInfoScreen>
     with SingleTickerProviderStateMixin {
-  String profileImagePath = 'assets/images/profile.png';
-  Uint8List? profileImageBytes;
 
-  String userName = 'Sofia';
-  String fullName = 'Sofia Anderson';
-  String email = 'sofia@example.com';
-  String phoneNumber = '+1 234 567 8900';
-  String bio = 'Food lover, cook, and traveler.';
-  String city = 'New York';
-  String workplace = 'Culinary Institute of America';
-  String follower='98';
-  String following='142';
-  String recipes= '23';
+  bool isEditMode = false;
+  static SocialMediaHandle insta= SocialMediaHandle(platform: 'Instagram',handle: '@sofiacooks');
 
-  List<Map<String, String>> socialMediaIds = [
-    {'platform': 'Instagram', 'handle': '@sofiacooks'},
-  ];
+  static List<SocialMediaHandle> socialMediaIds = [insta];
+  static Uint8List? profileImageBytes;
+
+  ProfileInfoModel profileinfo= ProfileInfoModel(id: '1', userName: 'Sofia', fullName: 'Sofia Anderson',
+      email: 'sofia@example.com', phoneNumber: '+1 234 567 8900',
+      bio: 'Food lover, cook, and traveler.', city: 'New York',
+      workplace: 'Culinary Institute of America', profileImagePath: 'assets/images/profile.png',
+      profileImageBytes: profileImageBytes,
+      followerCount: 98, followingCount: 142,
+      recipesCount:  23, socialMediaHandles: socialMediaIds);
+
 
   Future<void> _pickImage() async {
     final picker = ImagePicker();
@@ -38,20 +38,20 @@ class _ProfileDetailInfoScreenState extends State<ProfileDetailInfoScreen>
     if (pickedFile != null) {
       final bytes = await pickedFile.readAsBytes();
       setState(() {
-        profileImageBytes = bytes;
-        profileImagePath = pickedFile.path;
+        profileinfo.profileImageBytes = bytes;
+        profileinfo.profileImagePath = pickedFile.path;
       });
     }
   }
 
-  void _editSocialMediaHandle(Map<String, String> platform) {
-    final controller = TextEditingController(text: platform['handle']);
+  void _editSocialMediaHandle(SocialMediaHandle media) {
+    final controller = TextEditingController(text: media.handle);
     showDialog(
       context: context,
       builder: (_) {
         return AlertDialog(
-          backgroundColor: Color(0xFFB2EBF2),
-          title: Text('Edit ${platform['platform']} Handle'),
+          backgroundColor: const Color(0xFFB2EBF2),
+          title: Text('Edit ${media.platform} Handle'),
           content: TextField(
             controller: controller,
             decoration: const InputDecoration(
@@ -63,27 +63,28 @@ class _ProfileDetailInfoScreenState extends State<ProfileDetailInfoScreen>
               onPressed: () {
                 Navigator.pop(context);
               },
-              child: const Text('Cancel'),
               style: TextButton.styleFrom(
-                foregroundColor: Color(0xFF00ACC1), // Save button text color
+                foregroundColor: const Color(0xFF00ACC1),
               ),
+              child: const Text('Cancel'),
             ),
             TextButton(
               onPressed: () {
                 setState(() {
+                  String newHandle = controller.text;
                   socialMediaIds = socialMediaIds.map((item) {
-                    if (item == platform) {
-                      return {'platform': platform['platform']!, 'handle': controller.text};
+                    if (item.platform == media.platform) {
+                       return SocialMediaHandle(platform: item.platform, handle: newHandle);
                     }
                     return item;
                   }).toList();
                 });
                 Navigator.pop(context);
               },
-              child: const Text('Save'),
               style: TextButton.styleFrom(
-                foregroundColor: Color(0xFF00ACC1), // Save button text color
+                foregroundColor: const Color(0xFF00ACC1),
               ),
+              child: const Text('Done'),
             ),
           ],
         );
@@ -98,21 +99,33 @@ class _ProfileDetailInfoScreenState extends State<ProfileDetailInfoScreen>
       context: context,
       builder: (_) {
         return AlertDialog(
-          backgroundColor: Color(0xFFB2EBF2),
+          backgroundColor: const Color(0xFFB2EBF2),
           title: const Text('Add Social Media'),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               TextField(
+                cursorColor: Colors.black,
                 controller: platformController,
                 decoration: const InputDecoration(
                   labelText: 'Platform (e.g. Instagram)',
+                  labelStyle: const TextStyle(color: Colors.black),
+                  border: OutlineInputBorder(),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: const BorderSide(color: Colors.black, width: 1),
+                  ),
                 ),
               ),
               TextField(
+                cursorColor: Colors.black,
                 controller: handleController,
                 decoration: const InputDecoration(
                   labelText: 'Handle (e.g. @username)',
+                  labelStyle: const TextStyle(color: Colors.black),
+                  border: OutlineInputBorder(),
+                  focusedBorder: OutlineInputBorder(
+                     borderSide: const BorderSide(color: Colors.black, width: 1),
+                  ),
                 ),
               ),
             ],
@@ -120,29 +133,26 @@ class _ProfileDetailInfoScreenState extends State<ProfileDetailInfoScreen>
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: const Text('Cancel'),
               style: TextButton.styleFrom(
-                foregroundColor: Color(0xFF00ACC1), // Save button text color
+                foregroundColor: const Color(0xFF00ACC1),
               ),
+              child: const Text('Cancel'),
             ),
             TextButton(
               onPressed: () {
                 if (platformController.text.isNotEmpty &&
                     handleController.text.isNotEmpty) {
                   setState(() {
-                    socialMediaIds = List.from(socialMediaIds)
-                      ..add({
-                        'platform': platformController.text,
-                        'handle': handleController.text,
-                      });
+                    SocialMediaHandle fb= SocialMediaHandle(platform: platformController.text,handle: handleController.text);
+                    socialMediaIds.add(fb);
                   });
                   Navigator.pop(context);
                 }
               },
-              child: const Text('Add'),
               style: TextButton.styleFrom(
-                foregroundColor: Color(0xFF00ACC1), // Save button text color
+                foregroundColor: const Color(0xFF00ACC1),
               ),
+              child: const Text('Add'),
             ),
           ],
         );
@@ -156,33 +166,42 @@ class _ProfileDetailInfoScreenState extends State<ProfileDetailInfoScreen>
       context: context,
       builder: (_) {
         return AlertDialog(
-          backgroundColor: Color(0xFFB2EBF2),
+          backgroundColor: const Color(0xFFB2EBF2),
           title: Text('Edit $fieldName'),
           content: TextField(
+            cursorColor: Colors.black,
             controller: controller,
             keyboardType: multiline ? TextInputType.multiline : TextInputType.text,
             maxLines: multiline ? 4 : 1,
             decoration: InputDecoration(
               hintText: 'Enter new $fieldName',
+              hintStyle: const TextStyle(color: Colors.black),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: const BorderSide(color: Colors.black, width: 1),
+              ),
             ),
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: const Text('Cancel'),
               style: TextButton.styleFrom(
-                foregroundColor: Color(0xFF00ACC1), // Save button text color
+                foregroundColor: const Color(0xFF00ACC1),
               ),
+              child: const Text('Cancel'),
             ),
             TextButton(
               onPressed: () {
                 onSave(controller.text);
                 Navigator.pop(context);
               },
-              child: const Text('Save'),
               style: TextButton.styleFrom(
-                foregroundColor: Color(0xFF00ACC1), // Save button text color
+                foregroundColor: const Color(0xFF00ACC1),
               ),
+              child: const Text('Save'),
             ),
           ],
         );
@@ -192,7 +211,7 @@ class _ProfileDetailInfoScreenState extends State<ProfileDetailInfoScreen>
 
   void _shareProfile() {
     // A unique link could be generated from user's name
-    final profileLink = 'https://example.com/users/${fullName.replaceAll(' ', '_')}';
+    final profileLink = 'https://example.com/users/${profileinfo.fullName.replaceAll(' ', '_')}';
     Share.share('Check out my profile: $profileLink');
   }
 
@@ -231,11 +250,12 @@ class _ProfileDetailInfoScreenState extends State<ProfileDetailInfoScreen>
               ),
             ),
           ),
-          IconButton(
-            icon: Icon(icon, color: Colors.grey[600]),
-            iconSize: 20.0,
-            onPressed: onEdit,
-          ),
+          if (isEditMode)
+            IconButton(
+              icon: Icon(icon, color: Colors.grey[600]),
+              iconSize: 20.0,
+              onPressed: onEdit,
+            ),
         ],
       ),
     );
@@ -255,38 +275,41 @@ class _ProfileDetailInfoScreenState extends State<ProfileDetailInfoScreen>
           Text('Social Media',
               style: TextStyle(color: Colors.grey[700], fontWeight: FontWeight.bold)),
           const SizedBox(height: 8),
-          ...socialMediaIds.map((platform) {
+          ...socialMediaIds.map((item) {
             return Padding(
               padding: const EdgeInsets.symmetric(vertical: 4),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                      '${platform['platform']}: ${platform['handle']}',
+                      '${item.platform}: ${item.handle}',
                       style: const TextStyle(fontSize: 16)
                   ),
-                  IconButton(
-                    icon: Icon(Icons.edit, color: Colors.grey[600], size: 20),
-                    onPressed: () => _editSocialMediaHandle(platform),
-                    iconSize: 20.0,
-                    constraints: const BoxConstraints(),
-                  ),
+                  if (isEditMode)
+                    IconButton(
+                      icon: Icon(Icons.edit, color: Colors.grey[600], size: 20),
+                      onPressed: () => _editSocialMediaHandle(item),
+                      iconSize: 20.0,
+                      constraints: const BoxConstraints(),
+                    ),
                 ],
               ),
             );
           }).toList(),
           const SizedBox(height: 8),
-          TextButton.icon(
-            icon: const Icon(Icons.add),
-            label: const Text('Add social media'),
-            onPressed: _addSocialMediaHandle,
-          )
+          if (isEditMode)
+            TextButton.icon(
+              icon: const Icon(Icons.add),
+              label: const Text('Add social media'),
+              onPressed: _addSocialMediaHandle,
+            )
         ],
       ),
     );
   }
 
-  Widget _buildStat(String number, String label) {
+
+  Widget _buildStat(int number, String label) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
       decoration: BoxDecoration(
@@ -305,7 +328,7 @@ class _ProfileDetailInfoScreenState extends State<ProfileDetailInfoScreen>
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(
-            number,
+            number.toString(),
             style: const TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,
@@ -329,15 +352,15 @@ class _ProfileDetailInfoScreenState extends State<ProfileDetailInfoScreen>
   @override
   Widget build(BuildContext context) {
     ImageProvider backgroundImage;
-    if (profileImageBytes != null) {
-      backgroundImage = MemoryImage(profileImageBytes!);
-    } else if (profileImagePath.startsWith('assets/')) {
-      backgroundImage = AssetImage(profileImagePath);
+    if (profileinfo.profileImageBytes != null) {
+      backgroundImage = MemoryImage(profileinfo.profileImageBytes!);
+    } else if (profileinfo.profileImagePath.startsWith('assets/')) {
+      backgroundImage = AssetImage(profileinfo.profileImagePath);
     } else {
       if (kIsWeb) {
         backgroundImage = const AssetImage('assets/images/profile.png');
       } else {
-        backgroundImage = FileImage(File(profileImagePath));
+        backgroundImage = FileImage(File(profileinfo.profileImagePath));
       }
     }
 
@@ -355,134 +378,189 @@ class _ProfileDetailInfoScreenState extends State<ProfileDetailInfoScreen>
           ),
 
           SafeArea(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(10.0),
-              child: Column(
-                children: [
-                  Row(
-                    children: [
-                      IconButton(
-                        icon: const Icon(Icons.arrow_back, color: Colors.black),
-                        iconSize: 20.0,
-                        onPressed: () => Navigator.pop(context),
+            child: Column(
+              children: [
+                Row(
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.arrow_back, color: Colors.black),
+                      iconSize: 20.0,
+                      onPressed: () => Navigator.pop(context),
+                    ),
+                    const Spacer(),
+                    // Edit mode toggle button
+                    IconButton(
+                      icon: Icon(
+                          isEditMode ? Icons.close : Icons.edit,
+                          color: Colors.black
                       ),
-                      const Spacer(),
-                      IconButton(
-                        icon: const Icon(Icons.share, color: Colors.black),
-                        iconSize: 20.0,
-                        onPressed: _shareProfile,
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 10),
-                  Text('My Profile',
-                      style: const TextStyle(
-                          color: Colors.black,
-                          fontSize: 22,
-                          fontWeight: FontWeight.bold)),
-                  const SizedBox(height: 30),
-                  Center(
-                    child: Stack(
-                      alignment: Alignment.bottomRight,
+                      iconSize: 20.0,
+                      onPressed: () {
+                        if(isEditMode){
+                          // Bring previous profileinfo from bd
+                        }
+                        setState(() {
+                          isEditMode = !isEditMode;
+                        });
+                      },
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.share, color: Colors.black),
+                      iconSize: 20.0,
+                      onPressed: _shareProfile,
+                    ),
+                  ],
+                ),
+                Expanded(
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Column(
                       children: [
-                        CircleAvatar(
-                          radius: 50,
-                          backgroundImage: backgroundImage,
-                        ),
-                        Positioned(
-                          bottom: 0,
-                          right: 0,
-                          child: InkWell(
-                            onTap: _pickImage,
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: Colors.black54,
-                                shape: BoxShape.circle,
-                                border: Border.all(color: Colors.white, width: 2),
+                        const SizedBox(height: 10),
+                        const Text('My Profile',
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 22,
+                                fontWeight: FontWeight.bold)),
+                        const SizedBox(height: 30),
+                        Center(
+                          child: Stack(
+                            alignment: Alignment.bottomRight,
+                            children: [
+                              CircleAvatar(
+                                radius: 50,
+                                backgroundImage: backgroundImage,
                               ),
-                              padding: const EdgeInsets.all(6),
-                              child: const Icon(Icons.camera_alt,
-                                  color: Colors.white, size: 20),
-                            ),
+                              if (isEditMode) // Only show camera icon in edit mode
+                                Positioned(
+                                  bottom: 0,
+                                  right: 0,
+                                  child: InkWell(
+                                    onTap: _pickImage,
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        color: Colors.black54,
+                                        shape: BoxShape.circle,
+                                        border: Border.all(
+                                            color: Colors.white, width: 2),
+                                      ),
+                                      padding: const EdgeInsets.all(6),
+                                      child: const Icon(Icons.camera_alt,
+                                          color: Colors.white, size: 20),
+                                    ),
+                                  ),
+                                ),
+                            ],
                           ),
                         ),
+                        Container(
+                          margin: const EdgeInsets.symmetric(vertical: 18.0, horizontal: 12.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              Expanded(
+                                child: _buildStat(profileinfo.recipesCount, 'Recipes'),
+                              ),
+                              const SizedBox(width: 10),
+                              Expanded(
+                                child: _buildStat(profileinfo.followingCount, 'Following'),
+                              ),
+                              const SizedBox(width: 10),
+                              Expanded(
+                                child: _buildStat(profileinfo.followerCount, 'Followers'),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 30),
+                        _buildEditableField(
+                          label: 'Full Name',
+                          value: profileinfo.fullName,
+                          onEdit: () => _editField('Full Name', profileinfo.fullName, false, (newVal) {
+                            setState(() => profileinfo.fullName = newVal);
+                          }),
+                        ),
+                        _buildEditableField(
+                          label: 'User Name',
+                          value: profileinfo.userName,
+                          onEdit: () => _editField('User Name', profileinfo.userName, false, (newVal) {
+                            setState(() => profileinfo.userName = newVal);
+                          }),
+                        ),
+                        _buildEditableField(
+                          label: 'Email',
+                          value: profileinfo.email,
+                          onEdit: () => _editField('Email', profileinfo.email, false, (newVal) {
+                            setState(() => profileinfo.email = newVal);
+                          }),
+                        ),
+                        _buildEditableField(
+                          label: 'Phone Number',
+                          value: profileinfo.phoneNumber,
+                          onEdit: () => _editField('Phone Number', profileinfo.phoneNumber, false, (newVal) {
+                            setState(() => profileinfo.phoneNumber = newVal);
+                          }),
+                        ),
+                        _buildEditableField(
+                          label: 'Bio',
+                          value: profileinfo.bio,
+                          isMultiline: true,
+                          onEdit: () => _editField('Bio', profileinfo.bio, true, (newVal) {
+                            setState(() => profileinfo.bio = newVal);
+                          }),
+                        ),
+                        _buildEditableField(
+                          label: 'Workplace',
+                          value: profileinfo.workplace,
+                          isMultiline: true,
+                          onEdit: () => _editField('Workplace', profileinfo.workplace, false, (newVal) {
+                            setState(() => profileinfo.workplace = newVal);
+                          }),
+                        ),
+                        _buildEditableField(
+                          label: 'Living City',
+                          value: profileinfo.city,
+                          onEdit: () => _editField('Living City', profileinfo.city, false, (newVal) {
+                            setState(() => profileinfo.city = newVal);
+                          }),
+                        ),
+                        _buildSocialMediaSection(),
+
+                        if (isEditMode)
+                          Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: ElevatedButton(
+                              onPressed: () {
+                                // Implement save changes logic
+                                setState(() {
+                                  isEditMode = false;
+                                });
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(content: Text('Changes saved successfully')),
+                                );
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Color(0xFF00ACC1),
+                                minimumSize: Size(double.infinity, 50),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                              ),
+                              child: const Text(
+                                'Save Changes',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ),
                       ],
                     ),
                   ),
-                  Container(
-                    margin: const EdgeInsets.symmetric(vertical: 18.0, horizontal: 12.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Expanded(
-                          child: _buildStat(recipes, 'Recipes'),
-                        ),
-                        const SizedBox(width: 10),
-                        Expanded(
-                          child: _buildStat(following, 'Following'),
-                        ),
-                        const SizedBox(width: 10),
-                        Expanded(
-                          child: _buildStat(follower, 'Followers'),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 30),
-                  _buildEditableField(
-                    label: 'Full Name',
-                    value: fullName,
-                    onEdit: () => _editField('Full Name', fullName, false, (newVal) {
-                      setState(() => fullName = newVal);
-                    }),
-                  ),
-                  _buildEditableField(
-                    label: 'User Name',
-                    value: userName,
-                    onEdit: () => _editField('Full Name', fullName, false, (newVal) {
-                      setState(() => fullName = newVal);
-                    }),
-                  ),
-                  _buildEditableField(
-                    label: 'Email',
-                    value: email,
-                    onEdit: () => _editField('Email', email, false, (newVal) {
-                      setState(() => email = newVal);
-                    }),
-                  ),
-                  _buildEditableField(
-                    label: 'Phone Number',
-                    value: phoneNumber,
-                    onEdit: () => _editField('Phone Number', phoneNumber, false, (newVal) {
-                      setState(() => phoneNumber = newVal);
-                    }),
-                  ),
-                  _buildEditableField(
-                    label: 'Bio',
-                    value: bio,
-                    isMultiline: true,
-                    onEdit: () => _editField('Bio', bio, true, (newVal) {
-                      setState(() => bio = newVal);
-                    }),
-                  ),
-                  _buildEditableField(
-                    label: 'Workplace',
-                    value: workplace,
-                    isMultiline: true,
-                    onEdit: () => _editField('Workplace', workplace, false, (newVal) {
-                      setState(() => workplace = newVal);
-                    }),
-                  ),
-                  _buildEditableField(
-                    label: 'Living City',
-                    value: city,
-                    onEdit: () => _editField('Living City', city, false, (newVal) {
-                      setState(() => city = newVal);
-                    }),
-                  ),
-                  _buildSocialMediaSection(),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ],

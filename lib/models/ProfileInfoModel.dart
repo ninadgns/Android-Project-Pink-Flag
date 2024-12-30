@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'dart:typed_data';
 
 class SocialMediaHandle {
   String platform;
@@ -34,7 +34,7 @@ class ProfileInfoModel {
   String city;
   String workplace;
   String profileImagePath;
-  List<int>? profileImageBytes;
+  Uint8List? profileImageBytes;
   int followerCount;
   int followingCount;
   int recipesCount;
@@ -98,6 +98,25 @@ class ProfileInfoModel {
               (x) => SocialMediaHandle.fromJSON(x),
         ),
       ),
+    );
+  }
+
+  factory ProfileInfoModel.empty() {
+    return ProfileInfoModel(
+      id: '',
+      userName: '',
+      fullName: '',
+      email: '',
+      phoneNumber: '',
+      bio: '',
+      city: '',
+      workplace: '',
+      profileImagePath: '',
+      profileImageBytes: null,
+      followerCount: 0,
+      followingCount: 0,
+      recipesCount: 0,
+      socialMediaHandles: [],
     );
   }
 }
