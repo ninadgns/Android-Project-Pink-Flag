@@ -1,9 +1,10 @@
+import 'package:dim/screens/MealPlanner/FoodPlannerScreen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../models/RecipeModel.dart';
-import '/screens/ProfileScreen.dart';
-import '/screens/ShoppingScreen.dart';
+import 'package:dim/screens/Profile/ProfileScreen.dart';
+import 'package:dim/screens/Shopping/ShoppingScreen.dart';
 
 import '../screens/LibraryScreen.dart';
 import '../screens/ScannerScreen.dart';
@@ -27,6 +28,10 @@ final bottomNavigationItems = [
     label: 'Shopping',
   ),
   const BottomNavigationBarItem(
+    icon: Icon(Icons.date_range_outlined),
+    label: 'Meal Planner',
+  ),
+  const BottomNavigationBarItem(
     icon: Icon(CupertinoIcons.profile_circled),
     label: 'Profile',
   ),
@@ -36,7 +41,8 @@ final homepageScreens = [
   const SearchScreen(),
   const LibraryScreen(),
   const ScannerScreen(),
-  const Shoppingscreen(),
+  const ShoppingScreen(),
+  const FoodPlannerScreen(),
   const ProfileScreen(),
 ];
 
@@ -103,7 +109,8 @@ final dummyRecipe = Recipe(
   description: "A creamy and comforting soup perfect for fall.",
   difficulty: difficulty[0],
   ingredients: [
-    "Pumpkin",
+    "Spaghetti",
+    "Minced beef",
     "Onion",
     "Garlic cloves",
     "Vegetable stock",
@@ -121,24 +128,22 @@ final dummyRecipe = Recipe(
     "500g (peeled and chopped)",
     "1 piece",
     "2 cloves",
-    "500ml",
-    "100ml",
-    "2 tablespoons",
+    "400g",
     "To taste",
     "To taste",
-    "A pinch"
+    "2 tablespoons"
   ],
   steps: [
-    "Peel and chop the pumpkin into small cubes.",
-    "Peel and finely chop the onion and garlic cloves.",
-    "Heat 2 tablespoons of olive oil in a large pot over medium heat.",
-    "Add the onion and garlic to the pot and sauté until softened, about 5 minutes.",
-    "Add the chopped pumpkin to the pot and stir to combine with the onions and garlic.",
-    "Pour in the vegetable stock, ensuring the pumpkin is fully submerged.",
-    "Bring the mixture to a boil, then reduce the heat and let it simmer for about 20 minutes, or until the pumpkin is tender.",
-    "Remove the pot from heat and use an immersion blender to puree the soup until smooth. Alternatively, transfer the soup in batches to a blender.",
-    "Stir in the cream and season with salt, pepper, and a pinch of nutmeg. Mix well.",
-    "Serve the soup hot in bowls, garnished with a swirl of cream or croutons if desired. Enjoy your meal!"
+    "Fill a large pot with water, add a pinch of salt, and bring it to a boil.",
+    "Add the spaghetti to the boiling water and cook until al dente (about 10 minutes). Stir occasionally.",
+    "While the spaghetti cooks, peel and finely chop the onion and garlic cloves.",
+    "Heat 2 tablespoons of olive oil in a large pan over medium heat.",
+    "Add the minced beef to the pan and cook until browned, breaking it up with a wooden spoon.",
+    "Stir in the chopped onion and garlic. Cook for 5 minutes until softened.",
+    "Pour the canned tomatoes into the pan. Stir well and season with salt and pepper to taste.",
+    "Lower the heat and let the sauce simmer for about 20 minutes, stirring occasionally.",
+    "Once the spaghetti is cooked, drain it and toss it with a drizzle of olive oil to prevent sticking.",
+    "Serve the spaghetti on a plate, top with the Bolognese sauce, and enjoy your meal!"
   ],
   stepIntervals: [5, 5, 2, 5, 5, 2, 20, 10, 2, 0],
   titlePhoto:
@@ -147,3 +152,15 @@ final dummyRecipe = Recipe(
       "https://e...content-available-to-author-only...e.com/video/pumpkin_soup",
 );
 
+const List<String> Units = ['kg', 'g', 'L', 'ml', 'pieces', 'packs'];
+const Map<String, Color> categoryColors = {
+  'Meat, Poultry and Fish': Color(0xFFFFE4E1),
+  'Dairy': Color(0xFFBBDEFB),
+  'Fruits': Color(0xFFFFDAB9),
+  'Vegetables': Color(0xFFB2DFDB),
+  'Pantry': Color(0xFFE0E0E0),
+  'Spices & Seasonings': Color(0xFFE6E6FA),
+  'Baking Essentials': Color(0xFFFFECB3),
+  'Oils & Vinegars': Color(0xFFFFCFD0),
+  'Sauces & Condiments': Color(0xFFE6D3B4),
+};
