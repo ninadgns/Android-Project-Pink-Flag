@@ -27,10 +27,10 @@ final bottomNavigationItems = [
     icon: Icon(Icons.shopping_cart_outlined),
     label: 'Shopping',
   ),
-  const BottomNavigationBarItem(
-    icon: Icon(Icons.date_range_outlined),
-    label: 'Meal Planner',
-  ),
+  // const BottomNavigationBarItem(
+  //   icon: Icon(Icons.date_range_outlined),
+  //   label: 'Meal Planner',
+  // ),
   const BottomNavigationBarItem(
     icon: Icon(CupertinoIcons.profile_circled),
     label: 'Profile',
