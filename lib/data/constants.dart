@@ -42,8 +42,8 @@ final homepageScreens = [
   const LibraryScreen(),
   const ScannerScreen(),
   const ShoppingScreen(),
-  const FoodPlannerScreen(),
   const ProfileScreen(),
+  const FoodPlannerScreen(),
 ];
 
 final List<String> categories = [
@@ -109,8 +109,7 @@ final dummyRecipe = Recipe(
   description: "A creamy and comforting soup perfect for fall.",
   difficulty: difficulty[0],
   ingredients: [
-    "Spaghetti",
-    "Minced beef",
+    "Pumpkin",
     "Onion",
     "Garlic cloves",
     "Vegetable stock",
@@ -128,22 +127,24 @@ final dummyRecipe = Recipe(
     "500g (peeled and chopped)",
     "1 piece",
     "2 cloves",
-    "400g",
+    "500ml",
+    "100ml",
+    "2 tablespoons",
     "To taste",
     "To taste",
-    "2 tablespoons"
+    "A pinch"
   ],
   steps: [
-    "Fill a large pot with water, add a pinch of salt, and bring it to a boil.",
-    "Add the spaghetti to the boiling water and cook until al dente (about 10 minutes). Stir occasionally.",
-    "While the spaghetti cooks, peel and finely chop the onion and garlic cloves.",
-    "Heat 2 tablespoons of olive oil in a large pan over medium heat.",
-    "Add the minced beef to the pan and cook until browned, breaking it up with a wooden spoon.",
-    "Stir in the chopped onion and garlic. Cook for 5 minutes until softened.",
-    "Pour the canned tomatoes into the pan. Stir well and season with salt and pepper to taste.",
-    "Lower the heat and let the sauce simmer for about 20 minutes, stirring occasionally.",
-    "Once the spaghetti is cooked, drain it and toss it with a drizzle of olive oil to prevent sticking.",
-    "Serve the spaghetti on a plate, top with the Bolognese sauce, and enjoy your meal!"
+    "Peel and chop the pumpkin into small cubes.",
+    "Peel and finely chop the onion and garlic cloves.",
+    "Heat 2 tablespoons of olive oil in a large pot over medium heat.",
+    "Add the onion and garlic to the pot and sauté until softened, about 5 minutes.",
+    "Add the chopped pumpkin to the pot and stir to combine with the onions and garlic.",
+    "Pour in the vegetable stock, ensuring the pumpkin is fully submerged.",
+    "Bring the mixture to a boil, then reduce the heat and let it simmer for about 20 minutes, or until the pumpkin is tender.",
+    "Remove the pot from heat and use an immersion blender to puree the soup until smooth. Alternatively, transfer the soup in batches to a blender.",
+    "Stir in the cream and season with salt, pepper, and a pinch of nutmeg. Mix well.",
+    "Serve the soup hot in bowls, garnished with a swirl of cream or croutons if desired. Enjoy your meal!"
   ],
   stepIntervals: [5, 5, 2, 5, 5, 2, 20, 10, 2, 0],
   titlePhoto:

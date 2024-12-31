@@ -27,6 +27,7 @@ class _HomescreenState extends State<Homescreen> {
     return Scaffold(
       extendBodyBehindAppBar: true,
       extendBody: true,
+      resizeToAvoidBottomInset: false,
       // backgroundColor: ,
       body: Container(
         margin: EdgeInsets.only(top: _height * 0.01),

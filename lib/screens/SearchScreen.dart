@@ -27,7 +27,8 @@ class _SearchScreenState extends State<SearchScreen> {
     double _height = MediaQuery.of(context).size.height;
     double _width = MediaQuery.of(context).size.width;
     return Container(
-      width: MediaQuery.of(context).size.width, // Set width to full screen width
+      width:
+          MediaQuery.of(context).size.width, // Set width to full screen width
       child: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -45,7 +46,8 @@ class _SearchScreenState extends State<SearchScreen> {
             SizedBox(height: _height * 0.03),
             SearchBarHome(width: _width, height: _height),
             SizedBox(height: _height * 0.01),
-            HorizontalScrollingCat(width: _width, onCategorySelected: _onCategorySelected),
+            HorizontalScrollingCat(
+                width: _width, onCategorySelected: _onCategorySelected),
             // SizedBox(height: _height * 0.01),
             Row(
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -53,19 +55,27 @@ class _SearchScreenState extends State<SearchScreen> {
                 SizedBox(width: _width * 0.04),
                 Text(
                   '$_selectedCategory ',
-                  style: Theme.of(context).textTheme.displayMedium!.copyWith(fontSize: _width / 18),
+                  style: Theme.of(context)
+                      .textTheme
+                      .displayMedium!
+                      .copyWith(fontSize: _width / 18),
                 ),
                 Text(
                   'Recipes',
-                  style: Theme.of(context).textTheme.headlineMedium!.copyWith(fontSize: _width / 18),
+                  style: Theme.of(context)
+                      .textTheme
+                      .headlineMedium!
+                      .copyWith(fontSize: _width / 18),
                 ),
                 const Spacer(),
                 TextButton(
-                  onPressed: () {
-                  },
+                  onPressed: () {},
                   child: Text(
                     'View All',
-                    style: Theme.of(context).textTheme.titleMedium!.copyWith(fontSize: _width / 25),
+                    style: Theme.of(context)
+                        .textTheme
+                        .titleMedium!
+                        .copyWith(fontSize: _width / 25),
                   ),
                 ),
                 SizedBox(width: _width * 0.02),
@@ -76,7 +86,7 @@ class _SearchScreenState extends State<SearchScreen> {
             Container(
               height: _height * 0.3,
               color: Colors.greenAccent,
-            )
+            ),
           ],
         ),
       ),

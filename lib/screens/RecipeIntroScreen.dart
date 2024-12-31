@@ -376,10 +376,10 @@ class _RecipeIntroState extends State<RecipeIntro> {
                               childCount: recipe.ingredients.length,
                             ),
                           ),
-                        SliverToBoxAdapter(
-                            child: SizedBox(
-                          height: 100,
-                        ))
+                        // const SliverToBoxAdapter(
+                        //     child: SizedBox(
+                        //   height: 10,
+                        // ))
                       ],
                     ),
                   ),

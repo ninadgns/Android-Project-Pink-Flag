@@ -1,23 +1,42 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class SearchBarHome extends StatelessWidget {
+class SearchBarHome extends StatefulWidget {
   const SearchBarHome({
     super.key,
-    required double width,
-    required double height,
-  }) : _width = width, _height = height;
+    required this.width,
+    required this.height,
+  });
 
-  final double _width;
-  final double _height;
+  final double width;
+  final double height;
+
+  @override
+  _SearchBarHomeState createState() => _SearchBarHomeState();
+}
+
+class _SearchBarHomeState extends State<SearchBarHome> {
+  late TextEditingController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: _width * 0.85,
-      height: _height * 0.068,
-      child: TextField(
-        controller: TextEditingController(),
+      width: widget.width * 0.85,
+      height: widget.height * 0.068,
+      child: TextFormField(
+        controller: _controller,
         style: Theme.of(context).textTheme.titleMedium?.copyWith(
           color: Colors.black87,
         ),
