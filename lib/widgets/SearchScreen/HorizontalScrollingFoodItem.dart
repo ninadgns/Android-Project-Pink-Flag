@@ -148,12 +148,9 @@ class HorizontalScrollingFood extends StatelessWidget {
                 child: CircleAvatar(
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(100),
-                    child: Hero(
-                      tag: 'pumpkin_soup',
-                      child: Image.asset(
-                        'assets/pumpkin_soup.jpg',
-                        fit: BoxFit.cover,
-                      ),
+                    child: Image.asset(
+                      'assets/pumpkin_soup.jpg',
+                      fit: BoxFit.cover,
                     ),
                   ),
                   backgroundColor: color,

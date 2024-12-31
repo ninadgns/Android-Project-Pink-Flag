@@ -12,8 +12,19 @@ class Recipe {
   /// Recipe name
   final String name;
 
+  /// Short description
+  final String description;
+
   /// Total cooking/preparation duration in minutes
   int totalDuration;
+
+  int energy;
+  int protein;
+  int carbs;
+  int fat;
+
+  /// Difficulty level
+  final String difficulty;
 
   /// List of ingredients
   final List<String> ingredients;
@@ -37,7 +48,13 @@ class Recipe {
     String? id,
     required this.userId,
     required this.name,
+    required this.description,
     this.totalDuration = 0,
+    this.energy = 0,
+    this.protein = 0,
+    this.carbs = 0,
+    this.fat = 0,
+    required this.difficulty,
     required this.ingredients,
     required this.ingredientAmounts,
     required this.steps,
@@ -57,8 +74,14 @@ class Recipe {
       'id': id,
       'userId': userId,
       'name': name,
+      'description': description,
       'totalDuration': totalDuration,
+      'difficulty': difficulty.toString().split('.').last,
       'ingredients': ingredients,
+      'energy': energy,
+      'protein': protein,
+      'carbs': carbs,
+      'fat': fat,
       'ingredientAmounts': ingredientAmounts,
       'steps': steps,
       'stepIntervals': stepIntervals,
@@ -73,7 +96,9 @@ class Recipe {
       id: map['id'],
       userId: map['userId'],
       name: map['name'],
+      description: map['description'],
       totalDuration: map['totalDuration'],
+      difficulty: map['difficulty'],
       ingredients: List<String>.from(map['ingredients']),
       ingredientAmounts: List<String>.from(map['ingredientAmounts']),
       steps: List<String>.from(map['steps']),
@@ -82,21 +107,4 @@ class Recipe {
       videoInstruction: map['videoInstruction'],
     );
   }
-}
-
-/// Sample usage
-void main() {
-
-
-  recipe.calculateTotalDuration();
-
-  print("Recipe ID: ${recipe.id}");
-  print("User ID: ${recipe.userId}");
-  print("Recipe Name: ${recipe.name}");
-  print("Total Duration: ${recipe.totalDuration} minutes");
-  print("Ingredients:");
-  for (int i = 0; i < recipe.ingredients.length; i++) {
-    print("- ${recipe.ingredients[i]}: ${recipe.ingredientAmounts[i]}");
-  }
-  print("Steps: ${recipe.steps}");
 }

@@ -28,12 +28,12 @@ class UpperBar extends StatelessWidget {
         ),
         SizedBox(height: height * 0.01),
         Text(
-          'How to cook',
+          'How to cook Pumpkin Soup',
           textAlign: TextAlign.start,
           style: TextStyle(
             color: Colors.black,
-            fontSize: 35,
-            fontWeight: FontWeight.bold,
+            fontSize: height*0.03,
+            // fontWeight: FontWeight.bold,
           ),
         ),
         Row(
@@ -41,11 +41,11 @@ class UpperBar extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Text(
-              'Pumpkin Soup',
+              'Instruction Title',
               style: TextStyle(
                 color: Colors.black,
-                fontSize: 30,
-                fontWeight: FontWeight.w400,
+                fontSize: height*0.037,
+                fontWeight: FontWeight.w600,
               ),
             ),
             TextButton(

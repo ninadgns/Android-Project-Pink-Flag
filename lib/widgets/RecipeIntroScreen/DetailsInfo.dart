@@ -3,10 +3,19 @@ import 'package:flutter/material.dart';
 import 'FoodValBox.dart';
 
 class DetailsInfo extends StatelessWidget {
-  const DetailsInfo({
+  DetailsInfo({
     super.key,
+    required this.energy,
+    required this.protein,
+    required this.carbs,
+    required this.fat,
+    required this.description,
   });
-
+  final int energy;
+  final int protein;
+  final int carbs;
+  final int fat;
+  final String description;
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
@@ -18,29 +27,29 @@ class DetailsInfo extends StatelessWidget {
           children: [
             FoodValBox(
               width: width,
-              foodVal: '355 k',
+              foodVal: '$energy k',
               valType: 'Energy',
             ),
             FoodValBox(
               width: width,
-              foodVal: '34 g',
+              foodVal: '$protein g',
               valType: 'Protein',
             ),
             FoodValBox(
               width: width,
-              foodVal: '52 g',
+              foodVal: '$carbs g',
               valType: 'Carbs',
             ),
             FoodValBox(
               width: width,
-              foodVal: '12 g',
+              foodVal: '$fat g',
               valType: 'Fat',
             )
           ],
         ),
         SizedBox(height: 20),
-        Text(
-            'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'),
+        Text(description),
+        SizedBox(height: 100),
       ],
     );
   }

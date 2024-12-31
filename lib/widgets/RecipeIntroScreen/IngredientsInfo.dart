@@ -4,8 +4,11 @@ import 'package:flutter/material.dart';
 class IngredientsInfo extends StatelessWidget {
   const IngredientsInfo({
     super.key,
+    required this.numberOfItems,
+    this.howManyServings = 4,
   });
-
+  final int howManyServings;
+ final int numberOfItems ;
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -35,7 +38,7 @@ class IngredientsInfo extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  '4',
+                  '$howManyServings',
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
@@ -57,7 +60,7 @@ class IngredientsInfo extends StatelessWidget {
         SizedBox(height: 16),
         // Ingredient List Header
         Text(
-          '10 Items',
+          '$numberOfItems Items',
           style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold),

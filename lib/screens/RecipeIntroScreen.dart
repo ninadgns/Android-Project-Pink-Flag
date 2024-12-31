@@ -1,7 +1,10 @@
+import 'package:dim/data/constants.dart';
+import 'package:dim/data/page_data.dart';
 import 'package:dim/screens/RecipeDirectionScreen.dart';
 import 'package:dim/widgets/VideoPlayer.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import '../models/RecipeModel.dart';
 import '/widgets/RecipeIntroScreen/DetailsInfo.dart';
 
 import '../widgets/RecipeIntroScreen/IngredientsInfo.dart';
@@ -15,6 +18,19 @@ class RecipeIntro extends StatefulWidget {
 
 class _RecipeIntroState extends State<RecipeIntro> {
   bool isDetailsSelected = false;
+  List<Widget> pageviewlist = [
+    RecipeDirectionScreen(recipe: dummyRecipe),
+    RecipeDirectionScreen(recipe: dummyRecipe),
+    RecipeDirectionScreen(recipe: dummyRecipe),
+    RecipeDirectionScreen(recipe: dummyRecipe),
+  ];
+  Recipe recipe = dummyRecipe;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    recipe.calculateTotalDuration();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -24,38 +40,35 @@ class _RecipeIntroState extends State<RecipeIntro> {
       body: Stack(
         children: [
           // Background Image
-          Hero(
-            tag: 'pumpkin_soup',
-            child: Container(
-              width: double.infinity,
-              height: height * 0.44,
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage('assets/pumpkin_soup.jpg'),
-                  fit: BoxFit.cover,
-                ),
+          Container(
+            width: double.infinity,
+            height: height * 0.44,
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: NetworkImage(recipe.titlePhoto),
+                fit: BoxFit.cover,
               ),
-              child: Center(
-                child: Container(
-                  height: 100,
-                  width: 100,
-                  decoration: BoxDecoration(
-                    color: Colors.transparent,
-                    shape: BoxShape.circle,
-                  ),
-                  child: IconButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => VideoPlayerWindow(),
-                        ),
-                      );
-                    },
-                    icon: Image.asset(
-                      'assets/play_icon.png',
-                      fit: BoxFit.contain,
-                    ),
+            ),
+            child: Center(
+              child: Container(
+                height: 100,
+                width: 100,
+                decoration: const BoxDecoration(
+                  color: Colors.transparent,
+                  shape: BoxShape.circle,
+                ),
+                child: IconButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => VideoPlayerWindow(),
+                      ),
+                    );
+                  },
+                  icon: Image.asset(
+                    'assets/play_icon.png',
+                    fit: BoxFit.contain,
                   ),
                 ),
               ),
@@ -64,7 +77,7 @@ class _RecipeIntroState extends State<RecipeIntro> {
           Align(
             alignment: Alignment.topCenter,
             child: Padding(
-                padding: EdgeInsets.all(16.0),
+                padding: const EdgeInsets.all(16.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -72,7 +85,7 @@ class _RecipeIntroState extends State<RecipeIntro> {
                       onPressed: () {
                         Navigator.pop(context);
                       },
-                      icon: Icon(
+                      icon: const Icon(
                         Icons.arrow_back_ios,
                         color: Colors.black,
                       ),
@@ -108,7 +121,7 @@ class _RecipeIntroState extends State<RecipeIntro> {
             maxChildSize: 0.65,
             builder: (BuildContext context, ScrollController scrollController) {
               return Container(
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(40),
@@ -123,14 +136,15 @@ class _RecipeIntroState extends State<RecipeIntro> {
                   ],
                 ),
                 child: ClipRRect(
-                  borderRadius: BorderRadius.only(
+                  borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(40),
                     topRight: Radius.circular(40),
                   ),
                   child: Container(
-                    padding: EdgeInsets.symmetric(vertical: 8, horizontal: 2),
-                    decoration: BoxDecoration(
-                      color: const Color(0xfffaf6f2),
+                    padding:
+                        const EdgeInsets.symmetric(vertical: 8, horizontal: 2),
+                    decoration: const BoxDecoration(
+                      color: Color(0xfffaf6f2),
                       borderRadius: BorderRadius.only(
                         topRight: Radius.circular(40),
                         topLeft: Radius.circular(40),
@@ -150,7 +164,7 @@ class _RecipeIntroState extends State<RecipeIntro> {
                         SliverToBoxAdapter(
                           child: Center(
                             child: Container(
-                              margin: EdgeInsets.only(top: 8),
+                              margin: const EdgeInsets.only(top: 8),
                               width: 50,
                               height: 5,
                               decoration: BoxDecoration(
@@ -163,7 +177,7 @@ class _RecipeIntroState extends State<RecipeIntro> {
                         // Recipe Info
                         SliverToBoxAdapter(
                           child: Padding(
-                            padding: EdgeInsets.all(16.0),
+                            padding: const EdgeInsets.all(16.0),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -172,51 +186,53 @@ class _RecipeIntroState extends State<RecipeIntro> {
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
                                     Text(
-                                      'Pumpkin Soup',
+                                      recipe.name,
                                       style: TextStyle(
                                         fontSize: 24,
                                         fontWeight: FontWeight.bold,
                                         color: Colors.black,
                                       ),
                                     ),
-                                    SizedBox(height: 4),
+                                    const SizedBox(height: 4),
                                     Text(
-                                      'European Cuisine',
+                                      recipe.description,
                                       style: TextStyle(
                                         fontSize: 16,
                                         color: Colors.black,
                                       ),
                                     ),
-                                    SizedBox(height: 16),
+                                    const SizedBox(height: 16),
                                     // Time, Difficulty, and Rating Row
                                     Row(
                                       mainAxisAlignment: MainAxisAlignment
                                           .center, // Add this line
                                       children: [
-                                        Icon(Icons.timer,
+                                        const Icon(Icons.timer,
                                             size: 16, color: Colors.grey),
-                                        SizedBox(width: 4),
-                                        Text('35 min',
+                                        const SizedBox(width: 4),
+                                        Text(
+                                            recipe.totalDuration.toString() +
+                                                ' min',
                                             style:
                                                 TextStyle(color: Colors.grey)),
-                                        SizedBox(width: 16),
-                                        Icon(Icons.signal_cellular_alt,
+                                        const SizedBox(width: 16),
+                                        const Icon(Icons.signal_cellular_alt,
                                             size: 16, color: Colors.grey),
-                                        SizedBox(width: 4),
-                                        Text('Easy',
+                                        const SizedBox(width: 4),
+                                        Text(recipe.difficulty,
                                             style:
                                                 TextStyle(color: Colors.grey)),
-                                        SizedBox(width: 16),
+                                        const SizedBox(width: 16),
                                         InkWell(
                                           child: Row(
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.center,
                                             children: [
-                                              Icon(Icons.star,
+                                              const Icon(Icons.star,
                                                   size: 16,
                                                   color: Colors.amber),
-                                              SizedBox(width: 4),
-                                              Text('4.7 ',
+                                              const SizedBox(width: 4),
+                                              const Text('4.7 ',
                                                   style: TextStyle(
                                                       color: Colors.grey)),
                                               Text(
@@ -236,7 +252,7 @@ class _RecipeIntroState extends State<RecipeIntro> {
                                     ),
                                   ],
                                 ),
-                                SizedBox(height: 16),
+                                const SizedBox(height: 16),
                                 Container(
                                   height: 50,
                                   decoration: BoxDecoration(
@@ -262,9 +278,9 @@ class _RecipeIntroState extends State<RecipeIntro> {
                                                       .colorScheme
                                                       .error,
                                               borderRadius: !isDetailsSelected
-                                                  ? BorderRadius.all(
+                                                  ? const BorderRadius.all(
                                                       Radius.circular(25))
-                                                  : BorderRadius.only(
+                                                  : const BorderRadius.only(
                                                       bottomLeft:
                                                           Radius.circular(25),
                                                       topLeft:
@@ -299,9 +315,9 @@ class _RecipeIntroState extends State<RecipeIntro> {
                                                       .error
                                                   : Colors.white,
                                               borderRadius: isDetailsSelected
-                                                  ? BorderRadius.all(
+                                                  ? const BorderRadius.all(
                                                       Radius.circular(25))
-                                                  : BorderRadius.only(
+                                                  : const BorderRadius.only(
                                                       topRight:
                                                           Radius.circular(25),
                                                       bottomRight:
@@ -325,10 +341,19 @@ class _RecipeIntroState extends State<RecipeIntro> {
                                   ),
                                 ),
                                 // Servings Selector
-                                SizedBox(height: 12),
+                                const SizedBox(height: 12),
                                 !isDetailsSelected
-                                    ? IngredientsInfo()
-                                    : DetailsInfo(),
+                                    ? IngredientsInfo(
+                                        numberOfItems:
+                                            recipe.ingredients.length,
+                                      )
+                                    : DetailsInfo(
+                                        energy: recipe.energy,
+                                        protein: recipe.protein,
+                                        carbs: recipe.carbs,
+                                        fat: recipe.fat,
+                                        description: recipe.steps.join(' '),
+                                      ),
                               ],
                             ),
                           ),
@@ -337,14 +362,24 @@ class _RecipeIntroState extends State<RecipeIntro> {
                           SliverList(
                             delegate: SliverChildBuilderDelegate(
                               (BuildContext context, int index) {
-                                return ListTile(
-                                  title: Text('Ingredient ${index + 1}'),
-                                  trailing: Text('${(index + 1) * 100} g'),
+                                return Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 2,
+                                  ),
+                                  child: ListTile(
+                                    title: Text(recipe.ingredients[index]),
+                                    trailing:
+                                        Text(recipe.ingredientAmounts[index]),
+                                  ),
                                 );
                               },
-                              childCount: 9,
+                              childCount: recipe.ingredients.length,
                             ),
                           ),
+                        SliverToBoxAdapter(
+                            child: SizedBox(
+                          height: 100,
+                        ))
                       ],
                     ),
                   ),
@@ -366,7 +401,9 @@ class _RecipeIntroState extends State<RecipeIntro> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => RecipeDirectionScreen(),
+                builder: (context) => RecipeDirectionScreen(
+                  recipe: dummyRecipe,
+                ),
               ),
             );
           },
@@ -376,11 +413,11 @@ class _RecipeIntroState extends State<RecipeIntro> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(
+                const Icon(
                   CupertinoIcons.play,
                   color: Colors.white,
                 ),
-                SizedBox(width: 8),
+                const SizedBox(width: 8),
                 Text(
                   'Show Direction',
                   style: Theme.of(context)
