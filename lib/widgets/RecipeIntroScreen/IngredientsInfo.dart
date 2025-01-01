@@ -1,22 +1,24 @@
-
 import 'package:flutter/material.dart';
 
 class IngredientsInfo extends StatelessWidget {
   const IngredientsInfo({
     super.key,
     required this.numberOfItems,
-    this.howManyServings = 4,
+    required this.howManyServings,
+    required this.onAdd,
+    required this.onRemove,
   });
   final int howManyServings;
- final int numberOfItems ;
+  final int numberOfItems;
+  final Function() onAdd;
+  final Function() onRemove;
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
-          mainAxisAlignment:
-          MainAxisAlignment.spaceBetween,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
               'How many servings?',
@@ -26,11 +28,12 @@ class IngredientsInfo extends StatelessWidget {
                   color: Colors.grey[500]),
             ),
             Row(
-              crossAxisAlignment:
-              CrossAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 IconButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    onRemove();
+                  },
                   icon: Icon(
                     Icons.remove_circle_rounded,
                     color: Colors.black,
@@ -46,7 +49,9 @@ class IngredientsInfo extends StatelessWidget {
                   ),
                 ),
                 IconButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    onAdd();
+                  },
                   icon: Icon(
                     Icons.add_circle_rounded,
                     color: Colors.black,
@@ -61,9 +66,7 @@ class IngredientsInfo extends StatelessWidget {
         // Ingredient List Header
         Text(
           '$numberOfItems Items',
-          style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold),
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
         ),
       ],
     );

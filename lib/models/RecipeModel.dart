@@ -32,6 +32,12 @@ class Recipe {
   /// Amount for each ingredient
   final List<String> ingredientAmounts;
 
+  /// The unit of measurement for each ingredient
+  final List<String> ingredientUnits;
+
+  /// Number of servings
+  final int servings;
+
   /// Step-by-step instructions (also serves as description)
   final List<String> steps;
 
@@ -54,9 +60,11 @@ class Recipe {
     this.protein = 0,
     this.carbs = 0,
     this.fat = 0,
+    required this.servings,
     required this.difficulty,
     required this.ingredients,
     required this.ingredientAmounts,
+    required this.ingredientUnits,
     required this.steps,
     required this.stepIntervals,
     required this.titlePhoto,
@@ -82,7 +90,9 @@ class Recipe {
       'protein': protein,
       'carbs': carbs,
       'fat': fat,
+      'servings': servings,
       'ingredientAmounts': ingredientAmounts,
+      'ingredientUnits': ingredientUnits,
       'steps': steps,
       'stepIntervals': stepIntervals,
       'titlePhoto': titlePhoto,
@@ -99,8 +109,14 @@ class Recipe {
       description: map['description'],
       totalDuration: map['totalDuration'],
       difficulty: map['difficulty'],
+      energy: map['energy'],
+      protein: map['protein'],
+      carbs: map['carbs'],
+      fat: map['fat'],
+      servings: map['servings'],
       ingredients: List<String>.from(map['ingredients']),
       ingredientAmounts: List<String>.from(map['ingredientAmounts']),
+      ingredientUnits: List<String>.from(map['ingredientUnits']),
       steps: List<String>.from(map['steps']),
       stepIntervals: List<int>.from(map['stepIntervals']),
       titlePhoto: map['titlePhoto'],

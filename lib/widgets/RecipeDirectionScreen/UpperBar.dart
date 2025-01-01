@@ -6,10 +6,12 @@ class UpperBar extends StatelessWidget {
     super.key,
     required this.height,
     required this.time,
+    required this.name,
   });
 
   final double height;
   final int time;
+  final String name;
 
   @override
   Widget build(BuildContext context) {
@@ -26,9 +28,9 @@ class UpperBar extends StatelessWidget {
             color: Colors.black,
           ),
         ),
-        SizedBox(height: height * 0.01),
+        SizedBox(height: height * 0.005),
         Text(
-          'How to cook Pumpkin Soup',
+          'How to cook',
           textAlign: TextAlign.start,
           style: TextStyle(
             color: Colors.black,
@@ -41,7 +43,7 @@ class UpperBar extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Text(
-              'Instruction Title',
+              name,
               style: TextStyle(
                 color: Colors.black,
                 fontSize: height*0.037,
@@ -49,7 +51,8 @@ class UpperBar extends StatelessWidget {
               ),
             ),
             TextButton(
-              onPressed: () {},
+              onPressed: () {
+              },
               child: Text(
                 time.toString() + ' min',
                 style: TextStyle(

@@ -78,7 +78,7 @@ class HorizontalScrollingFood extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'Khabar er naam',
+                              'Pumpkin Soup',
                               style: Theme.of(context)
                                   .textTheme
                                   .labelLarge!
@@ -97,7 +97,7 @@ class HorizontalScrollingFood extends StatelessWidget {
                                       size: 20,
                                     ),
                                     Text(
-                                      ' 4.5',
+                                      ' 4.8',
                                       style: TextStyle(fontSize: 14),
                                     ),
                                   ],
@@ -105,7 +105,7 @@ class HorizontalScrollingFood extends StatelessWidget {
                                 Row(
                                   children: [
                                     Text(
-                                      '20 min ',
+                                      '56 min ',
                                       style: TextStyle(
                                         color: Colors.black26,
                                         fontSize: 14,

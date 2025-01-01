@@ -4,6 +4,7 @@ import 'package:dim/screens/RecipeDirectionScreen.dart';
 import 'package:dim/widgets/VideoPlayer.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import '../models/RecipeModel.dart';
 import '/widgets/RecipeIntroScreen/DetailsInfo.dart';
 
@@ -18,18 +19,34 @@ class RecipeIntro extends StatefulWidget {
 
 class _RecipeIntroState extends State<RecipeIntro> {
   bool isDetailsSelected = false;
-  List<Widget> pageviewlist = [
-    RecipeDirectionScreen(recipe: dummyRecipe),
-    RecipeDirectionScreen(recipe: dummyRecipe),
-    RecipeDirectionScreen(recipe: dummyRecipe),
-    RecipeDirectionScreen(recipe: dummyRecipe),
-  ];
+  // List<Widget> pageviewlist = [
+  //   RecipeDirectionScreen(recipe: dummyRecipe),
+  //   RecipeDirectionScreen(recipe: dummyRecipe),
+  //   RecipeDirectionScreen(recipe: dummyRecipe),
+  //   RecipeDirectionScreen(recipe: dummyRecipe),
+  // ];
   Recipe recipe = dummyRecipe;
+  late int count;
+  final formatter = NumberFormat('#.##'); // Up to two decimal places, no trailing zeros.
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    count = recipe.servings;
     recipe.calculateTotalDuration();
+  }
+
+  void decrement() {
+    setState(() {
+      count--;
+    });
+  }
+
+  void increment() {
+    setState(() {
+      count++;
+    });
   }
 
   @override
@@ -215,14 +232,14 @@ class _RecipeIntroState extends State<RecipeIntro> {
                                                 ' min',
                                             style:
                                                 TextStyle(color: Colors.grey)),
-                                        const SizedBox(width: 16),
+                                        SizedBox(width: width * 0.04),
                                         const Icon(Icons.signal_cellular_alt,
                                             size: 16, color: Colors.grey),
                                         const SizedBox(width: 4),
                                         Text(recipe.difficulty,
                                             style:
                                                 TextStyle(color: Colors.grey)),
-                                        const SizedBox(width: 16),
+                                        SizedBox(width: width * 0.04),
                                         InkWell(
                                           child: Row(
                                             crossAxisAlignment:
@@ -346,6 +363,9 @@ class _RecipeIntroState extends State<RecipeIntro> {
                                     ? IngredientsInfo(
                                         numberOfItems:
                                             recipe.ingredients.length,
+                                        onAdd: increment,
+                                        onRemove: decrement,
+                                        howManyServings: count,
                                       )
                                     : DetailsInfo(
                                         energy: recipe.energy,
@@ -368,18 +388,31 @@ class _RecipeIntroState extends State<RecipeIntro> {
                                   ),
                                   child: ListTile(
                                     title: Text(recipe.ingredients[index]),
-                                    trailing:
-                                        Text(recipe.ingredientAmounts[index]),
+                                    trailing: Text(
+                                      (double.tryParse(recipe.ingredientAmounts[
+                                                      index]) !=
+                                                  null
+                                              ? formatter.format((double.parse(recipe
+                                                              .ingredientAmounts[
+                                                          index]) *
+                                                      count /
+                                                      recipe.servings))
+                                                  .toString()
+                                              : recipe
+                                                  .ingredientAmounts[index]) +
+                                          ' ' +
+                                          recipe.ingredientUnits[index],
+                                    ),
                                   ),
                                 );
                               },
                               childCount: recipe.ingredients.length,
                             ),
                           ),
-                        // const SliverToBoxAdapter(
-                        //     child: SizedBox(
-                        //   height: 10,
-                        // ))
+                        const SliverToBoxAdapter(
+                            child: SizedBox(
+                          height: 100,
+                        ))
                       ],
                     ),
                   ),

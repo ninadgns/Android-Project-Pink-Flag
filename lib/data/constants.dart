@@ -123,16 +123,28 @@ final dummyRecipe = Recipe(
   protein: 34,
   carbs: 52,
   fat: 12,
+  servings: 4,
   ingredientAmounts: [
-    "500g (peeled and chopped)",
-    "1 piece",
-    "2 cloves",
-    "500ml",
-    "100ml",
-    "2 tablespoons",
+    "500",
+    "1",
+    "2",
+    "500",
+    "100",
+    "2",
     "To taste",
     "To taste",
     "A pinch"
+  ],
+  ingredientUnits: [
+    "g (peeled and chopped)",
+    'piece',
+    'cloves',
+    'ml',
+    'ml',
+    'tablespoons',
+    ' ',
+    ' ',
+    ' '
   ],
   steps: [
     "Peel and chop the pumpkin into small cubes.",
@@ -146,7 +158,7 @@ final dummyRecipe = Recipe(
     "Stir in the cream and season with salt, pepper, and a pinch of nutmeg. Mix well.",
     "Serve the soup hot in bowls, garnished with a swirl of cream or croutons if desired. Enjoy your meal!"
   ],
-  stepIntervals: [5, 5, 2, 5, 5, 2, 20, 10, 2, 0],
+  stepIntervals: [5, 5, 2, 5, 5, 2, 20, 10, 2, 1],
   titlePhoto:
       "https://thebigmansworld.com/wp-content/uploads/2024/09/pumpkin-curry-soup-recipe.jpg",
   videoInstruction:
