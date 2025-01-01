@@ -40,7 +40,7 @@ final bottomNavigationItems = [
 final homepageScreens = [
   const SearchScreen(),
   const LibraryScreen(),
-  const ScannerScreen(),
+   ScannerScreen(),
   const ShoppingScreen(),
   const ProfileScreen(),
   const FoodPlannerScreen(),

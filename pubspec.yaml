@@ -46,10 +46,16 @@ dependencies:
   sleek_circular_slider: ^2.0.1
   flutter_tts: ^4.2.0
   intl: ^0.19.0
+  flutter_svg: ^1.0.0+2
+  http: ^1.2.2
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  smooth_page_indicator: ^1.0.0+2
+  liquid_swipe: ^3.0.0
+  image_picker_for_web: ^2.0.0
+  flutter_dotenv: ^5.0.2
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
