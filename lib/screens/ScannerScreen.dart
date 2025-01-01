@@ -123,6 +123,7 @@ class ScannerScreen extends StatelessWidget {
       return Scaffold(
         appBar: AppBar(
           title: const Text('Food Item Recognition'),
+
         ),
         body: SingleChildScrollView(
           child: Padding(
