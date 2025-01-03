@@ -118,7 +118,7 @@ class ScannerScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const double minHeight = 700.0;
+    const double minHeight = 900.0;
     const double itemHeight = 60.0;
     final double totalHeight = minHeight + (_ingredients.length * itemHeight);
 
@@ -144,6 +144,7 @@ class ScannerScreen extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
+                const SizedBox(height: 20),
                 if (_imageBytes != null)
                   Image.memory(
                     _imageBytes!,
@@ -154,7 +155,7 @@ class ScannerScreen extends StatelessWidget {
                     fallbackHeight: 200,
                     fallbackWidth: double.infinity,
                   ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 25),
                 ElevatedButton(
                   onPressed: () => _pickImage(context, updateState),
                   style: ElevatedButton.styleFrom(
@@ -254,7 +255,7 @@ class ScannerScreen extends StatelessWidget {
                   },
                 ),
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 50),
               ],
             ),
           ),
