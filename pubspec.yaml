@@ -91,10 +91,16 @@ flutter:
     - assets/chef.gif
     - assets/pot.gif
     - assets/cooking.png
-    - assets/images/cat.png
-    - assets/images/profile.png
     - assets/pumpkin_soup.jpg
     - assets/play_icon.png
+    - assets/images/cat.png
+    - assets/images/profile.png
+    - assets/images/leaf.jpg
+    - assets/images/yellow.jpg
+    - assets/images/mix.jpg
+    - assets/images/tealwhite.jpeg
+    - assets/images/teal.png
+
 
 
   # An image asset can refer to one or more resolution-specific "variants", see

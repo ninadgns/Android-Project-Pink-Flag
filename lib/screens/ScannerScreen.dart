@@ -1,13 +1,4 @@
-// import 'package:flutter/material.dart';
-//
-// class ScannerScreen extends StatelessWidget {
-//   const ScannerScreen({super.key});
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return const Center(child: Text('Ami Scanner Screen'));
-//   }
-// }
+
 import 'dart:convert';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
@@ -93,6 +84,10 @@ class ScannerScreen extends StatelessWidget {
             actions: [
               TextButton(
                 onPressed: () => Navigator.of(context).pop(),
+                style: TextButton.styleFrom(
+                  foregroundColor: Color(0xffd2a85d),
+                  backgroundColor: Colors.transparent,
+                ),
                 child: const Text("Close"),
               )
             ],
@@ -110,6 +105,10 @@ class ScannerScreen extends StatelessWidget {
             actions: [
               TextButton(
                 onPressed: () => Navigator.of(context).pop(),
+                style: TextButton.styleFrom(
+                  foregroundColor: Color(0xffd2a85d),
+                  backgroundColor: Colors.transparent,
+                ),
                 child: const Text("Close"),
               )
             ],
@@ -119,14 +118,28 @@ class ScannerScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    const double minHeight = 700.0;
+    const double itemHeight = 60.0;
+    final double totalHeight = minHeight + (_ingredients.length * itemHeight);
+
     return StatefulBuilder(builder: (context, updateState) {
       return Scaffold(
         appBar: AppBar(
+          backgroundColor: Color(0xfff0af93),
           title: const Text('Food Item Recognition'),
 
         ),
         body: SingleChildScrollView(
-          child: Padding(
+          child: Container(
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              image: DecorationImage(
+                image: AssetImage('assets/images/mix.jpg'),
+                repeat: ImageRepeat.repeat,
+                opacity: 0.16,
+              ),
+            ),
+            height: totalHeight,
             padding: const EdgeInsets.all(16.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -144,12 +157,36 @@ class ScannerScreen extends StatelessWidget {
                 const SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: () => _pickImage(context, updateState),
-                  child: const Text('Pick Image'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFFF8E8C4),
+                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                  ),
+                  child: const Text('Pick Image',
+                    style: TextStyle(
+                    fontSize: 18,
+                    color: Colors.black45,
+                    ),
+                  ),
                 ),
                 const SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: () => _uploadImage(context, updateState),
-                  child: const Text('Upload and Predict'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFFF8E8C4),
+                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                  ),
+                  child: const Text('Upload and Predict',
+                    style: TextStyle(
+                      fontSize: 18,
+                      color: Colors.black45,
+                    ),
+                  ),
                 ),
                 const SizedBox(height: 20),
 
@@ -175,13 +212,26 @@ class ScannerScreen extends StatelessWidget {
                 // Add to Cart Button
                 ElevatedButton(
                   onPressed: () => _addToCart(context),
-                  child: const Text('Add to Cart'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFFF8E8C4),
+                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                  ),
+                  child: const Text('Add to Cart',
+                    style: TextStyle(
+                      fontSize: 18,
+                      color: Colors.black45,
+                    ),
+                  ),
                 ),
 
                 const SizedBox(height: 20),
 
                 // Ingredient List
-                ListView.builder(
+                Expanded(
+                 child:ListView.builder(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
                   itemCount: _ingredients.length,
@@ -203,6 +253,8 @@ class ScannerScreen extends StatelessWidget {
                     );
                   },
                 ),
+                ),
+                const SizedBox(height: 20),
               ],
             ),
           ),

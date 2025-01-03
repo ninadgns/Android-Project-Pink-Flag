@@ -137,9 +137,9 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
         decoration: const BoxDecoration(
           color: Colors.white,
           image: DecorationImage(
-            image: AssetImage('assets/images/cat.png'),
+            image: AssetImage('assets/images/teal.png'),
             repeat: ImageRepeat.repeat,
-            opacity: 0.1,
+            opacity: 0.08,
           ),
         ),
         child: Column(

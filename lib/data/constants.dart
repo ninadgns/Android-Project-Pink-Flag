@@ -41,7 +41,7 @@ final homepageScreens = [
   const SearchScreen(),
   const LibraryScreen(),
   ScannerScreen(),
-  const ShoppingScreen(),
+  ShoppingScreen(),
   const ProfileScreen(),
   const FoodPlannerScreen(),
 ];
