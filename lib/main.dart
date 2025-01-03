@@ -27,8 +27,8 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: appTheme,
-      //home: Onboarding(),
-      home: Homescreen(),
+      home: Onboarding(),
+      //home: Homescreen(),
 
     );
   }
