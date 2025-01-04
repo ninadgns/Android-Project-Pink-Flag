@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '/screens/RecipeIntroScreen.dart';
-
+import 'package:dim/data/constants.dart';
 import '../widgets/SearchScreen/CatFoodList.dart';
 import '../widgets/SearchScreen/HorizontalScrollingCat.dart';
 import '../widgets/SearchScreen/SearchBarHome.dart';
@@ -85,7 +85,7 @@ class _SearchScreenState extends State<SearchScreen> {
             CatFoodList(),
             Container(
               height: _height * 0.3,
-              color: Colors.greenAccent,
+              color: Color(0xfffaf6f2),
             ),
           ],
         ),

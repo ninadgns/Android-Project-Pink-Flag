@@ -107,11 +107,11 @@ class _ShoppingScreenState extends State<ShoppingScreen> with SingleTickerProvid
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return  Scaffold(
       backgroundColor: Colors.grey[100],
-      appBar: AppBar(
+      appBar:AppBar(
         backgroundColor: Colors.teal,
-        elevation: 20,
+        elevation: 0,
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -149,8 +149,17 @@ class _ShoppingScreenState extends State<ShoppingScreen> with SingleTickerProvid
       ),
       body: SingleChildScrollView(
         controller: _scrollController,
-        child: Column(
-          children: [
+        child: Container(
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            image: DecorationImage(
+              image: AssetImage('assets/images/tealwhite.jpeg'),
+              repeat: ImageRepeat.repeat,
+              opacity: 0.15,
+            ),
+          ),
+         child: Column(
+           children: [
             Padding(
               padding: const EdgeInsets.all(16),
               child: Row(
@@ -184,6 +193,7 @@ class _ShoppingScreenState extends State<ShoppingScreen> with SingleTickerProvid
           ],
         ),
       ),
-    );
+    ),
+   );
   }
 }

@@ -1,3 +1,5 @@
+import 'package:dim/screens/HomeScreen.dart';
+
 import '/screens/ImageAnimationScreen.dart';
 import '/screens/Onboarding.dart';
 import 'package:flutter/material.dart';
@@ -26,7 +28,7 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       theme: appTheme,
       home: Onboarding(),
-       //home: ProfileScreen(),
+      //home: Homescreen(),
 
     );
   }

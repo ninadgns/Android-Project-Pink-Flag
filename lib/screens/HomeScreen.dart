@@ -29,12 +29,9 @@ class _HomescreenState extends State<Homescreen> {
       extendBody: true,
       resizeToAvoidBottomInset: false,
       // backgroundColor: ,
-      body: Container(
-        margin: EdgeInsets.only(top: _height * 0.01),
-        child: Center(
+      body: Center(
           child: homepageScreens[_current_index],
         ),
-      ),
       bottomNavigationBar: BottomNavBar(onItemTapped: _onItemTapped),
     );
   }
