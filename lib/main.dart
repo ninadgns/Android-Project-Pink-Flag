@@ -1,6 +1,5 @@
 import 'package:dim/screens/HomeScreen.dart';
 
-import '/screens/ImageAnimationScreen.dart';
 import '/screens/Onboarding.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';

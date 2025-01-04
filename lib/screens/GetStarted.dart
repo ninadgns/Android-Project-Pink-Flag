@@ -48,69 +48,47 @@ class _OnboardingState extends State<Getstarted> {
               ),
             ),
 
-            Align(
-              alignment: Alignment(0, 0.5),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(height: screenHeight / 8),
-
-                  Text(
-                    "Welcome Here",
-                    style: GoogleFonts.satisfy(
-                      fontSize: screenHeight / 12, // Responsive font size
-                      fontWeight: FontWeight.bold,
-                      color: const Color(0xFF39786D),
-                    ),
-                  ),
-                  Text(
-                    "Show your cooking skills, cook like a pro, join with community",
-                    style: GoogleFonts.shadowsIntoLight(
-                      fontSize: screenHeight / 40,
-                      fontWeight: FontWeight.bold,
-                      color: const Color(0xFF39786D),
-                    ),
-                  ),
-                ],
-              ),
-            ),    // Text overlay
-            // Align(
-            //   alignment: Alignment(0,1000),
-            //   child: Column(
-            //     crossAxisAlignment: CrossAxisAlignment.start,
-            //     children: [
-            //       Text(
-            //         "Welcome Here",
-            //         style: GoogleFonts.satisfy(
-            //           fontSize: screenHeight / 12, // Responsive font size
-            //           fontWeight: FontWeight.bold,
-            //           color: const Color(0xFF39786D),
-            //         ),
-            //       ),
-            //
-            //
-            //       Text(
-            //         textAlign: TextAlign.center,
-            //         "Show your cooking skills, cook like a pro, join with community",
-            //         style: GoogleFonts.shadowsIntoLight(
-            //           fontSize: screenHeight / 40,
-            //           fontWeight: FontWeight.bold,
-            //           color: const Color(0xFF39786D),
-            //         ),
-            //       ),
-            //     ],
-            //   ),
-            // ),
             Center(
               child: Container(
                 alignment: Alignment(0.0, 0.5),
-                height: screenHeight, // Full screen height
+                 // Full screen height
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center, // Align buttons vertically
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
+                    Align(
+                      alignment:Alignment(0.0, 0.0),
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 20.0), // Add left padding
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Welcome Here",
+                              style: GoogleFonts.satisfy(
+                                fontSize: screenHeight / 12,
+                                fontWeight: FontWeight.bold,
+                                color: const Color(0xFF39786D),
+                              ),
+                            ),
+                            Text(
+                              "Show your cooking skills, cook like a pro, join with community",
+                              style: GoogleFonts.shadowsIntoLight(
+                                fontSize: screenHeight / 40,
+                                fontWeight: FontWeight.bold,
+                                color: const Color(0xFF39786D),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+
+
+                    SizedBox(height: screenHeight / 20),
+
                     // First Button
                     ElevatedButton(
-                      child: const Text("SignUp"),
+
                       onPressed: () {
                         Navigator.push(
                           context,
@@ -122,12 +100,13 @@ class _OnboardingState extends State<Getstarted> {
                           horizontal: screenWidth / 15, // 1/15th of screen width
                           vertical: 20,
                         ),
-                        backgroundColor: const Color(0xFFADD6CE), // Button color
+                        backgroundColor:  const Color(0xFF7AACA5), // Button color
                         textStyle: const TextStyle(fontSize: 18),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(30.0),
                         ),
                       ),
+                      child: const Text("SignUp"),
 
 
                     ),

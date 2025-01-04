@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:dim/screens/AddPost/CreateRecipePostScreen.dart';
 
 class MyPostsScreen extends StatelessWidget {
   const MyPostsScreen({super.key});
@@ -78,9 +79,21 @@ class MyPostsScreen extends StatelessWidget {
         },
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () async {
+          final result = await Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const CreateRecipePostScreen(),
+            ),
+          );
+          if (result != null) {
+            // Handle the created post data
+            print("Created Post: $result");
+          }
+        },
         child: const Icon(Icons.add),
       ),
+
     );
   }
 }

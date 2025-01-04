@@ -49,17 +49,7 @@ class _OnboardingState extends State<signup1> {
               ),
             ),
 
-            Align(
-              alignment: Alignment(0, -0.8), // Adjust the vertical alignment as needed
-              child: Text(
-                "Signup Here",
-                style: GoogleFonts.satisfy(
-                  fontSize: screenHeight / 15, // Responsive font size
-                  fontWeight: FontWeight.bold,
-                  color: const Color(0xFF39786D),
-                ),
-              ),
-            ),   // Text overlay
+               // Text overlay
             Center(
               child: Container(
                 alignment: Alignment(0.0, 0.0), // Center alignment
@@ -70,6 +60,19 @@ class _OnboardingState extends State<signup1> {
                     mainAxisAlignment: MainAxisAlignment.center, // Align items vertically
                     crossAxisAlignment: CrossAxisAlignment.start, // Align items to the start horizontally
                     children: [
+
+                      Align(
+                        alignment: Alignment(0, -0.8), // Adjust the vertical alignment as needed
+                        child: Text(
+                          "Signup Here",
+                          style: GoogleFonts.satisfy(
+                            fontSize: screenHeight / 15, // Responsive font size
+                            fontWeight: FontWeight.bold,
+                            color: const Color(0xFF39786D),
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: screenHeight / 40),
                       // First Name Field
                       TextField(
                         decoration: InputDecoration(
