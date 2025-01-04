@@ -84,8 +84,8 @@ class _CreateRecipePostScreenState extends State<CreateRecipePostScreen> {
           borderRadius: BorderRadius.circular(12),
         ),
         child: SizedBox(
-          width: MediaQuery.of(context).size.width * 0.5, // 90% of screen width
-          height: MediaQuery.of(context).size.height * 0.5, // 80% of screen height
+          width: MediaQuery.of(context).size.width * 0.5,
+          height: MediaQuery.of(context).size.height * 0.5,
           child: Column(
             children: [
               Expanded(
@@ -142,7 +142,7 @@ class _CreateRecipePostScreenState extends State<CreateRecipePostScreen> {
 
 
   void _showPostCreatedDialog(Map<String, dynamic> postData) {
-    final jsonData = jsonEncode(postData); // Convert post data to JSON format
+    final jsonData = jsonEncode(postData);
 
     showDialog(
       context: context,
@@ -156,7 +156,7 @@ class _CreateRecipePostScreenState extends State<CreateRecipePostScreen> {
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context), // Close the dialog
+            onPressed: () => Navigator.pop(context),
             child: const Text('OK'),
           ),
         ],
@@ -191,7 +191,7 @@ class _CreateRecipePostScreenState extends State<CreateRecipePostScreen> {
         'ingredients': _ingredients,
         'steps': _steps,
       };
-      Navigator.pop(context, postData); // Return post data
+      Navigator.pop(context, postData);
       _showPostCreatedDialog(postData);
     }
   }
@@ -270,7 +270,7 @@ class _CreateRecipePostScreenState extends State<CreateRecipePostScreen> {
 
                 onChanged: (value) {
                   if (value.isEmpty) {
-                    _servingCountController.text = '1'; // Set default to 1 if empty
+                    _servingCountController.text = '1';
                   }
                 },
               ),

@@ -23,12 +23,12 @@ class _VideoUploaderState extends State<VideoUploader> {
     );
 
     if (pickedVideo != null) {
-      print('Selected Video Path: ${pickedVideo.path}'); // Log the path
+      print('Selected Video Path: ${pickedVideo.path}');
       setState(() {
         _selectedVideo = pickedVideo;
       });
       await _initializeVideoPlayer();
-      widget.onVideoSelected(_selectedVideo); // Notify parent about the video selection
+      widget.onVideoSelected(_selectedVideo);
     }
   }
 
