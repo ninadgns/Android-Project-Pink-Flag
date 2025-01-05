@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'steps_input.dart';
@@ -23,15 +24,14 @@ class _CreateRecipePostScreenState extends State<CreateRecipePostScreen> {
   final TextEditingController _descriptionController = TextEditingController();
   final TextEditingController _nutritionController = TextEditingController();
   final TextEditingController _ingredientsCountController =
-  TextEditingController();
-  final TextEditingController _servingCountController =
-  TextEditingController();
+      TextEditingController();
+  final TextEditingController _servingCountController = TextEditingController();
   final TextEditingController _ingredientNameController =
-  TextEditingController();
+      TextEditingController();
   final TextEditingController _ingredientQuantityController =
-  TextEditingController();
+      TextEditingController();
   final TextEditingController _cookingDescriptionController =
-  TextEditingController();
+      TextEditingController();
 
   String? _category;
   List<Map<String, dynamic>> _ingredients = [];
@@ -43,8 +43,6 @@ class _CreateRecipePostScreenState extends State<CreateRecipePostScreen> {
       _nutritionData = data;
     });
   }
-
-
 
   Uint8List? _recipeImage; // Use Uint8List instead of File
   final ImagePicker _picker = ImagePicker();
@@ -75,7 +73,6 @@ class _CreateRecipePostScreenState extends State<CreateRecipePostScreen> {
     });
   }
 
-
   void _showPreview() {
     showDialog(
       context: context,
@@ -94,7 +91,8 @@ class _CreateRecipePostScreenState extends State<CreateRecipePostScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Title: ${_titleController.text.isNotEmpty ? _titleController.text : 'No title provided'}'),
+                      Text(
+                          'Title: ${_titleController.text.isNotEmpty ? _titleController.text : 'No title provided'}'),
                       const SizedBox(height: 8),
                       if (_descriptionController.text.isNotEmpty)
                         Text('Description: ${_descriptionController.text}'),
@@ -140,7 +138,6 @@ class _CreateRecipePostScreenState extends State<CreateRecipePostScreen> {
     );
   }
 
-
   void _showPostCreatedDialog(Map<String, dynamic> postData) {
     final jsonData = jsonEncode(postData);
 
@@ -164,7 +161,7 @@ class _CreateRecipePostScreenState extends State<CreateRecipePostScreen> {
     );
   }
 
-  void _createPost() {
+  Future<void> _createPost() async {
     // Validate the form first
     if (_formKey.currentState!.validate()) {
       // Check additional constraints
@@ -177,7 +174,8 @@ class _CreateRecipePostScreenState extends State<CreateRecipePostScreen> {
 
       if (_cookingDescriptionController.text.isEmpty) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Please provide the cooking instructions.')),
+          const SnackBar(
+              content: Text('Please provide the cooking instructions.')),
         );
         return;
       }
@@ -191,11 +189,20 @@ class _CreateRecipePostScreenState extends State<CreateRecipePostScreen> {
         'ingredients': _ingredients,
         'steps': _steps,
       };
+      try {
+        // Save the post data to the database
+        // Replace this with your own logic
+        await FirebaseFirestore.instance.collection('recipes').add(postData);
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to create post: $e')),
+        );
+        return;
+      }
       Navigator.pop(context, postData);
       _showPostCreatedDialog(postData);
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -234,9 +241,9 @@ class _CreateRecipePostScreenState extends State<CreateRecipePostScreen> {
                 onChanged: (value) => setState(() => _category = value),
                 items: ['Easy', 'Moderate', 'Cook Like a Pro']
                     .map((level) => DropdownMenuItem(
-                  value: level,
-                  child: Text(level),
-                ))
+                          value: level,
+                          child: Text(level),
+                        ))
                     .toList(),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -248,14 +255,11 @@ class _CreateRecipePostScreenState extends State<CreateRecipePostScreen> {
               const SizedBox(height: 16),
               ImageUploader(onImageSelected: _handleImageSelection),
               const SizedBox(height: 16),
-              if (_recipeImage != null) const Text('Image successfully uploaded!'),
-
-
+              if (_recipeImage != null)
+                const Text('Image successfully uploaded!'),
               const SizedBox(height: 16),
               VideoUploader(onVideoSelected: _handleVideoSelection),
               const SizedBox(height: 16),
-
-
               const SizedBox(height: 16),
               TextFormField(
                 controller: _descriptionController,
@@ -265,20 +269,19 @@ class _CreateRecipePostScreenState extends State<CreateRecipePostScreen> {
               const SizedBox(height: 16),
               TextFormField(
                 controller: _servingCountController,
-                decoration: const InputDecoration(labelText: 'Number of Servings'),
+                decoration:
+                    const InputDecoration(labelText: 'Number of Servings'),
                 keyboardType: TextInputType.number,
-
                 onChanged: (value) {
                   if (value.isEmpty) {
                     _servingCountController.text = '1';
                   }
                 },
               ),
-
               TextFormField(
                 controller: _ingredientsCountController,
                 decoration:
-                const InputDecoration(labelText: 'Number of Ingredients*'),
+                    const InputDecoration(labelText: 'Number of Ingredients*'),
                 keyboardType: TextInputType.number,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -293,10 +296,8 @@ class _CreateRecipePostScreenState extends State<CreateRecipePostScreen> {
               const SizedBox(height: 16),
               IngredientsList(onChanged: _handleIngredients),
               const SizedBox(height: 16),
-
               NutritionInput(onChanged: _handleNutritionData),
               const SizedBox(height: 8),
-
               const SizedBox(height: 16),
               TextFormField(
                 controller: _cookingDescriptionController,
