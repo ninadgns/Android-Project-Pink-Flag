@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "930235974996",
+    "project_id": "kabya2",
+    "storage_bucket": "kabya2.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:930235974996:android:66f6396b1383717f3134c1",
+        "android_client_info": {
+          "package_name": "com.example.dim"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "930235974996-shlbqfjp0nsa2t789356u3vovudnsnr6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCyNMYK2_1QPhKKO5W8FDisSoGk1T9MpWE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "930235974996-bt1ucaut59vtm7buon3mfk46b5t5ribk.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
