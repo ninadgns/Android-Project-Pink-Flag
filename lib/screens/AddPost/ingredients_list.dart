@@ -48,14 +48,28 @@ class _IngredientsListState extends State<IngredientsList> {
             Expanded(
               child: TextFormField(
                 controller: _ingredientNameController,
-                decoration: const InputDecoration(labelText: 'Ingredient'),
+                cursorColor: Colors.black,
+                decoration: const InputDecoration(
+                    labelText: 'Ingredient',
+                  labelStyle: TextStyle(color: Colors.black),
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.black, width: 1),
+                  ),
+                ),
               ),
             ),
             const SizedBox(width: 8),
             Expanded(
               child: TextFormField(
                 controller: _ingredientQuantityController,
-                decoration: const InputDecoration(labelText: 'Quantity'),
+                cursorColor: Colors.black,
+                decoration: const InputDecoration(
+                    labelText: 'Quantity',
+                  labelStyle: TextStyle(color: Colors.black),
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.black, width: 1),
+                  ),
+                ),
               ),
             ),
             IconButton(

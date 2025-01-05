@@ -36,14 +36,26 @@ class _StepsInputState extends State<StepsInput> {
           children: [
             TextField(
               controller: stepDescriptionController,
-              decoration: const InputDecoration(labelText: 'Step Description'),
+              cursorColor: Colors.black,
+              decoration: const InputDecoration(
+                  labelText: 'Step Description',
+                labelStyle: TextStyle(color: Colors.black),
+                focusedBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(color: Colors.black, width: 1),
+                ),
+              ),
             ),
             const SizedBox(height: 8),
             TextField(
               controller: stepTimingController,
               keyboardType: TextInputType.number,
+              cursorColor: Colors.black,
               decoration: const InputDecoration(
                 labelText: 'Step Timing (min, default 5)',
+                labelStyle: TextStyle(color: Colors.black),
+                focusedBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(color: Colors.black, width: 1),
+                ),
               ),
             ),
           ],
@@ -61,6 +73,7 @@ class _StepsInputState extends State<StepsInput> {
               );
               Navigator.pop(context);
             },
+
             child: const Text('Add Step'),
           ),
         ],
@@ -83,6 +96,9 @@ class _StepsInputState extends State<StepsInput> {
           onPressed: _showStepInputDialog,
           icon: const Icon(Icons.add),
           label: const Text('Add Step'),
+          style: TextButton.styleFrom(
+            foregroundColor: Colors.black45,
+          ),
         ),
       ],
     );

@@ -201,6 +201,7 @@ class _CreateRecipePostScreenState extends State<CreateRecipePostScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Color(0xFF7DA9CE),
         title: const Text('Create Recipe Post'),
         elevation: 0,
         actions: [
@@ -210,16 +211,38 @@ class _CreateRecipePostScreenState extends State<CreateRecipePostScreen> {
           ),
         ],
       ),
-      body: Form(
-        key: _formKey,
-        child: SingleChildScrollView(
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Colors.white.withOpacity(0.9),
+              const Color(0xFFEEF4FA),
+              const Color(0xFFE6EDF8),
+              const Color(0xFFE1EBF4),
+              const Color(0xFFD1E0ED),
+              const Color(0xFFD0DFF0),
+            ],
+          ),
+        ),
+        child:Form(
+         key: _formKey,
+         child: SingleChildScrollView(
           padding: const EdgeInsets.all(16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               TextFormField(
                 controller: _titleController,
-                decoration: const InputDecoration(labelText: 'Recipe Title*'),
+                cursorColor: Colors.black,
+                decoration: const InputDecoration(
+                  labelText: 'Recipe Title*',
+                  labelStyle: TextStyle(color: Colors.black),
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.black, width: 1),
+                  ),
+                ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Title is required';
@@ -229,11 +252,19 @@ class _CreateRecipePostScreenState extends State<CreateRecipePostScreen> {
               ),
               const SizedBox(height: 16),
               DropdownButtonFormField<String>(
-                decoration: const InputDecoration(labelText: 'Category*'),
+                dropdownColor: const Color(0xFFD0DFF0),
+                decoration: const InputDecoration(
+                    labelText: 'Category*',
+                  labelStyle: TextStyle(color: Colors.black),
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.black, width: 1),
+                  ),
+                ),
                 value: _category,
                 onChanged: (value) => setState(() => _category = value),
                 items: ['Easy', 'Moderate', 'Cook Like a Pro']
                     .map((level) => DropdownMenuItem(
+
                   value: level,
                   child: Text(level),
                 ))
@@ -259,13 +290,27 @@ class _CreateRecipePostScreenState extends State<CreateRecipePostScreen> {
               const SizedBox(height: 16),
               TextFormField(
                 controller: _descriptionController,
-                decoration: const InputDecoration(labelText: 'Description'),
+                cursorColor: Colors.black,
+                decoration: const InputDecoration(
+                    labelText: 'Description',
+                  labelStyle: TextStyle(color: Colors.black),
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.black, width: 1),
+                  ),
+                ),
                 maxLines: 3,
               ),
               const SizedBox(height: 16),
               TextFormField(
                 controller: _servingCountController,
-                decoration: const InputDecoration(labelText: 'Number of Servings'),
+                cursorColor: Colors.black,
+                decoration: const InputDecoration(
+                    labelText: 'Number of Servings',
+                  labelStyle: TextStyle(color: Colors.black),
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.black, width: 1),
+                  ),
+                ),
                 keyboardType: TextInputType.number,
 
                 onChanged: (value) {
@@ -277,8 +322,14 @@ class _CreateRecipePostScreenState extends State<CreateRecipePostScreen> {
 
               TextFormField(
                 controller: _ingredientsCountController,
-                decoration:
-                const InputDecoration(labelText: 'Number of Ingredients*'),
+                cursorColor: Colors.black,
+                decoration: const InputDecoration(
+                    labelText: 'Number of Ingredients*',
+                  labelStyle: TextStyle(color: Colors.black),
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.black, width: 1),
+                  ),
+                ),
                 keyboardType: TextInputType.number,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -300,7 +351,14 @@ class _CreateRecipePostScreenState extends State<CreateRecipePostScreen> {
               const SizedBox(height: 16),
               TextFormField(
                 controller: _cookingDescriptionController,
-                decoration: const InputDecoration(labelText: 'How to Cook*'),
+                cursorColor: Colors.black,
+                decoration: const InputDecoration(
+                    labelText: 'How to Cook*',
+                  labelStyle: TextStyle(color: Colors.black),
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.black, width: 1),
+                  ),
+                ),
                 maxLines: 3,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -316,10 +374,14 @@ class _CreateRecipePostScreenState extends State<CreateRecipePostScreen> {
               ElevatedButton(
                 onPressed: _createPost,
                 child: const Text('Create Post'),
+                style: TextButton.styleFrom(
+                  foregroundColor: const Color(0xFF7DA9CE),
+                ),
               ),
             ],
           ),
         ),
+      ),
       ),
     );
   }

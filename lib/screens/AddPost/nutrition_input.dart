@@ -43,7 +43,14 @@ class _NutritionInputState extends State<NutritionInput> {
                 child: TextFormField(
                   initialValue: entry.value['quantity'].toString(),
                   keyboardType: TextInputType.number,
-                  decoration: const InputDecoration(labelText: 'Quantity'),
+                  cursorColor: Colors.black,
+                  decoration: const InputDecoration(
+                      labelText: 'Quantity',
+                    labelStyle: TextStyle(color: Colors.black),
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.black, width: 1),
+                    ),
+                  ),
                   onChanged: (value) {
                     _updateData(type, 'quantity', int.tryParse(value) ?? 0);
                   },
@@ -53,6 +60,7 @@ class _NutritionInputState extends State<NutritionInput> {
               Expanded(
                 flex: 2,
                 child: DropdownButtonFormField<String>(
+                  dropdownColor: const Color(0xFFD0DFF0),
                   value: entry.value['unit'],
                   items: _units
                       .map((unit) => DropdownMenuItem(
