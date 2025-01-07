@@ -27,14 +27,14 @@ final bottomNavigationItems = [
     icon: Icon(Icons.shopping_cart_outlined),
     label: 'Shopping',
   ),
-  // const BottomNavigationBarItem(
-  //   icon: Icon(Icons.date_range_outlined),
-  //   label: 'Meal Planner',
-  // ),
   const BottomNavigationBarItem(
-    icon: Icon(CupertinoIcons.profile_circled),
-    label: 'Profile',
+    icon: Icon(Icons.date_range_outlined),
+    label: 'Meal Planner',
   ),
+  // const BottomNavigationBarItem(
+  //   icon: Icon(CupertinoIcons.profile_circled),
+  //   label: 'Profile',
+  // ),
 ];
 
 final homepageScreens = [
@@ -42,7 +42,7 @@ final homepageScreens = [
   const LibraryScreen(),
   ScannerScreen(),
   ShoppingScreen(),
-  const ProfileScreen(),
+  // const ProfileScreen(),
   const FoodPlannerScreen(),
 ];
 

@@ -22,7 +22,7 @@ class LibraryCollections extends StatelessWidget {
         return InkWell(
           onTap: () {
             Navigator.push(
-                context, MaterialPageRoute(builder: (ctx) => RecipeIntro()));
+                context, MaterialPageRoute(builder: (ctx) => RecipeIntro(recipe: dummyRecipe,)));
           },
           child: CollectionItem(
             index: index,
