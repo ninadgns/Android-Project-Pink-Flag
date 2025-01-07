@@ -1,4 +1,6 @@
 import 'package:dim/screens/HomeScreen.dart';
+import 'package:dim/screens/Profile/PaymentMethodsScreen.dart';
+import 'package:dim/screens/Profile/SubscriptionScreen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'package:dim/screens/Profile/MyPostsScreen.dart';
@@ -34,6 +36,7 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       theme: appTheme,
       home: Onboarding(),
+      //home: SubscriptionScreen(),
       //home: Homescreen(),
     );
   }

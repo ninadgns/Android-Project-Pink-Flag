@@ -53,7 +53,7 @@ final List<SubscriptionPlan> defaultPlans = [
          'Limited Recipe Library',
          'Ads Included',
      ],
-     color: const Color(0xFF90CAF9), // Light Blue
+     color: Colors.lightGreen.shade200,
    ),
   SubscriptionPlan(
      id: 'premium_plan',
@@ -68,7 +68,7 @@ final List<SubscriptionPlan> defaultPlans = [
         'Priority Customer Support',
        ],
      isPopular: true,
-     color: const Color(0xFF80CBC4), // Teal
+     color: const Color(0xFF90CAF9),
    ),
   SubscriptionPlan(
     id: 'family_plan',
@@ -84,7 +84,8 @@ final List<SubscriptionPlan> defaultPlans = [
       '24/7 Dedicated Support',
     ],
     isPopular: true,
-    color: const Color(0xFFF8BBD0), // Pink
+    //color: const Color(0xFF80CBC4),
+    color: Colors.teal.shade100,
   )
 ];
 

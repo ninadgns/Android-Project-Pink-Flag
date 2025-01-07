@@ -6,15 +6,51 @@ import '../models/PaymentModels.dart';
 class PaymentService {
   // In-memory storage for demo purposes
   static CurrentSubscription? _currentSubscription;
-  static List<PaymentMethod> _paymentMethods = [
+  static final List<PaymentMethod> _paymentMethods = [
     PaymentMethod(
-      id: 'default_card',
-      type: 'Visa',
-      last4: '4242',
-      expiryDate: '12/24',
+      id: 'card_1',
       cardHolderName: 'John Doe',
-      isDefault: false,
+      cardType: 'VISA',
+      last4: '4242',
+      cardNumber: '7234 7949 3474 4242',
+      expiryDate: '12/25',
+      cvc: '',
+      zipCode: '01274',
+      //region: '',
     ),
+    PaymentMethod(
+      id: 'card_2',
+      cardHolderName: 'John Doe',
+      cardType: 'MASTER',
+      last4: '0101',
+      cardNumber: '7234 0000 3474 0101',
+      expiryDate: '12/26',
+      cvc: '',
+      zipCode: '29292',
+     // region: '',
+    ),
+    PaymentMethod(
+      id: 'card_3',
+      cardHolderName: 'John Doe',
+      cardType: 'JCB',
+      last4: '0000',
+      cardNumber: '7234 1020 3474 0000',
+      expiryDate: '08/26',
+      cvc: '',
+      zipCode: '83371',
+      //region: '',
+    ),
+    // PaymentMethod(
+    //   id: 'card_4',
+    //   cardHolderName: 'John Doe',
+    //   cardType: 'PayPal',
+    //   last4: '',
+    //   cardNumber: '',
+    //   expiryDate: '',
+    //   cvc: '',
+    //   zipCode: '',
+    //   region: '',
+    // ),
   ];
 
   Future<CurrentSubscription> getCurrentSubscription() async {
@@ -35,16 +71,7 @@ class PaymentService {
 
   Future<List<PaymentMethod>> getPaymentMethods() async {
     // TODO: Replace with actual API call
-    return [
-      PaymentMethod(
-        id: 'card_1',
-        type: 'Visa',
-        last4: '4242',
-        expiryDate: '12/24',
-        cardHolderName: 'John Doe',
-        isDefault: true,
-      ),
-    ];
+    return _paymentMethods;
   }
 
   Future<PaymentResult> processPayment({
@@ -103,16 +130,4 @@ class PaymentService {
     _paymentMethods.removeWhere((m) => m.id == methodId);
   }
 
-  Future<void> setDefaultPaymentMethod(String methodId) async {
-    for (var method in _paymentMethods) {
-      method = PaymentMethod(
-        id: method.id,
-        type: method.type,
-        last4: method.last4,
-        expiryDate: method.expiryDate,
-        cardHolderName: method.cardHolderName,
-        isDefault: method.id == methodId,
-      );
-    }
-  }
 }
