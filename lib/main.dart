@@ -1,5 +1,6 @@
 import 'package:dim/screens/HomeScreen.dart';
 import 'package:dim/screens/Profile/PaymentMethodsScreen.dart';
+import 'package:dim/screens/Profile/ProfileDetailInfoScreen.dart';
 import 'package:dim/screens/Profile/SubscriptionScreen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -41,8 +42,9 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: appTheme,
-      home: Onboarding(),
+      //home: Onboarding(),
       //home: SubscriptionScreen(),
+      home: ProfileDetailInfoScreen(),
       //home: Homescreen(),
     );
   }
