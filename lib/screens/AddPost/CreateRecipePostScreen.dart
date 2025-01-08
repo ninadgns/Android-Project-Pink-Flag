@@ -1,8 +1,10 @@
 import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'steps_input.dart';
 import 'video_uploader.dart';
@@ -30,15 +32,15 @@ class _CreateRecipePostScreenState extends State<CreateRecipePostScreen> {
       TextEditingController();
   final TextEditingController _ingredientQuantityController =
       TextEditingController();
-  final TextEditingController _cookingDescriptionController =
-      TextEditingController();
+  // final TextEditingController _cookingDescriptionController =
+  //     TextEditingController();
 
-  String? _category;
+  String? _difficulty;
   List<Map<String, dynamic>> _ingredients = [];
   List<Map<String, dynamic>> _steps = [];
-  Map<String, dynamic> _nutritionData = {};
+  Map<String, int> _nutritionData = {};
 
-  void _handleNutritionData(Map<String, dynamic> data) {
+  void _handleNutritionData(Map<String, int> data) {
     setState(() {
       _nutritionData = data;
     });
@@ -97,26 +99,27 @@ class _CreateRecipePostScreenState extends State<CreateRecipePostScreen> {
                       if (_descriptionController.text.isNotEmpty)
                         Text('Description: ${_descriptionController.text}'),
                       const SizedBox(height: 8),
-                      Text('Category: ${_category ?? 'No category selected'}'),
+                      Text(
+                          'Difficulty: ${_difficulty ?? 'No difficulty level selected'}'),
                       const SizedBox(height: 16),
                       const SizedBox(height: 16),
-                      Text('Ingredients:'),
+                      const Text('Ingredients:'),
                       if (_ingredients.isNotEmpty)
                         ..._ingredients.map((ingredient) => Text(
                             '- ${ingredient['name']} (${ingredient['quantity']})'))
                       else
                         const Text('No ingredients added.'),
                       const SizedBox(height: 16),
-                      Text('How to cook:'),
-                      if (_cookingDescriptionController.text.isNotEmpty)
-                        Text(_cookingDescriptionController.text)
-                      else
-                        const Text('No cooking instructions provided.'),
+                      const Text('How to cook:'),
+                      // if (_cookingDescriptionController.text.isNotEmpty)
+                      //   Text(_cookingDescriptionController.text)
+                      // else
+                      //   const Text('No cooking instructions provided.'),
                       const SizedBox(height: 16),
-                      Text('Steps:'),
+                      const Text('Steps:'),
                       if (_steps.isNotEmpty)
                         ..._steps.map((step) => Text(
-                            '- ${step['description']} (Timing: ${step['timing']} min)'))
+                            '- ${step['description']} (time: ${step['time']} min)'))
                       else
                         const Text('No steps added.'),
                       const SizedBox(height: 16),
@@ -162,9 +165,7 @@ class _CreateRecipePostScreenState extends State<CreateRecipePostScreen> {
   }
 
   Future<void> _createPost() async {
-    // Validate the form first
     if (_formKey.currentState!.validate()) {
-      // Check additional constraints
       if (_ingredients.isEmpty) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Please add at least one ingredient.')),
@@ -172,35 +173,74 @@ class _CreateRecipePostScreenState extends State<CreateRecipePostScreen> {
         return;
       }
 
-      if (_cookingDescriptionController.text.isEmpty) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-              content: Text('Please provide the cooking instructions.')),
-        );
-        return;
-      }
+      final supabase = Supabase.instance.client;
 
-      // If all checks pass, create the post
       final postData = {
+        'user_id': 'd942d7d5-f9b5-4dc6-a63d-7271f1e22f3a',
         'title': _titleController.text,
         'description': _descriptionController.text,
-        'category': _category,
-        'nutrition': _nutritionData,
-        'ingredients': _ingredients,
-        'steps': _steps,
+        'difficulty': _difficulty,
+        'total_duration':
+            _steps.fold(0, (sum, step) => sum + step['time'] as int),
+        'serving_count': int.tryParse(_servingCountController.text) ?? 1,
       };
+
       try {
-        // Save the post data to the database
-        // Replace this with your own logic
-        await FirebaseFirestore.instance.collection('recipes').add(postData);
+        // Insert the main recipe and get the recipe_id
+        final response = await supabase
+            .from('recipes')
+            .insert(postData)
+            .select('id')
+            .single();
+
+        final recipeId = response['id'];
+        debugPrint('Recipe created with ID: $recipeId');
+
+        // Insert nutrition data
+        final nutritionData = {
+          'recipe_id': recipeId,
+          'protein': _nutritionData['Protein'],
+          'carbs': _nutritionData['Carbs'],
+          'fat': _nutritionData['Fat'],
+        };
+
+        final nutritionResponse =
+            await supabase.from('nutrition').insert(nutritionData);
+        print(nutritionResponse);
+
+        // Insert ingredients
+        for (final ingredient in _ingredients) {
+          final ingredientResponse = await supabase.from('ingredients').insert({
+            'recipe_id': recipeId,
+            'name': ingredient['name'],
+            'quantity': ingredient['quantity'],
+            'unit': ingredient['unit'],
+          });
+
+          print(ingredientResponse);
+        }
+
+        // Insert steps with step_order
+        for (int i = 0; i < _steps.length; i++) {
+          final step = _steps[i];
+          final stepResponse = await supabase.from('steps').insert({
+            'recipe_id': recipeId,
+            'description': step['description'],
+            'time': step['time'],
+            'step_order': i + 1,
+          });
+
+          print(stepResponse);
+        }
+
+        Navigator.pop(context, postData);
+        _showPostCreatedDialog(postData);
       } catch (e) {
+        debugPrint('Exception occurred during post creation: $e');
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Failed to create post: $e')),
         );
-        return;
       }
-      Navigator.pop(context, postData);
-      _showPostCreatedDialog(postData);
     }
   }
 
@@ -208,7 +248,7 @@ class _CreateRecipePostScreenState extends State<CreateRecipePostScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color(0xFF7DA9CE),
+        backgroundColor: const Color(0xFF7DA9CE),
         title: const Text('Create Recipe Post'),
         elevation: 0,
         actions: [
@@ -233,154 +273,156 @@ class _CreateRecipePostScreenState extends State<CreateRecipePostScreen> {
             ],
           ),
         ),
-        child:Form(
-         key: _formKey,
-         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              TextFormField(
-                controller: _titleController,
-                cursorColor: Colors.black,
-                decoration: const InputDecoration(
-                  labelText: 'Recipe Title*',
-                  labelStyle: TextStyle(color: Colors.black),
-                  focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.black, width: 1),
+        child: Form(
+          key: _formKey,
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                TextFormField(
+                  controller: _titleController,
+                  cursorColor: Colors.black,
+                  decoration: const InputDecoration(
+                    labelText: 'Recipe Title*',
+                    labelStyle: TextStyle(color: Colors.black),
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.black, width: 1),
+                    ),
                   ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Title is required';
+                    }
+                    return null;
+                  },
                 ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Title is required';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 16),
-              DropdownButtonFormField<String>(
-                dropdownColor: const Color(0xFFD0DFF0),
-                decoration: const InputDecoration(
-                    labelText: 'Category*',
-                  labelStyle: TextStyle(color: Colors.black),
-                  focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.black, width: 1),
+                const SizedBox(height: 16),
+                DropdownButtonFormField<String>(
+                  dropdownColor: const Color(0xFFD0DFF0),
+                  decoration: const InputDecoration(
+                    labelText: 'Difficulty*',
+                    labelStyle: TextStyle(color: Colors.black),
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.black, width: 1),
+                    ),
                   ),
+                  value: _difficulty,
+                  onChanged: (value) => setState(() => _difficulty = value),
+                  items: ['Easy', 'Moderate', 'Cook Like a Pro']
+                      .map((level) => DropdownMenuItem(
+                            value: level,
+                            child: Text(level),
+                          ))
+                      .toList(),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Difficulty is required';
+                    }
+                    return null;
+                  },
                 ),
-                value: _category,
-                onChanged: (value) => setState(() => _category = value),
-                items: ['Easy', 'Moderate', 'Cook Like a Pro']
-                    .map((level) => DropdownMenuItem(
-                          value: level,
-                          child: Text(level),
-                        ))
-                    .toList(),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Category is required';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 16),
-              ImageUploader(onImageSelected: _handleImageSelection),
-              const SizedBox(height: 16),
-              if (_recipeImage != null)
-                const Text('Image successfully uploaded!'),
-              const SizedBox(height: 16),
-              VideoUploader(onVideoSelected: _handleVideoSelection),
-              const SizedBox(height: 16),
-              const SizedBox(height: 16),
-              TextFormField(
-                controller: _descriptionController,
-                cursorColor: Colors.black,
-                decoration: const InputDecoration(
+                const SizedBox(height: 16),
+                ImageUploader(onImageSelected: _handleImageSelection),
+                const SizedBox(height: 16),
+                if (_recipeImage != null)
+                  const Text('Image successfully uploaded!'),
+                const SizedBox(height: 16),
+                VideoUploader(onVideoSelected: _handleVideoSelection),
+                const SizedBox(height: 16),
+                const SizedBox(height: 16),
+                TextFormField(
+                  controller: _descriptionController,
+                  cursorColor: Colors.black,
+                  decoration: const InputDecoration(
                     labelText: 'Description',
-                  labelStyle: TextStyle(color: Colors.black),
-                  focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.black, width: 1),
+                    hintText: "Brief Description about the recipe",
+                    labelStyle: TextStyle(color: Colors.black),
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.black, width: 1),
+                    ),
                   ),
+                  maxLines: 3,
                 ),
-                maxLines: 3,
-              ),
-              const SizedBox(height: 16),
-              TextFormField(
-                controller: _servingCountController,
-                cursorColor: Colors.black,
-                decoration: const InputDecoration(
+                const SizedBox(height: 16),
+                TextFormField(
+                  controller: _servingCountController,
+                  cursorColor: Colors.black,
+                  decoration: const InputDecoration(
                     labelText: 'Number of Servings',
-                  labelStyle: TextStyle(color: Colors.black),
-                  focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.black, width: 1),
+                    labelStyle: TextStyle(color: Colors.black),
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.black, width: 1),
+                    ),
                   ),
+                  keyboardType: TextInputType.number,
+                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                  onChanged: (value) {
+                    if (value.isEmpty) {
+                      _servingCountController.text = '1';
+                    }
+                  },
                 ),
-                keyboardType: TextInputType.number,
-                onChanged: (value) {
-                  if (value.isEmpty) {
-                    _servingCountController.text = '1';
-                  }
-                },
-              ),
-              TextFormField(
-                controller: _ingredientsCountController,
-                cursorColor: Colors.black,
-                decoration: const InputDecoration(
-                    labelText: 'Number of Ingredients*',
-                  labelStyle: TextStyle(color: Colors.black),
-                  focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.black, width: 1),
-                  ),
-                ),
-                keyboardType: TextInputType.number,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Number of ingredients is required';
-                  }
-                  if (int.tryParse(value) == null) {
-                    return 'Enter a valid number';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 16),
-              IngredientsList(onChanged: _handleIngredients),
-              const SizedBox(height: 16),
-              NutritionInput(onChanged: _handleNutritionData),
-              const SizedBox(height: 8),
-              const SizedBox(height: 16),
-              TextFormField(
-                controller: _cookingDescriptionController,
-                cursorColor: Colors.black,
-                decoration: const InputDecoration(
-                    labelText: 'How to Cook*',
-                  labelStyle: TextStyle(color: Colors.black),
-                  focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.black, width: 1),
-                  ),
-                ),
-                maxLines: 3,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please provide how to cook';
-                  }
+                // TextFormField(
+                //   controller: _ingredientsCountController,
+                //   cursorColor: Colors.black,
+                //   decoration: const InputDecoration(
+                //     labelText: 'Number of Ingredients*',
+                //     labelStyle: TextStyle(color: Colors.black),
+                //     focusedBorder: UnderlineInputBorder(
+                //       borderSide: BorderSide(color: Colors.black, width: 1),
+                //     ),
+                //   ),
+                //   keyboardType: TextInputType.number,
+                //   validator: (value) {
+                //     if (value == null || value.isEmpty) {
+                //       return 'Number of ingredients is required';
+                //     }
+                //     if (int.tryParse(value) == null) {
+                //       return 'Enter a valid number';
+                //     }
+                //     return null;
+                //   },
+                // ),
+                const SizedBox(height: 16),
+                IngredientsList(onChanged: _handleIngredients),
+                const SizedBox(height: 16),
+                NutritionInput(onChanged: _handleNutritionData),
+                const SizedBox(height: 8),
+                // const SizedBox(height: 16),
+                // TextFormField(
+                //   controller: _cookingDescriptionController,
+                //   cursorColor: Colors.black,
+                //   decoration: const InputDecoration(
+                //     labelText: 'How to Cook*',
+                //     labelStyle: TextStyle(color: Colors.black),
+                //     focusedBorder: UnderlineInputBorder(
+                //       borderSide: BorderSide(color: Colors.black, width: 1),
+                //     ),
+                //   ),
+                //   maxLines: 3,
+                //   validator: (value) {
+                //     if (value == null || value.isEmpty) {
+                //       return 'Please provide how to cook';
+                //     }
 
-                  return null;
-                },
-              ),
-              const SizedBox(height: 16),
-              StepsInput(onChanged: _handleSteps),
-              const SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: _createPost,
-                child: const Text('Create Post'),
-                style: TextButton.styleFrom(
-                  foregroundColor: const Color(0xFF7DA9CE),
+                //     return null;
+                //   },
+                // ),
+                // const SizedBox(height: 16),
+                StepsInput(onChanged: _handleSteps),
+                const SizedBox(height: 16),
+                ElevatedButton(
+                  onPressed: _createPost,
+                  child: const Text('Create Post'),
+                  style: TextButton.styleFrom(
+                    foregroundColor: const Color(0xFF7DA9CE),
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
-      ),
       ),
     );
   }

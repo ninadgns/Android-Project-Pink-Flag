@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class NutritionInput extends StatefulWidget {
-  final Function(Map<String, dynamic>) onChanged;
+  final Function(Map<String, int>) onChanged;
 
   const NutritionInput({super.key, required this.onChanged});
 
@@ -10,17 +11,15 @@ class NutritionInput extends StatefulWidget {
 }
 
 class _NutritionInputState extends State<NutritionInput> {
-  final Map<String, dynamic> _nutritionData = {
-    'Protein': {'quantity': 0, 'unit': 'g'},
-    'Carbs': {'quantity': 0, 'unit': 'g'},
-    'Fat': {'quantity': 0, 'unit': 'g'},
+  final Map<String, int> _nutritionData = {
+    'Protein': 0,
+    'Carbs': 0,
+    'Fat': 0,
   };
 
-  final List<String> _units = ['g', 'cal'];
-
-  void _updateData(String type, String key, dynamic value) {
+  void _updateData(String type, int value) {
     setState(() {
-      _nutritionData[type]![key] = value;
+      _nutritionData[type] = value;
     });
     widget.onChanged(_nutritionData);
   }
@@ -41,35 +40,21 @@ class _NutritionInputState extends State<NutritionInput> {
               Expanded(
                 flex: 3,
                 child: TextFormField(
-                  initialValue: entry.value['quantity'].toString(),
+                  initialValue: entry.value.toString(),
                   keyboardType: TextInputType.number,
+                  inputFormatters: [
+                    FilteringTextInputFormatter.digitsOnly,
+                  ],
                   cursorColor: Colors.black,
                   decoration: const InputDecoration(
-                      labelText: 'Quantity',
+                    labelText: 'Quantity (g)',
                     labelStyle: TextStyle(color: Colors.black),
                     focusedBorder: UnderlineInputBorder(
                       borderSide: BorderSide(color: Colors.black, width: 1),
                     ),
                   ),
                   onChanged: (value) {
-                    _updateData(type, 'quantity', int.tryParse(value) ?? 0);
-                  },
-                ),
-              ),
-              const SizedBox(width: 8),
-              Expanded(
-                flex: 2,
-                child: DropdownButtonFormField<String>(
-                  dropdownColor: const Color(0xFFD0DFF0),
-                  value: entry.value['unit'],
-                  items: _units
-                      .map((unit) => DropdownMenuItem(
-                    value: unit,
-                    child: Text(unit),
-                  ))
-                      .toList(),
-                  onChanged: (value) {
-                    _updateData(type, 'unit', value!);
+                    _updateData(type, int.tryParse(value) ?? 0);
                   },
                 ),
               ),
