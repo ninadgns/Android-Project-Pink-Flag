@@ -1,3 +1,6 @@
+import 'package:dim/screens/Profile/ProfileScreen.dart';
+import 'package:dim/widgets/Recipe/MealItem.dart';
+import 'package:dim/widgets/SearchScreen/ReicipeListView.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '/screens/RecipeIntroScreen.dart';
@@ -5,6 +8,7 @@ import 'package:dim/data/constants.dart';
 import '../widgets/SearchScreen/CatFoodList.dart';
 import '../widgets/SearchScreen/HorizontalScrollingCat.dart';
 import '../widgets/SearchScreen/SearchBarHome.dart';
+import 'AddPost/CreateRecipePostScreen.dart';
 
 class SearchScreen extends StatefulWidget {
   const SearchScreen({super.key});
@@ -41,6 +45,40 @@ class _SearchScreenState extends State<SearchScreen> {
                   'What do you want\nto cook today?',
                   style: Theme.of(context).textTheme.displayMedium,
                 ),
+                Spacer(),
+                SizedBox(width: _width * 0.05),
+                Hero(
+                  tag: 'profile-hero',
+                  child: InkWell(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ProfileScreen(),
+                        ),
+                      );
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.5),
+                            spreadRadius: 1,
+                            blurRadius: 4,
+                            offset: const Offset(0, 3),
+                          ),
+                        ],
+                      ),
+                      child: CircleAvatar(
+                        radius: _width / 15, // larger size
+                        backgroundImage:
+                            const AssetImage('assets/images/profile.png'),
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(width: _width * 0.04),
               ],
             ), // Top text
             SizedBox(height: _height * 0.03),
@@ -83,8 +121,46 @@ class _SearchScreenState extends State<SearchScreen> {
             ),
             // SizedBox(height: 5),
             CatFoodList(),
+            // SizedBox(height: _height * 0.03),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                SizedBox(width: _width * 0.03),
+                Text('For you',
+                    style: Theme.of(context).textTheme.displayMedium),
+                Spacer(),
+                TextButton.icon(
+                  onPressed: () async {
+                    final result = await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const CreateRecipePostScreen(),
+                      ),
+                    );
+                  },
+                  icon: Icon(Icons.add_circle_outline_rounded,
+                      color: Colors.white),
+                  iconAlignment: IconAlignment.start,
+                  label: Text(
+                    'Add Yours',
+                    style: Theme.of(context)
+                        .textTheme
+                        .titleMedium!
+                        .copyWith(fontSize: _width / 25, color: Colors.white),
+                  ),
+                  style: TextButton.styleFrom(
+                    backgroundColor: Colors.black,
+                  ),
+                ),
+                SizedBox(width: _width * 0.03),
+              ],
+            ),
+            SizedBox(height: _height * 0.01),
+            RecipeListView(),
+            SizedBox(height: _height * 0.03),
             Container(
-              height: _height * 0.3,
+              height: _height * 0.2,
               color: Color(0xfffaf6f2),
             ),
           ],
