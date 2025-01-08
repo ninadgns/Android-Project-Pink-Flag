@@ -235,28 +235,37 @@ class _CreateRecipePostScreenState extends State<CreateRecipePostScreen> {
         debugPrint(nutritionResponse);
 
         // Insert ingredients
-        for (final ingredient in _ingredients) {
-          final ingredientResponse = await supabase.from('ingredients').insert({
+        final List<Map<String, dynamic>> ingredientBatch =
+            _ingredients.map((ingredient) {
+          return {
             'recipe_id': recipeId,
             'name': ingredient['name'],
             'quantity': ingredient['quantity'],
             'unit': ingredient['unit'],
-          });
+          };
+        }).toList();
 
-          debugPrint(ingredientResponse);
+        if (ingredientBatch.isNotEmpty) {
+          final ingredientsResponse =
+              await supabase.from('ingredients').insert(ingredientBatch);
+          debugPrint(ingredientsResponse);
         }
 
-        // Insert steps with step_order
-        for (int i = 0; i < _steps.length; i++) {
-          final step = _steps[i];
-          final stepResponse = await supabase.from('steps').insert({
+        // Batch insert steps
+        final List<Map<String, dynamic>> stepsBatch =
+            _steps.asMap().entries.map((entry) {
+          final step = entry.value;
+          return {
             'recipe_id': recipeId,
             'description': step['description'],
             'time': step['time'],
-            'step_order': i + 1,
-          });
+            'step_order': entry.key + 1,
+          };
+        }).toList();
 
-          debugPrint(stepResponse);
+        if (stepsBatch.isNotEmpty) {
+          final stepResopnse = await supabase.from('steps').insert(stepsBatch);
+          debugPrint(stepResopnse);
         }
 
         Navigator.pop(context, postData);
