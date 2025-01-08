@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'NotificationsScreen.dart';
 import 'package:dim/widgets/ProfileScreen/MenuItemTile.dart';
@@ -242,6 +243,12 @@ class _ProfileScreenState extends State<ProfileScreen>
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
+                    IconButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      icon: Icon(Icons.arrow_back_ios),
+                    ),
                     const Text(
                       'Profile',
                       style: TextStyle(
@@ -273,15 +280,15 @@ class _ProfileScreenState extends State<ProfileScreen>
                       child: Column(
                         children: [
                           CircleAvatar(
-                            radius: 50, // larger size
+                            radius: height*0.08, // larger size
                             backgroundImage:
                                 const AssetImage('assets/images/profile.png'),
                           ),
                           const SizedBox(height: 16),
-                          const Text(
+                          Text(
                             'Sofia',
                             style: TextStyle(
-                              fontSize: 20,
+                              fontSize: height*0.025,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
@@ -292,7 +299,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                               'My Profile',
                               style: TextStyle(
                                 color: Colors.grey[600],
-                                fontSize: 16,
+                                fontSize: height*0.018,
                                 decoration: TextDecoration
                                     .underline, // indicate it's clickable
                               ),
@@ -367,7 +374,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                             );
                           },
                         ),
-                        SizedBox(height: height/7),
+                        SizedBox(height: height / 7),
                       ],
                     ),
                   ),

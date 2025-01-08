@@ -1,16 +1,18 @@
-import 'dart:typed_data';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 class ImageUploader extends StatefulWidget {
-  const ImageUploader({super.key, required void Function(Uint8List? imageBytes) onImageSelected});
+  final void Function(File? imageFile) onImageSelected;
+
+  const ImageUploader({super.key, required this.onImageSelected});
 
   @override
   State<ImageUploader> createState() => _ImageUploaderState();
 }
 
 class _ImageUploaderState extends State<ImageUploader> {
-  Uint8List? _selectedImageBytes;
+  File? _selectedImageFile;
 
   Future<void> _pickImage() async {
     final ImagePicker picker = ImagePicker();
@@ -20,10 +22,13 @@ class _ImageUploaderState extends State<ImageUploader> {
     );
 
     if (pickedImage != null) {
-      final imageBytes = await pickedImage.readAsBytes();
+      final imageFile = File(pickedImage.path);
       setState(() {
-        _selectedImageBytes = imageBytes;
+        _selectedImageFile = imageFile;
       });
+
+      // Pass the selected file to the parent widget or handle it
+      widget.onImageSelected(imageFile);
     }
   }
 
@@ -38,7 +43,7 @@ class _ImageUploaderState extends State<ImageUploader> {
           border: Border.all(color: Colors.grey),
           borderRadius: BorderRadius.circular(8),
         ),
-        child: _selectedImageBytes == null
+        child: _selectedImageFile == null
             ? const Center(
           child: Text(
             'Tap to upload a photo',
@@ -49,9 +54,8 @@ class _ImageUploaderState extends State<ImageUploader> {
           children: [
             ClipRRect(
               borderRadius: BorderRadius.circular(8),
-              child: Image.memory(
-                _selectedImageBytes!,
-                //fit: BoxFit.cover,
+                    child: Image.file(
+                      _selectedImageFile!,
                 width: double.infinity,
                 height: double.infinity,
               ),
@@ -62,7 +66,7 @@ class _ImageUploaderState extends State<ImageUploader> {
               child: GestureDetector(
                 onTap: () {
                   setState(() {
-                    _selectedImageBytes = null;
+                          _selectedImageFile = null;
                   });
                 },
                 child: Container(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class StepsInput extends StatefulWidget {
   final Function(List<Map<String, dynamic>>) onChanged;
@@ -12,20 +13,29 @@ class StepsInput extends StatefulWidget {
 class _StepsInputState extends State<StepsInput> {
   final List<Map<String, dynamic>> _steps = [];
 
-  void _addStep(String description, String timing) {
+  void _addStep(String description, String time) {
+    if (description.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Description cannot be empty')),
+      );
+      return;
+    }
+
     setState(() {
       _steps.add({
         'description': description,
-        'timing': timing.isEmpty ? '5' : timing,
+        'time': time.isEmpty ? 5 : int.tryParse(time) ?? 5,
+        'step_order': _steps.length + 1, // Assign order based on list length
       });
     });
+
     widget.onChanged(_steps);
   }
 
   void _showStepInputDialog() {
     final TextEditingController stepDescriptionController =
-    TextEditingController();
-    final TextEditingController stepTimingController = TextEditingController();
+        TextEditingController();
+    final TextEditingController stepTimeController = TextEditingController();
 
     showDialog(
       context: context,
@@ -38,7 +48,7 @@ class _StepsInputState extends State<StepsInput> {
               controller: stepDescriptionController,
               cursorColor: Colors.black,
               decoration: const InputDecoration(
-                  labelText: 'Step Description',
+                labelText: 'Description',
                 labelStyle: TextStyle(color: Colors.black),
                 focusedBorder: UnderlineInputBorder(
                   borderSide: BorderSide(color: Colors.black, width: 1),
@@ -47,11 +57,15 @@ class _StepsInputState extends State<StepsInput> {
             ),
             const SizedBox(height: 8),
             TextField(
-              controller: stepTimingController,
+              controller: stepTimeController,
               keyboardType: TextInputType.number,
+              inputFormatters: [
+                FilteringTextInputFormatter.digitsOnly,
+              ],
               cursorColor: Colors.black,
               decoration: const InputDecoration(
-                labelText: 'Step Timing (min, default 5)',
+                labelText: 'Required time (minutes)',
+                hintText: 'Leave empty for default (5 min)',
                 labelStyle: TextStyle(color: Colors.black),
                 focusedBorder: UnderlineInputBorder(
                   borderSide: BorderSide(color: Colors.black, width: 1),
@@ -64,17 +78,24 @@ class _StepsInputState extends State<StepsInput> {
           TextButton(
             onPressed: () => Navigator.pop(context),
             child: const Text('Cancel'),
+            style: TextButton.styleFrom(
+              foregroundColor: Colors.black,
+            ),
           ),
           ElevatedButton(
             onPressed: () {
               _addStep(
                 stepDescriptionController.text,
-                stepTimingController.text,
+                stepTimeController.text,
               );
+              stepDescriptionController.clear();
+              stepTimeController.clear();
               Navigator.pop(context);
             },
-
             child: const Text('Add Step'),
+            style: ElevatedButton.styleFrom(
+              foregroundColor: Colors.black,
+            ),
           ),
         ],
       ),
@@ -86,21 +107,42 @@ class _StepsInputState extends State<StepsInput> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text('Steps', style: TextStyle(fontWeight: FontWeight.bold)),
+        const Text('Cooking Steps',
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
         const SizedBox(height: 8),
         ..._steps.map((step) => ListTile(
-          title: Text(step['description']),
-          subtitle: Text('Timing: ${step['timing']} min'),
-        )),
+              leading: CircleAvatar(
+                child: Text(step['step_order'].toString()), // Show step order
+              ),
+              title: Text(step['description']),
+              subtitle: Text('time: ${step['time']} min'),
+              trailing: IconButton(
+                icon: const Icon(Icons.delete, color: Colors.red),
+                onPressed: () {
+                  setState(() {
+                    _steps.remove(step);
+                    _reorderSteps(); // Recalculate step orders after deletion
+                  });
+                  widget.onChanged(_steps);
+                },
+              ),
+            )),
         TextButton.icon(
           onPressed: _showStepInputDialog,
           icon: const Icon(Icons.add),
           label: const Text('Add Step'),
           style: TextButton.styleFrom(
-            foregroundColor: Colors.black45,
+            foregroundColor: const Color.fromARGB(255, 0, 0, 0),
           ),
         ),
       ],
     );
+  }
+
+  // Reorder steps when one is removed
+  void _reorderSteps() {
+    for (int i = 0; i < _steps.length; i++) {
+      _steps[i]['step_order'] = i + 1;
+    }
   }
 }
