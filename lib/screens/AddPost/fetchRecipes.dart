@@ -14,6 +14,7 @@ Future<List<Map<String, dynamic>>> fetchRecipes() async {
           total_duration,
           serving_count,
           created_at,
+          image_url,
           nutrition(protein, carbs, fat),
           ingredients(name, quantity, unit),
           steps(description, time, step_order)

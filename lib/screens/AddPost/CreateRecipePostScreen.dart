@@ -12,6 +12,7 @@ import 'package:video_player/video_player.dart';
 import 'image_uploader.dart';
 import 'nutrition_input.dart';
 import 'ingredients_list.dart';
+import 'package:uuid/uuid.dart';
 
 class CreateRecipePostScreen extends StatefulWidget {
   const CreateRecipePostScreen({super.key});
@@ -35,6 +36,8 @@ class _CreateRecipePostScreenState extends State<CreateRecipePostScreen> {
   // final TextEditingController _cookingDescriptionController =
   //     TextEditingController();
 
+  final supabase = Supabase.instance.client;
+
   String? _difficulty;
   List<Map<String, dynamic>> _ingredients = [];
   List<Map<String, dynamic>> _steps = [];
@@ -46,14 +49,14 @@ class _CreateRecipePostScreenState extends State<CreateRecipePostScreen> {
     });
   }
 
-  Uint8List? _recipeImage; // Use Uint8List instead of File
+  File? _recipeImage; // Use Uint8List instead of File
   final ImagePicker _picker = ImagePicker();
   XFile? _recipeVideo; // For video upload
   VideoPlayerController? _videoController;
 
-  void _handleImageSelection(Uint8List? imageBytes) {
+  void _handleImageSelection(File? imageFile) {
     setState(() {
-      _recipeImage = imageBytes;
+      _recipeImage = imageFile;
     });
   }
 
@@ -164,6 +167,28 @@ class _CreateRecipePostScreenState extends State<CreateRecipePostScreen> {
     );
   }
 
+  Future<String?> _uploadImageToSupabase(File image) async {
+    try {
+      final uuid = const Uuid().v4(); // Unique image name
+      final imagePath = 'images/$uuid.png';
+
+      // Upload image to Supabase storage bucket
+      final response =
+          await supabase.storage.from('recipe').upload(imagePath, image);
+
+      debugPrint('Response: $response');
+
+      // Get public URL of the uploaded image
+      final imageUrl = supabase.storage.from('recipe').getPublicUrl(imagePath);
+
+      debugPrint('Image uploaded: $imageUrl');
+      return imageUrl;
+    } catch (e) {
+      debugPrint('Failed to upload image: $e');
+      return null;
+    }
+  }
+
   Future<void> _createPost() async {
     if (_formKey.currentState!.validate()) {
       if (_ingredients.isEmpty) {
@@ -173,7 +198,7 @@ class _CreateRecipePostScreenState extends State<CreateRecipePostScreen> {
         return;
       }
 
-      final supabase = Supabase.instance.client;
+      final imageUrl = await _uploadImageToSupabase(_recipeImage!);
 
       final postData = {
         'user_id': 'd942d7d5-f9b5-4dc6-a63d-7271f1e22f3a',
@@ -183,6 +208,7 @@ class _CreateRecipePostScreenState extends State<CreateRecipePostScreen> {
         'total_duration':
             _steps.fold(0, (sum, step) => sum + step['time'] as int),
         'serving_count': int.tryParse(_servingCountController.text) ?? 1,
+        'image_url': imageUrl,
       };
 
       try {
@@ -206,7 +232,7 @@ class _CreateRecipePostScreenState extends State<CreateRecipePostScreen> {
 
         final nutritionResponse =
             await supabase.from('nutrition').insert(nutritionData);
-        print(nutritionResponse);
+        debugPrint(nutritionResponse);
 
         // Insert ingredients
         for (final ingredient in _ingredients) {
@@ -217,7 +243,7 @@ class _CreateRecipePostScreenState extends State<CreateRecipePostScreen> {
             'unit': ingredient['unit'],
           });
 
-          print(ingredientResponse);
+          debugPrint(ingredientResponse);
         }
 
         // Insert steps with step_order
@@ -230,7 +256,7 @@ class _CreateRecipePostScreenState extends State<CreateRecipePostScreen> {
             'step_order': i + 1,
           });
 
-          print(stepResponse);
+          debugPrint(stepResponse);
         }
 
         Navigator.pop(context, postData);
@@ -414,10 +440,10 @@ class _CreateRecipePostScreenState extends State<CreateRecipePostScreen> {
                 const SizedBox(height: 16),
                 ElevatedButton(
                   onPressed: _createPost,
-                  child: const Text('Create Post'),
                   style: TextButton.styleFrom(
                     foregroundColor: const Color(0xFF7DA9CE),
                   ),
+                  child: const Text('Create Post'),
                 ),
               ],
             ),
