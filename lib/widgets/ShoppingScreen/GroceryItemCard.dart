@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../../models/GroceryModel.dart';
 import '../../services/GroceryService.dart';
 import 'package:dim/data/constants.dart';
@@ -45,11 +46,12 @@ class GroceryItemCard extends StatelessWidget {
         return AlertDialog(
           backgroundColor: categoryColors[category],
           title: Text('${addOrEdit == 'EDIT' ? 'Edit' : 'Add'} $category Item'),
-          content: SingleChildScrollView(
+          content: Form(
+            key: GlobalKey<FormState>(),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                TextField(
+                TextFormField(
                   maxLines: 1,
                   cursorColor: Colors.black,
                   controller: TextEditingController(text: itemName),
@@ -64,15 +66,21 @@ class GroceryItemCard extends StatelessWidget {
                       borderSide: const BorderSide(color: Colors.black, width: 1),
                     ),
                   ),
-                  onChanged: (value) => itemName = value,
-                  textCapitalization: TextCapitalization.sentences,
+                  onChanged: (value) {
+                    if (RegExp(r"[a-zA-Z0-9\s\.\-\']").hasMatch(value)) {
+                      itemName = value;
+                    }
+                  },
+                  inputFormatters: [
+                    FilteringTextInputFormatter.allow(RegExp(r"[a-zA-Z0-9\s\.\-\']")),
+                  ],
                 ),
                 const SizedBox(height: 16),
                 Row(
                   children: [
                     Expanded(
                       flex: 2,
-                      child: TextField(
+                      child: TextFormField(
                         maxLines: 1,
                         cursorColor: Colors.black,
                         controller: TextEditingController(text: quantity.toString()),
@@ -87,8 +95,14 @@ class GroceryItemCard extends StatelessWidget {
                             borderSide: const BorderSide(color: Colors.black, width: 1),
                           ),
                         ),
-                        keyboardType: TextInputType.number,
-                        onChanged: (value) => quantity = double.tryParse(value) ?? quantity,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*$')),
+                        ],
+                        onChanged: (value) {
+                          if (RegExp(r"[a-zA-Z0-9\s\.\-\']").hasMatch(value)) {
+                            quantity = double.tryParse(value) ?? quantity;
+                          }
+                        }
                       ),
                     ),
                     const SizedBox(width: 8),

@@ -1,21 +1,39 @@
 import 'package:flutter/material.dart';
 import 'package:dim/models/PaymentModels.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 
 
 class PaymentMethodCard extends StatelessWidget {
   final PaymentMethod paymentMethod;
-  final VoidCallback onEdit;
+  bool isSelected;
+  final VoidCallback onSelect;
   final VoidCallback onDelete;
-  final VoidCallback onSetDefault;
 
-  const PaymentMethodCard({
+  PaymentMethodCard({
     Key? key,
     required this.paymentMethod,
-    required this.onEdit,
+    required this.isSelected,
+    required this.onSelect,
     required this.onDelete,
-    required this.onSetDefault,
   }) : super(key: key);
+
+
+  IconData _getCardIcon(String cardBrand) {
+    switch (cardBrand.toLowerCase()) {
+      case 'visa':
+        return FontAwesomeIcons.ccVisa;
+      case 'master':
+        return FontAwesomeIcons.ccMastercard;
+      case 'jcb':
+        return FontAwesomeIcons.ccJcb;
+      case 'paypal':
+        return FontAwesomeIcons.ccPaypal;
+      default:
+        return FontAwesomeIcons.creditCard;
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -47,10 +65,8 @@ class PaymentMethodCard extends StatelessWidget {
               borderRadius: BorderRadius.circular(8),
             ),
             child: Icon(
-              paymentMethod.type.toLowerCase() == 'visa'
-                  ? Icons.credit_card
-                  : Icons.credit_card,
-              color: const Color(0xFFFFA1A0),
+              _getCardIcon(paymentMethod.cardType),
+              color: Colors.blue.shade300,
             ),
           ),
           const SizedBox(width: 12),
@@ -61,33 +77,12 @@ class PaymentMethodCard extends StatelessWidget {
                 Row(
                   children: [
                     Text(
-                      '${paymentMethod.type} ending in ${paymentMethod.last4}',
+                      '${paymentMethod.cardType.toUpperCase()} Card',
                       style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
-                    if (paymentMethod.isDefault) ...[
-                      const SizedBox(width: 8),
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 8,
-                          vertical: 2,
-                        ),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFF80CBC4).withOpacity(0.1),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: const Text(
-                          'Default',
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: Color(0xFFFFA1A0),
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ),
-                    ],
                   ],
                 ),
                 const SizedBox(height: 4),
@@ -113,7 +108,11 @@ class PaymentMethodCard extends StatelessWidget {
               ],
             ),
           ),
-
+          Checkbox(
+            value: isSelected,
+            onChanged: (_) => onSelect(),
+            activeColor: Colors.blue.shade300,
+          ),
         ],
       ),
     );
