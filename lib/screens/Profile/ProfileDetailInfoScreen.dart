@@ -5,6 +5,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:share_plus/share_plus.dart';
 import 'dart:typed_data';
 import 'package:dim/models/ProfileInfoModel.dart';
+import 'package:intl/intl.dart';
+
 
 
 class ProfileDetailInfoScreen extends StatefulWidget {
@@ -24,7 +26,7 @@ class _ProfileDetailInfoScreenState extends State<ProfileDetailInfoScreen>
   static Uint8List? profileImageBytes;
 
   ProfileInfoModel profileinfo= ProfileInfoModel(id: '1', userName: 'Sofia', fullName: 'Sofia Anderson',
-      email: 'sofia@example.com', phoneNumber: '+1 234 567 8900',
+      email: 'sofia@example.com', phoneNumber: '+1 234 567 8900', dateofBirth: DateTime(2000, 5, 15),
       bio: 'Food lover, cook, and traveler.', city: 'New York',
       workplace: 'Culinary Institute of America', profileImagePath: 'assets/images/profile.png',
       profileImageBytes: profileImageBytes,
@@ -499,6 +501,17 @@ class _ProfileDetailInfoScreenState extends State<ProfileDetailInfoScreen>
                           value: profileinfo.phoneNumber,
                           onEdit: () => _editField('Phone Number', profileinfo.phoneNumber, false, (newVal) {
                             setState(() => profileinfo.phoneNumber = newVal);
+                          }),
+                        ),
+                        _buildEditableField(
+                          label: 'Date of Birth',
+                          value: profileinfo.dateofBirth != null
+                              ? DateFormat('yyyy-MM-dd').format(profileinfo.dateofBirth!) : '',
+                          onEdit: () => _editField('Date of Birth',
+                                 profileinfo.dateofBirth != null
+                                  ? DateFormat('yyyy-MM-dd').format(profileinfo.dateofBirth!) : '',
+                                 false, (newVal) {
+                            setState(() => profileinfo.dateofBirth = DateTime.parse(newVal));
                           }),
                         ),
                         _buildEditableField(
