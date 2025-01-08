@@ -148,7 +148,14 @@ class _OnboardingState extends State<signup1> {
                               borderRadius: BorderRadius.circular(30.0),
                             ),
                           ),
-                          child: const Text("Sign Up"),
+                          child: const Text(
+                              "Sign Up",
+                            style: TextStyle(
+                              //fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          ),
                         ),
                       ),
                       SizedBox(height: screenHeight / 40),

@@ -89,6 +89,7 @@ class _IngredientsListState extends State<IngredientsList> {
             Expanded(
               flex: 2,
               child: DropdownButtonFormField<String>(
+                dropdownColor: const Color(0xFFD0DFF0),
                 value: _selectedUnit,
                 items: _units.map((unit) {
                   return DropdownMenuItem(

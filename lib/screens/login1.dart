@@ -131,7 +131,14 @@ class _OnboardingState extends State<login1> {
                               borderRadius: BorderRadius.circular(30.0),
                             ),
                           ),
-                          child: const Text("Log in"),
+                          child: const Text(
+                              "Log in",
+                            style: TextStyle(
+                              //fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          ),
                         ),
                       ),
                       SizedBox(height: screenHeight / 40),
