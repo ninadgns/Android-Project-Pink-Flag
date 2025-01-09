@@ -278,7 +278,14 @@ class _OnboardingState extends State<Onboarding> {
                     borderRadius: BorderRadius.circular(30.0),
                   ),
                 ),
-                child: const Text("Get Started"),
+                child: const Text(
+                    "Get Started",
+                  style: TextStyle(
+                    //fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
               ),
             ),
           ],

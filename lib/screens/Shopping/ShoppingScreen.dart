@@ -110,7 +110,7 @@ class _ShoppingScreenState extends State<ShoppingScreen> with SingleTickerProvid
     return  Scaffold(
       backgroundColor: Colors.grey[100],
       appBar:AppBar(
-        backgroundColor: Colors.teal,
+        backgroundColor: Colors.teal.shade300,
         elevation: 0,
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

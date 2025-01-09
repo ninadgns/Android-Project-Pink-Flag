@@ -5,6 +5,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:share_plus/share_plus.dart';
 import 'dart:typed_data';
 import 'package:dim/models/ProfileInfoModel.dart';
+import 'package:intl/intl.dart';
+
 
 
 class ProfileDetailInfoScreen extends StatefulWidget {
@@ -24,7 +26,7 @@ class _ProfileDetailInfoScreenState extends State<ProfileDetailInfoScreen>
   static Uint8List? profileImageBytes;
 
   ProfileInfoModel profileinfo= ProfileInfoModel(id: '1', userName: 'Sofia', fullName: 'Sofia Anderson',
-      email: 'sofia@example.com', phoneNumber: '+1 234 567 8900',
+      email: 'sofia@example.com', phoneNumber: '+1 234 567 8900', dateofBirth: DateTime(2000, 5, 15),
       bio: 'Food lover, cook, and traveler.', city: 'New York',
       workplace: 'Culinary Institute of America', profileImagePath: 'assets/images/profile.png',
       profileImageBytes: profileImageBytes,
@@ -116,15 +118,16 @@ class _ProfileDetailInfoScreenState extends State<ProfileDetailInfoScreen>
                   ),
                 ),
               ),
+              const SizedBox(height: 8),
               TextField(
                 cursorColor: Colors.black,
                 controller: handleController,
                 decoration: const InputDecoration(
                   labelText: 'Handle (e.g. @username)',
-                  labelStyle: const TextStyle(color: Colors.black),
+                  labelStyle: TextStyle(color: Colors.black),
                   border: OutlineInputBorder(),
                   focusedBorder: OutlineInputBorder(
-                     borderSide: const BorderSide(color: Colors.black, width: 1),
+                     borderSide: BorderSide(color: Colors.black, width: 1),
                   ),
                 ),
               ),
@@ -477,7 +480,15 @@ class _ProfileDetailInfoScreenState extends State<ProfileDetailInfoScreen>
                           label: 'Full Name',
                           value: profileinfo.fullName,
                           onEdit: () => _editField('Full Name', profileinfo.fullName, false, (newVal) {
-                            setState(() => profileinfo.fullName = newVal);
+                            final nameRegExp = RegExp(r"^[a-zA-Zà-úÀ-Ú\s'-]{2,40}$");
+                            if (nameRegExp.hasMatch(newVal)) {
+                              setState(() => profileinfo.fullName = newVal);
+                            } else {
+                              // Handle invalid input
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(content: Text('Invalid name. Use only letters, spaces, hyphens, or apostrophes.'))
+                              );
+                            }
                           }),
                         ),
                         _buildEditableField(
@@ -491,14 +502,39 @@ class _ProfileDetailInfoScreenState extends State<ProfileDetailInfoScreen>
                           label: 'Email',
                           value: profileinfo.email,
                           onEdit: () => _editField('Email', profileinfo.email, false, (newVal) {
-                            setState(() => profileinfo.email = newVal);
+                            final emailRegExp = RegExp(r'^[\w-.]+@[\w-]+\.(com|org|net|edu|gov)$');
+                            if (emailRegExp.hasMatch(newVal)) {
+                              setState(() => profileinfo.email = newVal);
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(content: Text('Invalid email address. Use a valid format (e.g., user@example.com).'))
+                              );
+                            }
                           }),
                         ),
                         _buildEditableField(
                           label: 'Phone Number',
                           value: profileinfo.phoneNumber,
                           onEdit: () => _editField('Phone Number', profileinfo.phoneNumber, false, (newVal) {
-                            setState(() => profileinfo.phoneNumber = newVal);
+                            final phoneRegExp = RegExp(r'^\+?\d{10,15}$');
+                            if (phoneRegExp.hasMatch(newVal)) {
+                              setState(() => profileinfo.phoneNumber = newVal);
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(content: Text('Invalid phone number. Use digits with optional +.'))
+                              );
+                            }
+                          }),
+                        ),
+                        _buildEditableField(
+                          label: 'Date of Birth',
+                          value: profileinfo.dateofBirth != null
+                              ? DateFormat('yyyy-MM-dd').format(profileinfo.dateofBirth!) : '',
+                          onEdit: () => _editField('Date of Birth',
+                                 profileinfo.dateofBirth != null
+                                  ? DateFormat('yyyy-MM-dd').format(profileinfo.dateofBirth!) : '',
+                                 false, (newVal) {
+                            setState(() => profileinfo.dateofBirth = DateTime.parse(newVal));
                           }),
                         ),
                         _buildEditableField(
@@ -540,8 +576,8 @@ class _ProfileDetailInfoScreenState extends State<ProfileDetailInfoScreen>
                                 );
                               },
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: Color(0xFF00ACC1),
-                                minimumSize: Size(double.infinity, 50),
+                                backgroundColor: const Color(0xFF00ACC1),
+                                minimumSize: const Size(double.infinity, 50),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10),
                                 ),

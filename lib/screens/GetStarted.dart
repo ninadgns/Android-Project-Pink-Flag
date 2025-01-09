@@ -106,7 +106,14 @@ class _OnboardingState extends State<Getstarted> {
                           borderRadius: BorderRadius.circular(30.0),
                         ),
                       ),
-                      child: const Text("SignUp"),
+                      child: const Text(
+                          "SignUp",
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
 
 
                     ),
@@ -131,7 +138,14 @@ class _OnboardingState extends State<Getstarted> {
                           borderRadius: BorderRadius.circular(30.0),
                         ),
                       ),
-                      child: const Text("Login"),
+                      child: const Text(
+                          "Login",
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
                     ),
                     SizedBox(height: screenHeight / 40), // Vertical space between buttons
 
@@ -151,7 +165,14 @@ class _OnboardingState extends State<Getstarted> {
                           borderRadius: BorderRadius.circular(30.0),
                         ),
                       ),
-                      child: const Text("Guest"),
+                      child: const Text(
+                          "Guest",
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
                     ),
                   ],
                 ),

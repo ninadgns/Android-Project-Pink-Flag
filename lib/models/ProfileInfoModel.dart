@@ -1,4 +1,5 @@
 import 'dart:typed_data';
+import 'package:intl/intl.dart';
 
 class SocialMediaHandle {
   String platform;
@@ -30,6 +31,7 @@ class ProfileInfoModel {
   String fullName;
   String email;
   String phoneNumber;
+  DateTime? dateofBirth;
   String bio;
   String city;
   String workplace;
@@ -46,6 +48,7 @@ class ProfileInfoModel {
     required this.fullName,
     required this.email,
     required this.phoneNumber,
+    required this.dateofBirth,
     required this.bio,
     required this.city,
     required this.workplace,
@@ -61,19 +64,20 @@ class ProfileInfoModel {
   Map<String, dynamic> toMap() {
     return {
       'id': id,
-      'userName': userName,
-      'fullName': fullName,
+      'user_name': userName,
+      'full_name': fullName,
       'email': email,
-      'phoneNumber': phoneNumber,
+      'phone_number': phoneNumber,
+      'date_of_birth': dateofBirth != null ? DateFormat('yyyy-MM-dd').format(dateofBirth!) : null,
       'bio': bio,
       'city': city,
-      'workplace': workplace,
-      'profileImagePath': profileImagePath,
-      'profileImageBytes': profileImageBytes,
-      'followerCount': followerCount,
-      'followingCount': followingCount,
-      'recipesCount': recipesCount,
-      'socialMediaHandles': socialMediaHandles.map((x) => x.toJSON()).toList(),
+      'work_place': workplace,
+      'profile_Image_Path': profileImagePath,
+      'profile_Image_Bytes': profileImageBytes,
+      'follower_Count': followerCount,
+      'following_Count': followingCount,
+      'recipes_Count': recipesCount,
+      'social_Media_Handles': socialMediaHandles.map((x) => x.toJSON()).toList(),
     };
   }
 
@@ -81,20 +85,21 @@ class ProfileInfoModel {
   factory ProfileInfoModel.fromMap(Map<String, dynamic> map) {
     return ProfileInfoModel(
       id: map['id'] ?? '',
-      userName: map['userName'] ?? '',
-      fullName: map['fullName'] ?? '',
+      userName: map['user_name'] ?? '',
+      fullName: map['full_name'] ?? '',
       email: map['email'] ?? '',
-      phoneNumber: map['phoneNumber'] ?? '',
+      phoneNumber: map['phone_number'] ?? '',
+      dateofBirth: map['date_of_birth'],
       bio: map['bio'] ?? '',
       city: map['city'] ?? '',
-      workplace: map['workplace'] ?? '',
-      profileImagePath: map['profileImagePath'] ?? '',
-      profileImageBytes: map['profileImageBytes'],
-      followerCount: map['followerCount']?.toInt() ?? 0,
-      followingCount: map['followingCount']?.toInt() ?? 0,
-      recipesCount: map['recipesCount']?.toInt() ?? 0,
+      workplace: map['work_place'] ?? '',
+      profileImagePath: map['profile_Image_Path'] ?? '',
+      profileImageBytes: map['profile_Image_Bytes'],
+      followerCount: map['follower_Count']?.toInt() ?? 0,
+      followingCount: map['following_Count']?.toInt() ?? 0,
+      recipesCount: map['recipes_Count']?.toInt() ?? 0,
       socialMediaHandles: List<SocialMediaHandle>.from(
-        (map['socialMediaHandles'] ?? []).map(
+        (map['social_Media_Handles'] ?? []).map(
               (x) => SocialMediaHandle.fromJSON(x),
         ),
       ),
@@ -108,6 +113,7 @@ class ProfileInfoModel {
       fullName: '',
       email: '',
       phoneNumber: '',
+      dateofBirth: null,
       bio: '',
       city: '',
       workplace: '',
