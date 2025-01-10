@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '/data/constants.dart';
 import '/widgets/FilterScreen/WarpedList.dart';
-import 'package:syncfusion_flutter_sliders/sliders.dart';
 
 import '../widgets/FilterScreen/CookTimeSlider.dart';
 import '../widgets/FilterScreen/FindFromHome.dart';

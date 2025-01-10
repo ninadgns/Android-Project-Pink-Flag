@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 import 'package:chewie/chewie.dart';
 
-import 'VideoPlayerScreen/VideoDownBar.dart';
 
 class VideoPlayerWindow extends StatefulWidget {
   @override

@@ -1,10 +1,7 @@
 import 'package:dim/screens/Profile/ProfileScreen.dart';
-import 'package:dim/widgets/Recipe/MealItem.dart';
 import 'package:dim/widgets/SearchScreen/ReicipeListView.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import '/screens/RecipeIntroScreen.dart';
-import 'package:dim/data/constants.dart';
+
 import '../widgets/SearchScreen/CatFoodList.dart';
 import '../widgets/SearchScreen/HorizontalScrollingCat.dart';
 import '../widgets/SearchScreen/SearchBarHome.dart';

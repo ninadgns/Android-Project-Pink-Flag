@@ -1,12 +1,11 @@
-import 'dart:math';
+// ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
-import 'login1.dart';
-import 'package:liquid_swipe/liquid_swipe.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import 'LogIn.dart';
+import 'SignUp.dart';
 import 'curve.dart'; // Ensure this file contains BigClipper
-import 'signup1.dart';
 
 class Getstarted extends StatefulWidget {
   const Getstarted({Key? key}) : super(key: key);
@@ -16,7 +15,6 @@ class Getstarted extends StatefulWidget {
 }
 
 class _OnboardingState extends State<Getstarted> {
-
   @override
   Widget build(BuildContext context) {
     // Obtain screen dimensions inside build
@@ -36,7 +34,6 @@ class _OnboardingState extends State<Getstarted> {
               clipper: BigClipper2(),
               child: Container(
                 color: const Color(0xFFCBEAE5), // Background color
-
               ),
             ),
 
@@ -51,14 +48,15 @@ class _OnboardingState extends State<Getstarted> {
             Center(
               child: Container(
                 alignment: Alignment(0.0, 0.5),
-                 // Full screen height
+                // Full screen height
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Align(
-                      alignment:Alignment(0.0, 0.0),
+                      alignment: Alignment(0.0, 0.0),
                       child: Padding(
-                        padding: const EdgeInsets.only(left: 20.0), // Add left padding
+                        padding: const EdgeInsets.only(
+                            left: 20.0), // Add left padding
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -83,63 +81,69 @@ class _OnboardingState extends State<Getstarted> {
                       ),
                     ),
 
-
                     SizedBox(height: screenHeight / 20),
 
                     // First Button
                     ElevatedButton(
-
                       onPressed: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => signup1()), // Navigate to signup1 screen
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  SignUp()), // Navigate to SignUp screen
                         );
                       },
                       style: ElevatedButton.styleFrom(
                         padding: EdgeInsets.symmetric(
-                          horizontal: screenWidth / 15, // 1/15th of screen width
+                          horizontal:
+                              screenWidth / 15, // 1/15th of screen width
                           vertical: 20,
                         ),
-                        backgroundColor:  const Color(0xFF7AACA5), // Button color
+                        backgroundColor:
+                            const Color(0xFF7AACA5), // Button color
                         textStyle: const TextStyle(fontSize: 18),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(30.0),
                         ),
                       ),
                       child: const Text(
-                          "SignUp",
+                        "SignUp",
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
                           color: Colors.white,
                         ),
                       ),
-
-
                     ),
-                    SizedBox(height: screenHeight / 40), // Vertical space between buttons
+                    SizedBox(
+                        height: screenHeight /
+                            40), // Vertical space between buttons
 
                     // Second Button
                     ElevatedButton(
                       onPressed: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => login1()), // Navigate to signup1 screen
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  LogIn()), // Navigate to SignUp screen
                         );
                       },
                       style: ElevatedButton.styleFrom(
                         padding: EdgeInsets.symmetric(
-                          horizontal: screenWidth / 15, // 1/15th of screen width
+                          horizontal:
+                              screenWidth / 15, // 1/15th of screen width
                           vertical: 20,
                         ),
-                        backgroundColor:  const Color(0xFF7AACA5), // Button color
+                        backgroundColor:
+                            const Color(0xFF7AACA5), // Button color
                         textStyle: const TextStyle(fontSize: 18),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(30.0),
                         ),
                       ),
                       child: const Text(
-                          "Login",
+                        "Login",
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
@@ -147,7 +151,9 @@ class _OnboardingState extends State<Getstarted> {
                         ),
                       ),
                     ),
-                    SizedBox(height: screenHeight / 40), // Vertical space between buttons
+                    SizedBox(
+                        height: screenHeight /
+                            40), // Vertical space between buttons
 
                     // Third Button
                     ElevatedButton(
@@ -156,17 +162,19 @@ class _OnboardingState extends State<Getstarted> {
                       },
                       style: ElevatedButton.styleFrom(
                         padding: EdgeInsets.symmetric(
-                          horizontal: screenWidth / 15, // 1/15th of screen width
+                          horizontal:
+                              screenWidth / 15, // 1/15th of screen width
                           vertical: 20,
                         ),
-                        backgroundColor: const Color(0xFF39786D), // Button color
+                        backgroundColor:
+                            const Color(0xFF39786D), // Button color
                         textStyle: const TextStyle(fontSize: 18),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(30.0),
                         ),
                       ),
                       child: const Text(
-                          "Guest",
+                        "Guest",
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
@@ -178,7 +186,6 @@ class _OnboardingState extends State<Getstarted> {
                 ),
               ),
             ),
-
           ],
         ),
       ),
@@ -199,7 +206,8 @@ class _OnboardingState extends State<Getstarted> {
                 backgroundColor: Colors.transparent, // Make AppBar transparent
                 elevation: 0, // No shadow
                 leading: IconButton(
-                  icon: const Icon(Icons.arrow_back, color: Colors.black), // Back button icon
+                  icon: const Icon(Icons.arrow_back,
+                      color: Colors.black), // Back button icon
                   onPressed: () {
                     Navigator.pop(context); // Go back to the previous screen
                   },
@@ -213,11 +221,8 @@ class _OnboardingState extends State<Getstarted> {
         ],
       ),
     );
-
   }
 }
-
-
 
 class SoftPastelBackgroundPainter extends CustomPainter {
   // Normalized positions (as fractions of width and height) and radii
@@ -240,15 +245,30 @@ class SoftPastelBackgroundPainter extends CustomPainter {
   ];
 
   final List<double> normalizedRadii = [
-    0.1, 0.22, 0.09, 0.41, 0.08, 0.13, 0.1, 0.08, 0.51, 0.12, 0.09, 0.1, 0.08, 0.13, 0.21,
+    0.1,
+    0.22,
+    0.09,
+    0.41,
+    0.08,
+    0.13,
+    0.1,
+    0.08,
+    0.51,
+    0.12,
+    0.09,
+    0.1,
+    0.08,
+    0.13,
+    0.21,
   ];
 
   @override
   void paint(Canvas canvas, Size size) {
     // Step 1: Draw the background color
-    final backgroundPaint =
-    Paint()..color = const Color(0xfffaf6f2); // Soft background color
-    canvas.drawRect(Rect.fromLTWH(0, 0, size.width, size.height), backgroundPaint);
+    final backgroundPaint = Paint()
+      ..color = const Color(0xfffaf6f2); // Soft background color
+    canvas.drawRect(
+        Rect.fromLTWH(0, 0, size.width, size.height), backgroundPaint);
 
     // Step 2: Define a list of pastel colors
     final colors = [
@@ -270,7 +290,8 @@ class SoftPastelBackgroundPainter extends CustomPainter {
       );
 
       // Scale normalized radius to screen size
-      final radius = normalizedRadii[i] * size.width; // Assuming radius scales with width
+      final radius =
+          normalizedRadii[i] * size.width; // Assuming radius scales with width
 
       // Randomize color
       final paint = paints[i % paints.length];
@@ -283,7 +304,6 @@ class SoftPastelBackgroundPainter extends CustomPainter {
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
-
 
 class SoftPastelBackgroundCooker extends CustomPainter {
   // Normalized positions (as fractions of width and height) and sizes
@@ -299,15 +319,23 @@ class SoftPastelBackgroundCooker extends CustomPainter {
   ];
 
   final List<double> normalizedSizes = [
-    0.1, 0.12, 0.09, 0.11, 0.08, 0.13, 0.1, 0.08,
+    0.1,
+    0.12,
+    0.09,
+    0.11,
+    0.08,
+    0.13,
+    0.1,
+    0.08,
   ];
 
   @override
   void paint(Canvas canvas, Size size) {
     // Step 1: Draw the background color
-    final backgroundPaint =
-    Paint()..color = const Color(0xfffaf6f2); // Soft background color
-    canvas.drawRect(Rect.fromLTWH(0, 0, size.width, size.height), backgroundPaint);
+    final backgroundPaint = Paint()
+      ..color = const Color(0xfffaf6f2); // Soft background color
+    canvas.drawRect(
+        Rect.fromLTWH(0, 0, size.width, size.height), backgroundPaint);
 
     // Step 2: Define a list of pastel colors
     final colors = [
@@ -339,7 +367,8 @@ class SoftPastelBackgroundCooker extends CustomPainter {
       );
 
       // Scale normalized size to screen size
-      final iconSize = normalizedSizes[i] * size.width; // Size scales with screen width
+      final iconSize =
+          normalizedSizes[i] * size.width; // Size scales with screen width
 
       // Randomize color and icon
       final color = colors[i % colors.length];
@@ -378,15 +407,23 @@ class SoftPastelBackgroundOrganize extends CustomPainter {
   ];
 
   final List<double> normalizedSizes = [
-    0.1, 0.12, 0.09, 0.11, 0.08, 0.13, 0.1, 0.08,
+    0.1,
+    0.12,
+    0.09,
+    0.11,
+    0.08,
+    0.13,
+    0.1,
+    0.08,
   ];
 
   @override
   void paint(Canvas canvas, Size size) {
     // Step 1: Draw the background color
-    final backgroundPaint =
-    Paint()..color = const Color(0xffd7edf8); // Soft background color
-    canvas.drawRect(Rect.fromLTWH(0, 0, size.width, size.height), backgroundPaint);
+    final backgroundPaint = Paint()
+      ..color = const Color(0xffd7edf8); // Soft background color
+    canvas.drawRect(
+        Rect.fromLTWH(0, 0, size.width, size.height), backgroundPaint);
 
     // Step 2: Define a list of pastel colors
     final colors = [
@@ -418,7 +455,8 @@ class SoftPastelBackgroundOrganize extends CustomPainter {
       );
 
       // Scale normalized size to screen size
-      final iconSize = normalizedSizes[i] * size.width; // Size scales with screen width
+      final iconSize =
+          normalizedSizes[i] * size.width; // Size scales with screen width
 
       // Randomize color and icon
       final color = colors[i % colors.length];
@@ -457,15 +495,23 @@ class SoftPastelBackgroundCommunity extends CustomPainter {
   ];
 
   final List<double> normalizedSizes = [
-    0.1, 0.12, 0.09, 0.11, 0.08, 0.13, 0.1, 0.08,
+    0.1,
+    0.12,
+    0.09,
+    0.11,
+    0.08,
+    0.13,
+    0.1,
+    0.08,
   ];
 
   @override
   void paint(Canvas canvas, Size size) {
     // Step 1: Draw the background color
-    final backgroundPaint =
-    Paint()..color = const Color(0xfff8d7dc); // Soft background color
-    canvas.drawRect(Rect.fromLTWH(0, 0, size.width, size.height), backgroundPaint);
+    final backgroundPaint = Paint()
+      ..color = const Color(0xfff8d7dc); // Soft background color
+    canvas.drawRect(
+        Rect.fromLTWH(0, 0, size.width, size.height), backgroundPaint);
 
     // Step 2: Define a list of pastel colors
     final colors = [
@@ -497,7 +543,8 @@ class SoftPastelBackgroundCommunity extends CustomPainter {
       );
 
       // Scale normalized size to screen size
-      final iconSize = normalizedSizes[i] * size.width; // Size scales with screen width
+      final iconSize =
+          normalizedSizes[i] * size.width; // Size scales with screen width
 
       // Randomize color and icon
       final color = colors[i % colors.length];

@@ -1,11 +1,10 @@
 import 'package:dim/screens/MealPlanner/FoodPlannerScreen.dart';
+import 'package:dim/screens/Shopping/ShoppingScreen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import '../models/RecipeModel.dart';
-import 'package:dim/screens/Profile/ProfileScreen.dart';
-import 'package:dim/screens/Shopping/ShoppingScreen.dart';
 
+import '../models/RecipeModel.dart';
 import '../screens/LibraryScreen.dart';
 import '../screens/ScannerScreen.dart';
 import '../screens/SearchScreen.dart';
