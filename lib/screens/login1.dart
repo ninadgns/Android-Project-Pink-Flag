@@ -1,20 +1,25 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'dart:math';
+
+import 'package:dim/screens/AddPost/fetchRecipes.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'HomeScreen.dart';
+import 'signup1.dart';
+import 'package:liquid_swipe/liquid_swipe.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import 'LogIn.dart';
-import 'SignUp.dart';
 import 'curve.dart'; // Ensure this file contains BigClipper
 
-class Getstarted extends StatefulWidget {
-  const Getstarted({Key? key}) : super(key: key);
+class login1 extends StatefulWidget {
+  const login1({Key? key}) : super(key: key);
 
   @override
-  State<Getstarted> createState() => _OnboardingState();
+  State<login1> createState() => _OnboardingState();
 }
 
-class _OnboardingState extends State<Getstarted> {
+class _OnboardingState extends State<login1> {
   @override
   Widget build(BuildContext context) {
     // Obtain screen dimensions inside build
@@ -45,133 +50,157 @@ class _OnboardingState extends State<Getstarted> {
               ),
             ),
 
+            // Text overlay
             Center(
               child: Container(
-                alignment: Alignment(0.0, 0.5),
-                // Full screen height
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Align(
-                      alignment: Alignment(0.0, 0.0),
-                      child: Padding(
-                        padding: const EdgeInsets.only(
-                            left: 20.0), // Add left padding
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "Welcome Here",
-                              style: GoogleFonts.satisfy(
-                                fontSize: screenHeight / 15,
-                                fontWeight: FontWeight.bold,
-                                color: const Color(0xFF39786D),
-                              ),
-                            ),
-                            Text(
-                              "Show your cooking skills, cook like a pro, join with community",
-                              style: GoogleFonts.shadowsIntoLight(
-                                fontSize: screenHeight / 40,
-                                fontWeight: FontWeight.bold,
-                                color: const Color(0xFF39786D),
-                              ),
-                            ),
-                          ],
+                alignment: Alignment(0.0, 0.0), // Center alignment
+                height: screenHeight, // Full screen height
+                width: screenWidth * 0.9, // Adjust width as needed
+                child: SingleChildScrollView(
+                  // Scroll for small screens
+                  child: Column(
+                    mainAxisAlignment:
+                        MainAxisAlignment.center, // Align items vertically
+                    crossAxisAlignment: CrossAxisAlignment
+                        .start, // Align items to the start horizontally
+                    children: [
+                      Align(
+                        alignment: Alignment(
+                            0, -0.8), // Adjust the vertical alignment as needed
+                        child: Text(
+                          "Login Here",
+                          style: GoogleFonts.satisfy(
+                            fontSize: screenHeight / 15, // Responsive font size
+                            fontWeight: FontWeight.bold,
+                            color: const Color(0xFF39786D),
+                          ),
                         ),
                       ),
-                    ),
+                      SizedBox(height: screenHeight / 40),
 
-                    SizedBox(height: screenHeight / 20),
+                      // First Name Field
+                      TextField(
+                        decoration: InputDecoration(
+                          labelText: "First Name",
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(30.0),
+                          ),
+                          contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 15),
+                        ),
+                      ),
+                      SizedBox(
+                          height: screenHeight / 40), // Space between fields
 
-                    // First Button
-                SizedBox(
-                  width: screenWidth * 0.3, // 90% of screen width
-                  child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => signup1(),),
-                      );
-                    },
-                    style: ElevatedButton.styleFrom(
-                      padding: EdgeInsets.symmetric(
-                        vertical: 15, // Taller button
+                      // Gmail Field
+                      TextField(
+                        keyboardType: TextInputType.emailAddress,
+                        decoration: InputDecoration(
+                          labelText: "Gmail",
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(30.0),
+                          ),
+                          contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 15),
+                        ),
                       ),
-                      backgroundColor: const Color(0xFF000000),
-                      textStyle: GoogleFonts.roboto(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: const Color(0xFF000000),
+                      SizedBox(height: screenHeight / 40),
+
+                      // Password Field
+                      PasswordField(labelText: "Password"),
+                      SizedBox(height: screenHeight / 40),
+
+                      // Sign-Up Button
+                      Center(
+                        child: ElevatedButton(
+                          onPressed: () {
+                            fetchRecipes();
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => Homescreen()),
+                            );
+                          },
+                          style: ElevatedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 40, vertical: 15),
+                            backgroundColor:
+                                const Color(0xFF000000), // Button color
+                            textStyle: const TextStyle(fontSize: 18),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(30.0),
+                            ),
+                          ),
+                          child: const Text("Log in"),
+                        ),
                       ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15.0),
+                      SizedBox(height: screenHeight / 40),
+                      Align(
+                        alignment: Alignment(
+                            0, -0.8), // Adjust the vertical alignment as needed
+                        child: Text(
+                          "Or",
+                          style: GoogleFonts.roboto(
+                            fontSize: screenHeight / 40, // Responsive font size
+                            fontWeight: FontWeight.bold,
+                            color: const Color(0xFF39786D),
+                          ),
+                        ),
                       ),
-                    ),
-                    child: const Text("SignUp"),
+
+                      SizedBox(height: screenHeight / 40),
+
+                      Center(
+                        child: ElevatedButton(
+                          onPressed: () {
+                            print("Google Pressed");
+                          },
+                          style: ElevatedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 40, vertical: 15),
+                            backgroundColor: Colors.white, // Button color
+                            textStyle: const TextStyle(fontSize: 18),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(0.0),
+                            ),
+                          ),
+                          child: const Text("🇬 Continue with Google"),
+                        ),
+                      ),
+                      SizedBox(height: screenHeight / 40),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 0.0),
+                        child: Center(
+                          child: RichText(
+                            text: TextSpan(
+                              text: "Don't have an account? ",
+                              style:
+                                  TextStyle(color: Colors.black, fontSize: 16),
+                              children: [
+                                TextSpan(
+                                  text: "Sign Up",
+                                  style: TextStyle(
+                                    color: Colors.blue,
+                                    fontWeight: FontWeight.bold,
+                                    decoration: TextDecoration.underline,
+                                  ),
+                                  recognizer: TapGestureRecognizer()
+                                    ..onTap = () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                signup1()), // Replace with your login page
+                                      );
+                                    },
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                ),
-                    SizedBox(height: screenHeight / 40), // Vertical space between buttons
-
-                    // Second Button
-                    SizedBox(
-                      width: screenWidth * 0.3, // 90% of screen width
-                      child: ElevatedButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => login1()),
-                          );
-                        },
-                        //Color(0xFF000000),
-                        style: ElevatedButton.styleFrom(
-                          padding: EdgeInsets.symmetric(
-                            vertical: 15, // Taller button
-                          ),
-                          backgroundColor: const Color(0xFF050505),
-                          textStyle: GoogleFonts.roboto(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: const Color(0xFFFFFFFF),
-                          ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15.0),
-                          ),
-                        ),
-                        child: const Text("Login"),
-                      ),
-                    ),
-                    SizedBox(
-                        height: screenHeight /
-                            40), // Vertical space between buttons
-
-                    // Third Button
-                    SizedBox(
-                      width: screenWidth * 0.3, // 90% of screen width
-                      child: ElevatedButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => login1()),
-                          );
-                        },
-                        style: ElevatedButton.styleFrom(
-                          padding: EdgeInsets.symmetric(
-                            vertical: 15, // Taller button
-                          ),
-                          backgroundColor: const Color(0xFF000000),
-                          textStyle: GoogleFonts.roboto(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: const Color(0xFFFFFFFF),
-                          ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15.0),
-                          ),
-                        ),
-                        child: const Text("Guest"),
-                      ),
-                    ),
-                  ],
                 ),
               ),
             ),
@@ -208,6 +237,44 @@ class _OnboardingState extends State<Getstarted> {
             ],
           ),
         ],
+      ),
+    );
+  }
+}
+
+class PasswordField extends StatefulWidget {
+  final String labelText;
+
+  const PasswordField({Key? key, required this.labelText}) : super(key: key);
+
+  @override
+  _PasswordFieldState createState() => _PasswordFieldState();
+}
+
+class _PasswordFieldState extends State<PasswordField> {
+  bool _obscureText = true;
+
+  @override
+  Widget build(BuildContext context) {
+    return TextField(
+      obscureText: _obscureText,
+      decoration: InputDecoration(
+        labelText: widget.labelText,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(30.0),
+        ),
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+        suffixIcon: IconButton(
+          icon: Icon(
+            _obscureText ? Icons.visibility_off : Icons.visibility,
+          ),
+          onPressed: () {
+            setState(() {
+              _obscureText = !_obscureText;
+            });
+          },
+        ),
       ),
     );
   }

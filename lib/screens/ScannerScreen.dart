@@ -1,10 +1,8 @@
-
 import 'dart:convert';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
-
 
 class ScannerScreen extends StatelessWidget {
   final ImagePicker _picker = ImagePicker();
@@ -15,6 +13,17 @@ class ScannerScreen extends StatelessWidget {
 
   Future<void> _pickImage(BuildContext context, Function updateState) async {
     final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+
+    if (pickedFile != null) {
+      final bytes = await pickedFile.readAsBytes();
+      updateState(() {
+        _imageBytes = bytes;
+      });
+    }
+  }
+
+  Future<void> _takePhoto(BuildContext context, Function updateState) async {
+    final pickedFile = await _picker.pickImage(source: ImageSource.camera);
 
     if (pickedFile != null) {
       final bytes = await pickedFile.readAsBytes();
@@ -51,7 +60,7 @@ class ScannerScreen extends StatelessWidget {
           }));
         });
       } else {
-        _showErrorDialog(context, "Error: ${response.statusCode} }");
+        _showErrorDialog(context, "Error: ${response.statusCode}");
       }
     } catch (e) {
       _showErrorDialog(context, "An error occurred: $e");
@@ -127,7 +136,6 @@ class ScannerScreen extends StatelessWidget {
         appBar: AppBar(
           backgroundColor: Color(0xfff0af93),
           title: const Text('Food Item Recognition'),
-
         ),
         body: SingleChildScrollView(
           child: Container(
@@ -145,32 +153,95 @@ class ScannerScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 const SizedBox(height: 20),
-                if (_imageBytes != null)
-                  Image.memory(
-                    _imageBytes!,
-                    height: 200,
-                  )
-                else
-                  const Placeholder(
-                    fallbackHeight: 200,
-                    fallbackWidth: double.infinity,
-                  ),
+                DragTarget<Uint8List>(
+                  onAccept: (data) {
+                    updateState(() {
+                      _imageBytes = data;
+                    });
+                  },
+                  builder: (context, candidateData, rejectedData) {
+                    return Container(
+                      height: 200,
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.grey),
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: _imageBytes != null
+                          ? Stack(
+                        alignment: Alignment.topRight,
+                        children: [
+                          Center(
+                            child: Image.memory(
+                              _imageBytes!,
+                              fit: BoxFit.contain,
+                              width: double.infinity,
+                              height: 200,
+                            ),
+                          ),
+                          IconButton(
+                            icon: const Icon(
+                              Icons.delete,
+                              color: Colors.red,
+                            ),
+                            onPressed: () {
+                              updateState(() {
+                                _imageBytes = null;
+                              });
+                            },
+                          ),
+                        ],
+                      )
+                          : const Center(
+                        child: Text(
+                          'Your image will be shown here',
+                          style: TextStyle(color: Colors.grey),
+                        ),
+                      ),
+                    );
+                  },
+                ),
                 const SizedBox(height: 25),
-                ElevatedButton(
-                  onPressed: () => _pickImage(context, updateState),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFFF8E8C4),
-                    padding: const EdgeInsets.symmetric(vertical: 10),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
+                Row(
+                  children: [
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: () => _pickImage(context, updateState),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFFF8E8C4),
+                          padding: const EdgeInsets.symmetric(vertical: 10),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                        ),
+                        child: const Text('Pick Image',
+                          style: TextStyle(
+                            fontSize: 18,
+                            color: Colors.black45,
+                          ),
+                        ),
+                      ),
                     ),
-                  ),
-                  child: const Text('Pick Image',
-                    style: TextStyle(
-                    fontSize: 18,
-                    color: Colors.black45,
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: ElevatedButton.icon(
+                        onPressed: () => _takePhoto(context, updateState),
+                        icon: const Icon(Icons.camera_alt, color: Colors.black45),
+                        label: const Text('Camera',
+                          style: TextStyle(
+                            fontSize: 18,
+                            color: Colors.black45,
+                          ),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFFF8E8C4),
+                          padding: const EdgeInsets.symmetric(vertical: 10),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                        ),
+                      ),
                     ),
-                  ),
+                  ],
                 ),
                 const SizedBox(height: 20),
                 ElevatedButton(
@@ -190,8 +261,6 @@ class ScannerScreen extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 20),
-
-                // Manual Ingredient Input Field
                 TextField(
                   controller: _manualInputController,
                   decoration: InputDecoration(
@@ -209,8 +278,6 @@ class ScannerScreen extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 20),
-
-                // Add to Cart Button
                 ElevatedButton(
                   onPressed: () => _addToCart(context),
                   style: ElevatedButton.styleFrom(
@@ -220,40 +287,37 @@ class ScannerScreen extends StatelessWidget {
                       borderRadius: BorderRadius.circular(16),
                     ),
                   ),
-                  child: const Text('Add to Cart',
+                  child: const Text('Add to available list',
                     style: TextStyle(
                       fontSize: 18,
                       color: Colors.black45,
                     ),
                   ),
                 ),
-
                 const SizedBox(height: 20),
-
-                // Ingredient List
                 Expanded(
-                 child:ListView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: _ingredients.length,
-                  itemBuilder: (context, index) {
-                    final ingredient = _ingredients[index];
-                    return Card(
-                      margin: const EdgeInsets.symmetric(vertical: 8.0),
-                      child: ListTile(
-                        title: Text(ingredient['name']),
-                        subtitle: ingredient['confidence'] != null
-                            ? Text(
-                            'Confidence: ${(ingredient['confidence'] * 100).toStringAsFixed(2)}%')
-                            : null,
-                        trailing: IconButton(
-                          icon: const Icon(Icons.delete, color: Colors.red),
-                          onPressed: () => _removeIngredient(index, updateState),
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: _ingredients.length,
+                    itemBuilder: (context, index) {
+                      final ingredient = _ingredients[index];
+                      return Card(
+                        margin: const EdgeInsets.symmetric(vertical: 8.0),
+                        child: ListTile(
+                          title: Text(ingredient['name']),
+                          subtitle: ingredient['confidence'] != null
+                              ? Text(
+                              'Confidence: ${(ingredient['confidence'] * 100).toStringAsFixed(2)}%')
+                              : null,
+                          trailing: IconButton(
+                            icon: const Icon(Icons.delete, color: Colors.red),
+                            onPressed: () => _removeIngredient(index, updateState),
+                          ),
                         ),
-                      ),
-                    );
-                  },
-                ),
+                      );
+                    },
+                  ),
                 ),
                 const SizedBox(height: 50),
               ],
@@ -263,6 +327,4 @@ class ScannerScreen extends StatelessWidget {
       );
     });
   }
-
 }
-
