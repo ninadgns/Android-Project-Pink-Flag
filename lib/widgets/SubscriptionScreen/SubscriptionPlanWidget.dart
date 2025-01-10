@@ -8,12 +8,12 @@ class SubscriptionPlanCard extends StatelessWidget {
   //static const Color customTeal = Color(0xFF80CBC4);
 
   const SubscriptionPlanCard({
-    Key? key,
+    super.key,
     required this.plan,
     required this.isSelected,
     required this.onSubscribe,
     //required this.uniColor,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

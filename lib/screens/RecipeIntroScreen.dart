@@ -204,7 +204,7 @@ class _RecipeIntroState extends State<RecipeIntro> {
                                   children: [
                                     Text(
                                       widget.recipe.name,
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                         fontSize: 24,
                                         fontWeight: FontWeight.bold,
                                         color: Colors.black,
@@ -213,7 +213,7 @@ class _RecipeIntroState extends State<RecipeIntro> {
                                     const SizedBox(height: 4),
                                     Text(
                                       widget.recipe.description,
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                         fontSize: 16,
                                         color: Colors.black,
                                       ),
@@ -228,18 +228,16 @@ class _RecipeIntroState extends State<RecipeIntro> {
                                             size: 16, color: Colors.grey),
                                         const SizedBox(width: 4),
                                         Text(
-                                            widget.recipe.totalDuration
-                                                    .toString() +
-                                                ' min',
+                                            '${widget.recipe.totalDuration} min',
                                             style:
-                                                TextStyle(color: Colors.grey)),
+                                                const TextStyle(color: Colors.grey)),
                                         SizedBox(width: width * 0.04),
                                         const Icon(Icons.signal_cellular_alt,
                                             size: 16, color: Colors.grey),
                                         const SizedBox(width: 4),
                                         Text(widget.recipe.difficulty,
                                             style:
-                                                TextStyle(color: Colors.grey)),
+                                                const TextStyle(color: Colors.grey)),
                                         SizedBox(width: width * 0.04),
                                         InkWell(
                                           child: Row(
@@ -392,7 +390,7 @@ class _RecipeIntroState extends State<RecipeIntro> {
                                     title:
                                         Text(widget.recipe.ingredients[index]),
                                     trailing: Text(
-                                      (double.tryParse(widget.recipe
+                                      '${double.tryParse(widget.recipe
                                                           .ingredientAmounts[
                                                       index]) !=
                                                   null
@@ -405,9 +403,7 @@ class _RecipeIntroState extends State<RecipeIntro> {
                                                       widget.recipe.servings))
                                                   .toString()
                                               : widget.recipe
-                                                  .ingredientAmounts[index]) +
-                                          ' ' +
-                                          widget.recipe.ingredientUnits[index],
+                                                  .ingredientAmounts[index]} ${widget.recipe.ingredientUnits[index]}',
                                     ),
                                   ),
                                 );

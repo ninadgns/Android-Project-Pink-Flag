@@ -166,7 +166,7 @@ class _RecipeDirectionScreenState extends State<RecipeDirectionScreen> {
     }
   }
 
-  Timer? _timer = null;
+  Timer? _timer;
   int _elapsed = 0;
   bool _hasStarted = false;
   bool _timerPaused = true;
@@ -183,8 +183,8 @@ class _RecipeDirectionScreenState extends State<RecipeDirectionScreen> {
       _timerPaused = false;
       _elapsed = 0;
     });
-    const oneSec = const Duration(seconds: 1);
-    _timer = new Timer.periodic(
+    const oneSec = Duration(seconds: 1);
+    _timer = Timer.periodic(
       oneSec,
       (Timer timer) {
         if (_elapsed == time * 60) {
@@ -278,7 +278,7 @@ class _RecipeDirectionScreenState extends State<RecipeDirectionScreen> {
                 SizedBox(height: height * 0.01),
                 Text(
                   '${_elapsed >= 3600 ? ('${(_elapsed ~/ 3600).toString().padLeft(2, '0')}:') : ''}${((_elapsed % 3600) ~/ 60).toString().padLeft(2, '0')}:${(_elapsed % 60).toString().padLeft(2, '0')}',
-                  style: TextStyle(
+                  style: const TextStyle(
                     color: Colors.grey,
                     fontSize: 20,
                     fontWeight: FontWeight.w500,
@@ -292,10 +292,10 @@ class _RecipeDirectionScreenState extends State<RecipeDirectionScreen> {
               SizedBox(height: height * 0.56),
               Expanded(
                 child: PageView(
+                  controller: _pageController,
                   children: [
                     ..._pages,
                   ],
-                  controller: _pageController,
                   // key: PageStorageKey('recipe'),
                 ),
               ),
@@ -341,13 +341,13 @@ class _RecipeDirectionScreenState extends State<RecipeDirectionScreen> {
                         _isPlaying ? Icons.pause : Icons.play_arrow_rounded,
                         color: _isPlaying ? Colors.white : Colors.black,
                       ),
-                      SizedBox(width: 10),
+                      const SizedBox(width: 10),
                       Text(
                         'Hear the recipe',
                         style: TextStyle(
                             color: _isPlaying ? Colors.white : Colors.black),
                       ),
-                      SizedBox(width: 10),
+                      const SizedBox(width: 10),
                     ],
                   ),
                 ),
@@ -369,7 +369,7 @@ class _RecipeDirectionScreenState extends State<RecipeDirectionScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           IconButton(
-                            icon: Icon(Icons.skip_previous_rounded,
+                            icon: const Icon(Icons.skip_previous_rounded,
                                 color: Colors.black, size: 30),
                             onPressed: () {
                               setState(() {
@@ -377,7 +377,7 @@ class _RecipeDirectionScreenState extends State<RecipeDirectionScreen> {
                                     .clamp(0, _pages.length - 1);
 
                                 _pageController.previousPage(
-                                    duration: Duration(milliseconds: 500),
+                                    duration: const Duration(milliseconds: 500),
                                     curve: Curves.easeInOut);
                                 resetTimer();
                                 startTimer();
@@ -412,7 +412,7 @@ class _RecipeDirectionScreenState extends State<RecipeDirectionScreen> {
                             },
                           ),
                           IconButton(
-                            icon: Icon(Icons.skip_next_rounded,
+                            icon: const Icon(Icons.skip_next_rounded,
                                 color: Colors.black, size: 30),
                             onPressed: () {
                               setState(() {
@@ -420,7 +420,7 @@ class _RecipeDirectionScreenState extends State<RecipeDirectionScreen> {
                                     .clamp(0, _pages.length - 1);
 
                                 _pageController.nextPage(
-                                    duration: Duration(milliseconds: 500),
+                                    duration: const Duration(milliseconds: 500),
                                     curve: Curves.easeInOut);
                                 resetTimer();
                                 startTimer();

@@ -88,13 +88,11 @@ class _RecipeFormState extends State<RecipeForm> {
       final response =
           await supabase.from('recipes').insert(postData).select('id').single();
 
-      if (response != null) {
-        debugPrint('Recipe created with ID: ${response['id']}');
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Post created successfully')),
-        );
-      }
-    } catch (e) {
+      debugPrint('Recipe created with ID: ${response['id']}');
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Post created successfully')),
+      );
+        } catch (e) {
       debugPrint('Failed to create post: $e');
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Failed to create post: $e')),

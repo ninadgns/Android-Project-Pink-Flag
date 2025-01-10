@@ -40,7 +40,7 @@ final homepageScreens = [
   const SearchScreen(),
   const LibraryScreen(),
   ScannerScreen(),
-  ShoppingScreen(),
+  const ShoppingScreen(),
   // const ProfileScreen(),
   const FoodPlannerScreen(),
 ];
@@ -66,11 +66,11 @@ final categoryIcons = [
 ];
 
 final colorShades = [
-  Color(0xffadd6ef),
-  Color(0xff9fb693),
-  Color(0xfff8e8c4),
-  Color(0xfff0af93),
-  Color(0xffe48364),
+  const Color(0xffadd6ef),
+  const Color(0xff9fb693),
+  const Color(0xfff8e8c4),
+  const Color(0xfff0af93),
+  const Color(0xffe48364),
 ];
 
 final difficulty = [

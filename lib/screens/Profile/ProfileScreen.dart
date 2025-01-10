@@ -125,13 +125,13 @@ class _ProfileScreenState extends State<ProfileScreen>
         screen = const PreferencesScreen();
         break;
       case 'Posts':
-        screen = PostsScreen();
+        screen = const PostsScreen();
         break;
       case 'Subscription Management':
         screen = const SubscriptionScreen();
         break;
       default:
-        screen = ProfileScreen();
+        screen = const ProfileScreen();
     }
 
     Navigator.push(
@@ -247,7 +247,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                       onPressed: () {
                         Navigator.pop(context);
                       },
-                      icon: Icon(Icons.arrow_back_ios),
+                      icon: const Icon(Icons.arrow_back_ios),
                     ),
                     const Text(
                       'Profile',

@@ -11,7 +11,7 @@ import 'PasswordField.dart';
 import 'curve.dart';
 
 class SignUp extends StatefulWidget {
-  const SignUp({Key? key}) : super(key: key);
+  const SignUp({super.key});
 
   @override
   State<SignUp> createState() => _OnboardingState();

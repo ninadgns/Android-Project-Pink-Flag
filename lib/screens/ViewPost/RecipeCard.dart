@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'CommentSection.dart';
 
 class RecipeCard extends StatelessWidget {
   final bool isMyPost;

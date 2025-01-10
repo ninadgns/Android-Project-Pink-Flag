@@ -61,8 +61,8 @@ class _LibraryScreenState extends State<LibraryScreen> {
                             ? Colors.white
                             : Theme.of(context).colorScheme.error,
                         borderRadius: !isCollectionsSelected
-                            ? BorderRadius.all(Radius.circular(25))
-                            : BorderRadius.only(
+                            ? const BorderRadius.all(Radius.circular(25))
+                            : const BorderRadius.only(
                                 bottomLeft: Radius.circular(25),
                                 topLeft: Radius.circular(25),
                               ),
@@ -93,8 +93,8 @@ class _LibraryScreenState extends State<LibraryScreen> {
                             ? Theme.of(context).colorScheme.error
                             : Colors.white,
                         borderRadius: isCollectionsSelected
-                            ? BorderRadius.all(Radius.circular(25))
-                            : BorderRadius.only(
+                            ? const BorderRadius.all(Radius.circular(25))
+                            : const BorderRadius.only(
                                 topRight: Radius.circular(25),
                                 bottomRight: Radius.circular(25),
                               ),
@@ -119,7 +119,7 @@ class _LibraryScreenState extends State<LibraryScreen> {
           Expanded(
             child: Center(
               child:
-                  isCollectionsSelected ? LibraryCollections() : LibrarySaved(),
+                  isCollectionsSelected ? const LibraryCollections() : const LibrarySaved(),
             ),
           ),
         ],

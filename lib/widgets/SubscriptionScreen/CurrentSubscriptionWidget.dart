@@ -6,9 +6,9 @@ class CurrentPlanCard extends StatelessWidget {
   final CurrentSubscription subscription;
 
   const CurrentPlanCard({
-    Key? key,
+    super.key,
     required this.subscription,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

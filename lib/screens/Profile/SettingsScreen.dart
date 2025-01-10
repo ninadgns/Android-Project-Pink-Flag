@@ -65,10 +65,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
             style: TextButton.styleFrom(
               foregroundColor: Color(0xFFFF8A80),
             ),
+            child: const Text('Cancel'),
           ),
           TextButton(
             onPressed: () {
@@ -78,10 +78,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 const SnackBar(content: Text('Cache cleared successfully')),
               );
             },
-            child: const Text('Clear'),
             style: TextButton.styleFrom(
               foregroundColor: Color(0xFFFF8A80),
             ),
+            child: const Text('Clear'),
           ),
         ],
       ),
@@ -155,11 +155,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
         content: const Text('Are you sure you want to logout?'),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context), // Dismiss the dialog
-            child: const Text('Cancel'),
+            onPressed: () => Navigator.pop(context),
             style: TextButton.styleFrom(
               foregroundColor: Color(0xFFFF8A80),
-            ),
+            ), // Dismiss the dialog
+            child: const Text('Cancel'),
           ),
           TextButton(
             onPressed: () async {
@@ -196,10 +196,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 );
               }
             },
-            child: const Text('Logout'),
             style: TextButton.styleFrom(
               foregroundColor: Color(0xFFFF8A80),
             ),
+            child: const Text('Logout'),
           ),
         ],
       ),
@@ -240,10 +240,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
             style: TextButton.styleFrom(
               foregroundColor: Color(0xFFFF8A80),
             ),
+            child: const Text('Cancel'),
           ),
           TextButton(
             onPressed: () async {
@@ -251,10 +251,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 Navigator.pop(context);
               }
             },
-            child: const Text('Submit'),
             style: TextButton.styleFrom(
               foregroundColor: Color(0xFFFF8A80),
             ),
+            child: const Text('Submit'),
           ),
         ],
       ),
@@ -297,10 +297,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Close'),
             style: TextButton.styleFrom(
               foregroundColor: Color(0xFFFF8A80),
             ),
+            child: const Text('Close'),
           ),
         ],
       ),
@@ -341,10 +341,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Close'),
             style: TextButton.styleFrom(
               foregroundColor: Color(0xFFFF8A80),
             ),
+            child: const Text('Close'),
           ),
         ],
       ),

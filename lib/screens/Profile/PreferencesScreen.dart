@@ -120,7 +120,9 @@ class _PreferencesScreenState extends State<PreferencesScreen> with SingleTicker
 
   @override
   void dispose() {
-    inputControllers.values.forEach((controller) => controller.dispose());
+    for (var controller in inputControllers.values) {
+      controller.dispose();
+    }
     _controller.dispose();
     super.dispose();
   }
@@ -354,7 +356,7 @@ class _PreferencesScreenState extends State<PreferencesScreen> with SingleTicker
 
   @override
   Widget build(BuildContext context) {
-    final backgroundColor = Colors.white;
+    const backgroundColor = Colors.white;
 
     return Theme(
       data: Theme.of(context).copyWith(

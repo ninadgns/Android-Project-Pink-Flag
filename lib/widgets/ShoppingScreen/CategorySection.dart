@@ -16,8 +16,8 @@ class CategorySection extends StatelessWidget {
     required this.groceryService,
     required this.onAddItem,
     required this.onUpdate,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -25,12 +25,12 @@ class CategorySection extends StatelessWidget {
       future: groceryService.getGroceryListByCategory(category),
       builder: (BuildContext context, AsyncSnapshot<List<GroceryItem>> snapshot) {
         final items = snapshot.data ?? [];
-        final double _minCategoryHeight = 80.0;
-        final double _itemHeight = 60.0;
+        const double minCategoryHeight = 80.0;
+        const double itemHeight = 60.0;
 
         final double categoryHeight = items.isEmpty
-            ? _minCategoryHeight
-            : _minCategoryHeight + (items.length * _itemHeight);
+            ? minCategoryHeight
+            : minCategoryHeight + (items.length * itemHeight);
 
         return Container(
           height: categoryHeight,

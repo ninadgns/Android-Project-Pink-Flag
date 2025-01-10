@@ -8,7 +8,7 @@ import 'GetStarted.dart';
 import 'curve.dart'; // Ensure this file contains BigClipper
 
 class Onboarding extends StatefulWidget {
-  const Onboarding({Key? key}) : super(key: key);
+  const Onboarding({super.key});
 
   @override
   State<Onboarding> createState() => _OnboardingState();
@@ -255,7 +255,7 @@ class _OnboardingState extends State<Onboarding> {
               ),
             ),
             Align(
-              alignment: Alignment(0, 0.85),
+              alignment: const Alignment(0, 0.85),
 
               child: ElevatedButton(
 
@@ -266,17 +266,17 @@ class _OnboardingState extends State<Onboarding> {
                   print("Get Started Pressed");
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => Getstarted()),
+                    MaterialPageRoute(builder: (context) => const Getstarted()),
                   );
                 },
                 style: ElevatedButton.styleFrom(
-                  minimumSize: Size(200, 50),
+                  minimumSize: const Size(200, 50),
                   padding:
                   const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
                   backgroundColor:
                   const Color(0xFF000000), // Button color
                   textStyle: const TextStyle(fontSize: 18),
-                  iconColor: Color(0xFFFFFFFF),
+                  iconColor: const Color(0xFFFFFFFF),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15),
                   ),
@@ -368,21 +368,21 @@ class _OnboardingState extends State<Onboarding> {
 class SoftPastelBackgroundPainter extends CustomPainter {
   // Normalized positions (as fractions of width and height) and radii
   final List<Offset> normalizedPositions = [
-    Offset(0.1, 0.2),
-    Offset(0.3, 0.5),
-    Offset(0.6, 0.8),
-    Offset(0.8, 0.2),
-    Offset(0.2, 0.6),
-    Offset(0.4, 1.0),
-    Offset(0.1, 1.2),
-    Offset(0.7, 0.7),
-    Offset(0.5, 0.3),
-    Offset(1.0, 0.9),
-    Offset(0.3, 0.1),
-    Offset(0.9, 0.4),
-    Offset(0.1, 1.0),
-    Offset(0.6, 0.5),
-    Offset(0.8, 1.2),
+    const Offset(0.1, 0.2),
+    const Offset(0.3, 0.5),
+    const Offset(0.6, 0.8),
+    const Offset(0.8, 0.2),
+    const Offset(0.2, 0.6),
+    const Offset(0.4, 1.0),
+    const Offset(0.1, 1.2),
+    const Offset(0.7, 0.7),
+    const Offset(0.5, 0.3),
+    const Offset(1.0, 0.9),
+    const Offset(0.3, 0.1),
+    const Offset(0.9, 0.4),
+    const Offset(0.1, 1.0),
+    const Offset(0.6, 0.5),
+    const Offset(0.8, 1.2),
   ];
 
   final List<double> normalizedRadii = [
@@ -434,14 +434,14 @@ class SoftPastelBackgroundPainter extends CustomPainter {
 class SoftPastelBackgroundCooker extends CustomPainter {
   // Normalized positions (as fractions of width and height) and sizes
   final List<Offset> normalizedPositions = [
-    Offset(0.1, 0.2),
-    Offset(0.3, 0.5),
-    Offset(0.6, 0.8),
-    Offset(0.8, 0.2),
-    Offset(0.2, 0.6),
-    Offset(0.4, 1.0),
-    Offset(0.7, 0.7),
-    Offset(0.5, 0.3),
+    const Offset(0.1, 0.2),
+    const Offset(0.3, 0.5),
+    const Offset(0.6, 0.8),
+    const Offset(0.8, 0.2),
+    const Offset(0.2, 0.6),
+    const Offset(0.4, 1.0),
+    const Offset(0.7, 0.7),
+    const Offset(0.5, 0.3),
   ];
 
   final List<double> normalizedSizes = [
@@ -513,14 +513,14 @@ class SoftPastelBackgroundCooker extends CustomPainter {
 class SoftPastelBackgroundOrganize extends CustomPainter {
   // Normalized positions (as fractions of width and height) and sizes
   final List<Offset> normalizedPositions = [
-    Offset(0.1, 0.2),
-    Offset(0.3, 0.5),
-    Offset(0.6, 0.8),
-    Offset(0.8, 0.2),
-    Offset(0.2, 0.6),
-    Offset(0.4, 1.0),
-    Offset(0.7, 0.7),
-    Offset(0.5, 0.3),
+    const Offset(0.1, 0.2),
+    const Offset(0.3, 0.5),
+    const Offset(0.6, 0.8),
+    const Offset(0.8, 0.2),
+    const Offset(0.2, 0.6),
+    const Offset(0.4, 1.0),
+    const Offset(0.7, 0.7),
+    const Offset(0.5, 0.3),
   ];
 
   final List<double> normalizedSizes = [
@@ -592,14 +592,14 @@ class SoftPastelBackgroundOrganize extends CustomPainter {
 class SoftPastelBackgroundCommunity extends CustomPainter {
   // Normalized positions (as fractions of width and height) and sizes
   final List<Offset> normalizedPositions = [
-    Offset(0.1, 0.2),
-    Offset(0.3, 0.5),
-    Offset(0.6, 0.8),
-    Offset(0.8, 0.2),
-    Offset(0.2, 0.6),
-    Offset(0.4, 1.0),
-    Offset(0.7, 0.7),
-    Offset(0.5, 0.3),
+    const Offset(0.1, 0.2),
+    const Offset(0.3, 0.5),
+    const Offset(0.6, 0.8),
+    const Offset(0.8, 0.2),
+    const Offset(0.2, 0.6),
+    const Offset(0.4, 1.0),
+    const Offset(0.7, 0.7),
+    const Offset(0.5, 0.3),
   ];
 
   final List<double> normalizedSizes = [

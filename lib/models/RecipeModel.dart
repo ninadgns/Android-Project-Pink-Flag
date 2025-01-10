@@ -1,6 +1,5 @@
 import 'package:uuid/uuid.dart';
 
-import '../data/constants.dart';
 
 class Recipe {
   /// Unique recipe ID

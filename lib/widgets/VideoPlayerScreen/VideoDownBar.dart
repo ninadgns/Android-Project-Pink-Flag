@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 
 class CustomChewieControls extends StatefulWidget {
+  const CustomChewieControls({super.key});
+
   @override
   State<CustomChewieControls> createState() => _CustomChewieControlsState();
 }
@@ -17,7 +19,7 @@ class _CustomChewieControlsState extends State<CustomChewieControls> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    videoController = ChewieController.of(context)!.videoPlayerController;
+    videoController = ChewieController.of(context).videoPlayerController;
     videoController.addListener(() {
       setState(() {
         position = _formatDuration(videoController.value.position);
@@ -40,31 +42,31 @@ class _CustomChewieControlsState extends State<CustomChewieControls> {
       children: [
         // Time stamps above progress bar
         Padding(
-          padding: EdgeInsets.symmetric(horizontal: 20),
+          padding: const EdgeInsets.symmetric(horizontal: 20),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
                 position,
-                style: TextStyle(color: Colors.grey, fontSize: 13),
+                style: const TextStyle(color: Colors.grey, fontSize: 13),
               ),
               Text(
                 duration,
-                style: TextStyle(color: Colors.grey, fontSize: 13),
+                style: const TextStyle(color: Colors.grey, fontSize: 13),
               ),
             ],
           ),
         ),
         // Progress bar
         Container(
-          padding: EdgeInsets.symmetric(horizontal: 20),
+          padding: const EdgeInsets.symmetric(horizontal: 20),
           child: SliderTheme(
             data: SliderTheme.of(context).copyWith(
               activeTrackColor: Theme.of(context).colorScheme.error,
               inactiveTrackColor: Colors.grey[300],
               thumbColor: Theme.of(context).colorScheme.error,
-              thumbShape: RoundSliderThumbShape(enabledThumbRadius: 8.0),
-              overlayShape: RoundSliderOverlayShape(overlayRadius: 16.0),
+              thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 8.0),
+              overlayShape: const RoundSliderOverlayShape(overlayRadius: 16.0),
             ),
             child: Slider(
               value: videoController.value.position.inMilliseconds.toDouble(),
@@ -77,11 +79,11 @@ class _CustomChewieControlsState extends State<CustomChewieControls> {
           ),
         ),
         // Control buttons
-        SizedBox(height: 10),
+        const SizedBox(height: 10),
         Container(
-          padding: EdgeInsets.only(bottom: 5),
+          padding: const EdgeInsets.only(bottom: 5),
           height: MediaQuery.of(context).size.height * 0.11,
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.only(
               topLeft: Radius.circular(35.0),
@@ -92,14 +94,14 @@ class _CustomChewieControlsState extends State<CustomChewieControls> {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               IconButton(
-                icon: Icon(
+                icon: const Icon(
                   Icons.replay_10,
                   color: Colors.black,
                   size: 35,
                 ),
                 onPressed: () {
                   videoController.seekTo(
-                      videoController.value.position - Duration(seconds: 10));
+                      videoController.value.position - const Duration(seconds: 10));
                 },
               ),
               IconButton(
@@ -118,14 +120,14 @@ class _CustomChewieControlsState extends State<CustomChewieControls> {
                 },
               ),
               IconButton(
-                icon: Icon(
+                icon: const Icon(
                   Icons.forward_10,
                   color: Colors.black,
                   size: 35,
                 ),
                 onPressed: () {
                   videoController.seekTo(
-                      videoController.value.position + Duration(seconds: 10));
+                      videoController.value.position + const Duration(seconds: 10));
                 },
               ),
             ],

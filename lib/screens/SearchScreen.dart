@@ -25,25 +25,25 @@ class _SearchScreenState extends State<SearchScreen> {
 
   @override
   Widget build(BuildContext context) {
-    double _height = MediaQuery.of(context).size.height;
-    double _width = MediaQuery.of(context).size.width;
-    return Container(
+    double height = MediaQuery.of(context).size.height;
+    double width = MediaQuery.of(context).size.width;
+    return SizedBox(
       width:
           MediaQuery.of(context).size.width, // Set width to full screen width
       child: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            SizedBox(height: _height * 0.03),
+            SizedBox(height: height * 0.03),
             Row(
               children: [
-                SizedBox(width: _width * 0.05),
+                SizedBox(width: width * 0.05),
                 Text(
                   'What do you want\nto cook today?',
                   style: Theme.of(context).textTheme.displayMedium,
                 ),
-                Spacer(),
-                SizedBox(width: _width * 0.05),
+                const Spacer(),
+                SizedBox(width: width * 0.05),
                 Hero(
                   tag: 'profile-hero',
                   child: InkWell(
@@ -51,7 +51,7 @@ class _SearchScreenState extends State<SearchScreen> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => ProfileScreen(),
+                          builder: (context) => const ProfileScreen(),
                         ),
                       );
                     },
@@ -68,39 +68,39 @@ class _SearchScreenState extends State<SearchScreen> {
                         ],
                       ),
                       child: CircleAvatar(
-                        radius: _width / 15, // larger size
+                        radius: width / 15, // larger size
                         backgroundImage:
                             const AssetImage('assets/images/profile.png'),
                       ),
                     ),
                   ),
                 ),
-                SizedBox(width: _width * 0.04),
+                SizedBox(width: width * 0.04),
               ],
             ), // Top text
-            SizedBox(height: _height * 0.03),
-            SearchBarHome(width: _width, height: _height),
-            SizedBox(height: _height * 0.01),
+            SizedBox(height: height * 0.03),
+            SearchBarHome(width: width, height: height),
+            SizedBox(height: height * 0.01),
             HorizontalScrollingCat(
-                width: _width, onCategorySelected: _onCategorySelected),
+                width: width, onCategorySelected: _onCategorySelected),
             // SizedBox(height: _height * 0.01),
             Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                SizedBox(width: _width * 0.04),
+                SizedBox(width: width * 0.04),
                 Text(
                   '$_selectedCategory ',
                   style: Theme.of(context)
                       .textTheme
                       .displayMedium!
-                      .copyWith(fontSize: _width / 18),
+                      .copyWith(fontSize: width / 18),
                 ),
                 Text(
                   'Recipes',
                   style: Theme.of(context)
                       .textTheme
                       .headlineMedium!
-                      .copyWith(fontSize: _width / 18),
+                      .copyWith(fontSize: width / 18),
                 ),
                 const Spacer(),
                 TextButton(
@@ -110,23 +110,23 @@ class _SearchScreenState extends State<SearchScreen> {
                     style: Theme.of(context)
                         .textTheme
                         .titleMedium!
-                        .copyWith(fontSize: _width / 25),
+                        .copyWith(fontSize: width / 25),
                   ),
                 ),
-                SizedBox(width: _width * 0.02),
+                SizedBox(width: width * 0.02),
               ],
             ),
             // SizedBox(height: 5),
-            CatFoodList(),
+            const CatFoodList(),
             // SizedBox(height: _height * 0.03),
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                SizedBox(width: _width * 0.03),
+                SizedBox(width: width * 0.03),
                 Text('For you',
                     style: Theme.of(context).textTheme.displayMedium),
-                Spacer(),
+                const Spacer(),
                 TextButton.icon(
                   onPressed: () async {
                     final result = await Navigator.push(
@@ -136,7 +136,7 @@ class _SearchScreenState extends State<SearchScreen> {
                       ),
                     );
                   },
-                  icon: Icon(Icons.add_circle_outline_rounded,
+                  icon: const Icon(Icons.add_circle_outline_rounded,
                       color: Colors.white),
                   iconAlignment: IconAlignment.start,
                   label: Text(
@@ -144,21 +144,21 @@ class _SearchScreenState extends State<SearchScreen> {
                     style: Theme.of(context)
                         .textTheme
                         .titleMedium!
-                        .copyWith(fontSize: _width / 25, color: Colors.white),
+                        .copyWith(fontSize: width / 25, color: Colors.white),
                   ),
                   style: TextButton.styleFrom(
                     backgroundColor: Colors.black,
                   ),
                 ),
-                SizedBox(width: _width * 0.03),
+                SizedBox(width: width * 0.03),
               ],
             ),
-            SizedBox(height: _height * 0.01),
+            SizedBox(height: height * 0.01),
             RecipeListView(),
-            SizedBox(height: _height * 0.03),
+            SizedBox(height: height * 0.03),
             Container(
-              height: _height * 0.2,
-              color: Color(0xfffaf6f2),
+              height: height * 0.2,
+              color: const Color(0xfffaf6f2),
             ),
           ],
         ),

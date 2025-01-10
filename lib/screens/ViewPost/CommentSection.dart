@@ -7,12 +7,12 @@ class CommentSection extends StatelessWidget {
   final String Function(DateTime) getTimeAgo;
 
   const CommentSection({
-    Key? key,
+    super.key,
     required this.commentsList,
     required this.commentController,
     required this.handleAddComment,
     required this.getTimeAgo,
-  }) : super(key: key);
+  });
 
   void show(BuildContext context) {
     showModalBottomSheet(

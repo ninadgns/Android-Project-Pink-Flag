@@ -9,8 +9,8 @@ class DateSelector extends StatelessWidget {
     required this.label,
     required this.selectedDate,
     required this.onDateSelected,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   String _formatDate(DateTime date) {
     return '${date.day} ${_getMonthName(date.month)}';

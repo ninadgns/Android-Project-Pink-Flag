@@ -7,14 +7,14 @@ class CollectionItem extends StatelessWidget {
   int index;
   @override
   Widget build(BuildContext context) {
-    double _height = MediaQuery.of(context).size.height;
-    double _width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
+    double width = MediaQuery.of(context).size.width;
     return Container(
       margin: const EdgeInsets.all(3),
       child: Column(
         children: [
           Container(
-            height: _height / 6.5,
+            height: height / 6.5,
             width: double.maxFinite,
             decoration: BoxDecoration(
               color: colorShades[index % colorShades.length],
@@ -23,8 +23,8 @@ class CollectionItem extends StatelessWidget {
             child: Center(
               child: CircleAvatar(
                 backgroundColor: Colors.white,
-                radius: _width / 8, // Adjust the radius to change the size
-                child: Text(
+                radius: width / 8, // Adjust the radius to change the size
+                child: const Text(
                   'Khabarer chobi',
                   textAlign: TextAlign.center,
                 ),

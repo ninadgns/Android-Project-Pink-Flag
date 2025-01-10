@@ -11,12 +11,12 @@ class PaymentMethodCard extends StatelessWidget {
   final VoidCallback onDelete;
 
   PaymentMethodCard({
-    Key? key,
+    super.key,
     required this.paymentMethod,
     required this.isSelected,
     required this.onSelect,
     required this.onDelete,
-  }) : super(key: key);
+  });
 
 
   IconData _getCardIcon(String cardBrand) {

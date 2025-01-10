@@ -14,7 +14,7 @@ class FilterScreen extends StatefulWidget {
 }
 
 class _FilterScreenState extends State<FilterScreen> {
-  double _sliderValue = 0;
+  final double _sliderValue = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +37,7 @@ class _FilterScreenState extends State<FilterScreen> {
                     onPressed: () {
                       Navigator.pop(context);
                     },
-                    icon: Icon(Icons.arrow_back_ios),
+                    icon: const Icon(Icons.arrow_back_ios),
                   ),
                   IconButton(
                     onPressed: () {},
@@ -62,7 +62,7 @@ class _FilterScreenState extends State<FilterScreen> {
                   ),
                 ],
               ),
-              SizedBox(height: 4),
+              const SizedBox(height: 4),
               Text(
                 'Filter',
                 style: Theme.of(context)
@@ -70,23 +70,23 @@ class _FilterScreenState extends State<FilterScreen> {
                     .headlineMedium!
                     .copyWith(fontWeight: FontWeight.bold),
               ),
-              SizedBox(height: 16),
-              FindFromHome(),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
+              const FindFromHome(),
+              const SizedBox(height: 16),
               Text('Cook Time', style: Theme.of(context).textTheme.titleMedium),
-              SizedBox(height: 12),
-              CookTimeSlider(),
+              const SizedBox(height: 12),
+              const CookTimeSlider(),
               // SizedBox(height: 12),
               WarpedList(
                 items: difficulty,
                 title: 'Difficulty',
               ),
-              SizedBox(height: 12),
+              const SizedBox(height: 12),
               WarpedList(
                 items: dishType,
                 title: 'Dish type',
               ),
-              SizedBox(height: 12),
+              const SizedBox(height: 12),
               WarpedList(
                 items: suggestedDiets,
                 title: 'Suggested diets',

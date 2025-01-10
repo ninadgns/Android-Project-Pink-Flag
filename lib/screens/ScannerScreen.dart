@@ -11,6 +11,8 @@ class ScannerScreen extends StatelessWidget {
   final List<Map<String, dynamic>> _ingredients = [];
   Uint8List? _imageBytes;
 
+  ScannerScreen({super.key});
+
   Future<void> _pickImage(BuildContext context, Function updateState) async {
     final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
 
@@ -94,7 +96,7 @@ class ScannerScreen extends StatelessWidget {
               TextButton(
                 onPressed: () => Navigator.of(context).pop(),
                 style: TextButton.styleFrom(
-                  foregroundColor: Color(0xffd2a85d),
+                  foregroundColor: const Color(0xffd2a85d),
                   backgroundColor: Colors.transparent,
                 ),
                 child: const Text("Close"),
@@ -115,7 +117,7 @@ class ScannerScreen extends StatelessWidget {
               TextButton(
                 onPressed: () => Navigator.of(context).pop(),
                 style: TextButton.styleFrom(
-                  foregroundColor: Color(0xffd2a85d),
+                  foregroundColor: const Color(0xffd2a85d),
                   backgroundColor: Colors.transparent,
                 ),
                 child: const Text("Close"),
@@ -134,7 +136,7 @@ class ScannerScreen extends StatelessWidget {
     return StatefulBuilder(builder: (context, updateState) {
       return Scaffold(
         appBar: AppBar(
-          backgroundColor: Color(0xfff0af93),
+          backgroundColor: const Color(0xfff0af93),
           title: const Text('Food Item Recognition'),
         ),
         body: SingleChildScrollView(
@@ -154,7 +156,7 @@ class ScannerScreen extends StatelessWidget {
               children: [
                 const SizedBox(height: 20),
                 DragTarget<Uint8List>(
-                  onAccept: (data) {
+                  onAcceptWithDetails: (data) {
                     updateState(() {
                       _imageBytes = data;
                     });

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'FoodValBox.dart';
 
 class DetailsInfo extends StatelessWidget {
-  DetailsInfo({
+  const DetailsInfo({
     super.key,
     required this.energy,
     required this.protein,
@@ -47,9 +47,9 @@ class DetailsInfo extends StatelessWidget {
             )
           ],
         ),
-        SizedBox(height: 20),
+        const SizedBox(height: 20),
         Text(description),
-        SizedBox(height: 100),
+        const SizedBox(height: 100),
       ],
     );
   }

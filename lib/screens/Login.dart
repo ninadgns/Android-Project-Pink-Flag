@@ -15,7 +15,7 @@ import 'SignUpOld.dart';
 import 'curve.dart';
 
 class LogIn extends StatefulWidget {
-  const LogIn({Key? key}) : super(key: key);
+  const LogIn({super.key});
 
   @override
   State<LogIn> createState() => _LogInState();
