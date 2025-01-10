@@ -1,4 +1,5 @@
 import 'package:dim/screens/GetStarted.dart';
+import 'package:dim/screens/Login.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -7,7 +8,6 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'HomeScreen.dart';
-import 'LogInOld.dart';
 import 'PasswordField.dart';
 import 'curve.dart';
 
