@@ -63,8 +63,8 @@ class UpperBar extends StatelessWidget {
                 ),
               ),
               child: Text(
-                time.toString() + ' min',
-                style: TextStyle(
+                '$time min',
+                style: const TextStyle(
                   color: Colors.grey,
                   fontSize: 15,
                   fontWeight: FontWeight.w400,

@@ -10,7 +10,7 @@ import 'curve.dart';
 import 'login1.dart'; // Ensure this file contains BigClipper
 
 class signup1 extends StatefulWidget {
-  const signup1({Key? key}) : super(key: key);
+  const signup1({super.key});
 
   @override
   State<signup1> createState() => _OnboardingState();
@@ -52,7 +52,7 @@ class _OnboardingState extends State<signup1> {
                // Text overlay
             Center(
               child: Container(
-                alignment: Alignment(0.0, 0.0), // Center alignment
+                alignment: const Alignment(0.0, 0.0), // Center alignment
                 height: screenHeight, // Full screen height
                 width: screenWidth * 0.9, // Adjust width as needed
                 child: SingleChildScrollView( // Scroll for small screens
@@ -62,7 +62,7 @@ class _OnboardingState extends State<signup1> {
                     children: [
 
                       Align(
-                        alignment: Alignment(0, -0.8), // Adjust the vertical alignment as needed
+                        alignment: const Alignment(0, -0.8), // Adjust the vertical alignment as needed
                         child: Text(
                           "Signup Here",
                           style: GoogleFonts.satisfy(
@@ -99,11 +99,11 @@ class _OnboardingState extends State<signup1> {
                       SizedBox(height: screenHeight / 40),
 
                       // Password Field
-                      PasswordField(labelText: "Password"),
+                      const PasswordField(labelText: "Password"),
                       SizedBox(height: screenHeight / 40),
 
                       // Confirm Password Field
-                      PasswordField(labelText: "Confirm Password"),
+                      const PasswordField(labelText: "Confirm Password"),
                       SizedBox(height: screenHeight / 40),
 
                       // Occupation Type Dropdown
@@ -137,7 +137,7 @@ class _OnboardingState extends State<signup1> {
                             print("Sign Up Pressed");
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => Homescreen()),
+                              MaterialPageRoute(builder: (context) => const Homescreen()),
                             );
                           },
                           style: ElevatedButton.styleFrom(
@@ -153,7 +153,7 @@ class _OnboardingState extends State<signup1> {
                       ),
                       SizedBox(height: screenHeight / 40),
                       Align(
-                        alignment: Alignment(0, -0.8), // Adjust the vertical alignment as needed
+                        alignment: const Alignment(0, -0.8), // Adjust the vertical alignment as needed
                         child: Text(
                           "Or",
                           style: GoogleFonts.roboto(
@@ -190,11 +190,11 @@ class _OnboardingState extends State<signup1> {
                           child: RichText(
                             text: TextSpan(
                               text: "Already have an account? ",
-                              style: TextStyle(color: Colors.black, fontSize: 16),
+                              style: const TextStyle(color: Colors.black, fontSize: 16),
                               children: [
                                 TextSpan(
                                   text: "Log in",
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     color: Colors.blue,
                                     fontWeight: FontWeight.bold,
                                     decoration: TextDecoration.underline,
@@ -203,7 +203,7 @@ class _OnboardingState extends State<signup1> {
                                     ..onTap = () {
                                       Navigator.push(
                                         context,
-                                        MaterialPageRoute(builder: (context) => login1()), // Replace with your login page
+                                        MaterialPageRoute(builder: (context) => const login1()), // Replace with your login page
                                       );
                                     },
                                 ),
@@ -263,7 +263,7 @@ class _OnboardingState extends State<signup1> {
 class PasswordField extends StatefulWidget {
   final String labelText;
 
-  const PasswordField({Key? key, required this.labelText}) : super(key: key);
+  const PasswordField({super.key, required this.labelText});
 
   @override
   _PasswordFieldState createState() => _PasswordFieldState();
@@ -304,21 +304,21 @@ class _PasswordFieldState extends State<PasswordField> {
 class SoftPastelBackgroundPainter extends CustomPainter {
   // Normalized positions (as fractions of width and height) and radii
   final List<Offset> normalizedPositions = [
-    Offset(0.1, 0.2),
-    Offset(0.3, 0.5),
-    Offset(0.6, 0.8),
-    Offset(0.8, 0.2),
-    Offset(0.2, 0.6),
-    Offset(0.4, 1.0),
-    Offset(0.1, 1.2),
-    Offset(0.7, 0.7),
-    Offset(0.5, 0.3),
-    Offset(1.0, 0.9),
-    Offset(0.3, 0.1),
-    Offset(0.9, 0.4),
-    Offset(0.1, 1.0),
-    Offset(0.6, 0.5),
-    Offset(0.8, 1.2),
+    const Offset(0.1, 0.2),
+    const Offset(0.3, 0.5),
+    const Offset(0.6, 0.8),
+    const Offset(0.8, 0.2),
+    const Offset(0.2, 0.6),
+    const Offset(0.4, 1.0),
+    const Offset(0.1, 1.2),
+    const Offset(0.7, 0.7),
+    const Offset(0.5, 0.3),
+    const Offset(1.0, 0.9),
+    const Offset(0.3, 0.1),
+    const Offset(0.9, 0.4),
+    const Offset(0.1, 1.0),
+    const Offset(0.6, 0.5),
+    const Offset(0.8, 1.2),
   ];
 
   final List<double> normalizedRadii = [
@@ -370,14 +370,14 @@ class SoftPastelBackgroundPainter extends CustomPainter {
 class SoftPastelBackgroundCooker extends CustomPainter {
   // Normalized positions (as fractions of width and height) and sizes
   final List<Offset> normalizedPositions = [
-    Offset(0.1, 0.2),
-    Offset(0.3, 0.5),
-    Offset(0.6, 0.8),
-    Offset(0.8, 0.2),
-    Offset(0.2, 0.6),
-    Offset(0.4, 1.0),
-    Offset(0.7, 0.7),
-    Offset(0.5, 0.3),
+    const Offset(0.1, 0.2),
+    const Offset(0.3, 0.5),
+    const Offset(0.6, 0.8),
+    const Offset(0.8, 0.2),
+    const Offset(0.2, 0.6),
+    const Offset(0.4, 1.0),
+    const Offset(0.7, 0.7),
+    const Offset(0.5, 0.3),
   ];
 
   final List<double> normalizedSizes = [
@@ -449,14 +449,14 @@ class SoftPastelBackgroundCooker extends CustomPainter {
 class SoftPastelBackgroundOrganize extends CustomPainter {
   // Normalized positions (as fractions of width and height) and sizes
   final List<Offset> normalizedPositions = [
-    Offset(0.1, 0.2),
-    Offset(0.3, 0.5),
-    Offset(0.6, 0.8),
-    Offset(0.8, 0.2),
-    Offset(0.2, 0.6),
-    Offset(0.4, 1.0),
-    Offset(0.7, 0.7),
-    Offset(0.5, 0.3),
+    const Offset(0.1, 0.2),
+    const Offset(0.3, 0.5),
+    const Offset(0.6, 0.8),
+    const Offset(0.8, 0.2),
+    const Offset(0.2, 0.6),
+    const Offset(0.4, 1.0),
+    const Offset(0.7, 0.7),
+    const Offset(0.5, 0.3),
   ];
 
   final List<double> normalizedSizes = [
@@ -528,14 +528,14 @@ class SoftPastelBackgroundOrganize extends CustomPainter {
 class SoftPastelBackgroundCommunity extends CustomPainter {
   // Normalized positions (as fractions of width and height) and sizes
   final List<Offset> normalizedPositions = [
-    Offset(0.1, 0.2),
-    Offset(0.3, 0.5),
-    Offset(0.6, 0.8),
-    Offset(0.8, 0.2),
-    Offset(0.2, 0.6),
-    Offset(0.4, 1.0),
-    Offset(0.7, 0.7),
-    Offset(0.5, 0.3),
+    const Offset(0.1, 0.2),
+    const Offset(0.3, 0.5),
+    const Offset(0.6, 0.8),
+    const Offset(0.8, 0.2),
+    const Offset(0.2, 0.6),
+    const Offset(0.4, 1.0),
+    const Offset(0.7, 0.7),
+    const Offset(0.5, 0.3),
   ];
 
   final List<double> normalizedSizes = [

@@ -13,7 +13,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'curve.dart'; // Ensure this file contains BigClipper
 
 class login1 extends StatefulWidget {
-  const login1({Key? key}) : super(key: key);
+  const login1({super.key});
 
   @override
   State<login1> createState() => _OnboardingState();
@@ -245,7 +245,7 @@ class _OnboardingState extends State<login1> {
 class PasswordField extends StatefulWidget {
   final String labelText;
 
-  const PasswordField({Key? key, required this.labelText}) : super(key: key);
+  const PasswordField({super.key, required this.labelText});
 
   @override
   _PasswordFieldState createState() => _PasswordFieldState();

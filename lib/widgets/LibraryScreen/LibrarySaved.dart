@@ -3,7 +3,6 @@ import '/widgets/LibraryScreen/SavedItem.dart';
 
 import '../../data/constants.dart';
 import '../../screens/RecipeIntroScreen.dart';
-import 'CollectionItem.dart';
 
 class LibrarySaved extends StatelessWidget {
   const LibrarySaved({super.key});

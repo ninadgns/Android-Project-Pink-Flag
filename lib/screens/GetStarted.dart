@@ -8,7 +8,7 @@ import 'SignUp.dart';
 import 'curve.dart'; // Ensure this file contains BigClipper
 
 class Getstarted extends StatefulWidget {
-  const Getstarted({Key? key}) : super(key: key);
+  const Getstarted({super.key});
 
   @override
   State<Getstarted> createState() => _OnboardingState();

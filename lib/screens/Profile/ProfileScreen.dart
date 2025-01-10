@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'NotificationsScreen.dart';
 import 'package:dim/widgets/ProfileScreen/MenuItemTile.dart';

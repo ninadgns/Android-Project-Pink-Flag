@@ -79,7 +79,7 @@ class _RecipeIntroState extends State<RecipeIntro> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => VideoPlayerWindow(),
+                        builder: (context) => const VideoPlayerWindow(),
                       ),
                     );
                   },
