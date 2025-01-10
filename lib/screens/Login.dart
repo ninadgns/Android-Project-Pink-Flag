@@ -290,19 +290,45 @@ class _LogInState extends State<LogIn> {
     return Center(
       child: ElevatedButton(
         onPressed: () async {
-          UserCredential user = await signInWithGoogle();
-          print(user);
-          //show snackbar on error
-          if (user.user == null) {
-            _showSnackBar("Error signing in with Google");
-            return;
-          }
-          // Navigate to the home screen on successful login
-          if (user.user?.uid != null) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => Homescreen()),
-            );
+          try {
+            // Sign in with Google using Firebase
+            UserCredential user = await signInWithGoogle();
+            print(user);
+
+            // Show a snackbar on error
+            if (user.user == null) {
+              _showSnackBar("Error signing in with Google");
+              return;
+            }
+
+            // Extract user details
+            String firebaseUid = user.user?.uid ?? '';
+            String email = user.user?.email ?? '';
+            String displayName = user.user?.displayName ?? '';
+            String photoUrl = user.user?.photoURL ?? '';
+
+            // Insert or update user in the Supabase users table
+            final supabase = Supabase.instance.client;
+            final response = await supabase.from('users').upsert({
+              'id': firebaseUid, // Firebase UID as the unique identifier
+              'email': email,
+              'display_name': displayName,
+              'photo_url': photoUrl,
+            });
+
+            
+
+            // Navigate to the home screen on successful login
+            if (firebaseUid.isNotEmpty) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => Homescreen()),
+              );
+            }
+          } catch (e) {
+            // Handle any errors
+            print(e);
+            _showSnackBar("Error signing in with Google: ${e.toString()}");
           }
         },
         style: ElevatedButton.styleFrom(
