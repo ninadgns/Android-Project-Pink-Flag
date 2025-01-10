@@ -4,7 +4,7 @@ import 'package:dim/screens/Profile/SubscriptionScreen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'firebase_options.dart';
-import 'package:dim/screens/Profile/MyPostsScreen.dart';
+import 'package:dim/screens/ViewPost/MyPostsScreen.dart';
 import '/screens/Onboarding.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -41,7 +41,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: appTheme,
-      home: Onboarding(),
+      home: Onboarding() ,
       //home: SubscriptionScreen(),
       //home: Homescreen(),
     );

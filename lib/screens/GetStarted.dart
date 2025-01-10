@@ -65,7 +65,7 @@ class _OnboardingState extends State<Getstarted> {
                             Text(
                               "Welcome Here",
                               style: GoogleFonts.satisfy(
-                                fontSize: screenHeight / 12,
+                                fontSize: screenHeight / 15,
                                 fontWeight: FontWeight.bold,
                                 color: const Color(0xFF39786D),
                               ),
@@ -87,71 +87,90 @@ class _OnboardingState extends State<Getstarted> {
                     SizedBox(height: screenHeight / 20),
 
                     // First Button
-                    ElevatedButton(
-
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => signup1()), // Navigate to signup1 screen
-                        );
-                      },
-                      style: ElevatedButton.styleFrom(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: screenWidth / 15, // 1/15th of screen width
-                          vertical: 20,
-                        ),
-                        backgroundColor:  const Color(0xFF7AACA5), // Button color
-                        textStyle: const TextStyle(fontSize: 18),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30.0),
-                        ),
+                SizedBox(
+                  width: screenWidth * 0.3, // 90% of screen width
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => signup1(),),
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      padding: EdgeInsets.symmetric(
+                        vertical: 15, // Taller button
                       ),
-                      child: const Text("SignUp"),
-
-
+                      backgroundColor: const Color(0xFF000000),
+                      textStyle: GoogleFonts.roboto(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: const Color(0xFF000000),
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15.0),
+                      ),
                     ),
+                    child: const Text("SignUp"),
+                  ),
+                ),
                     SizedBox(height: screenHeight / 40), // Vertical space between buttons
 
                     // Second Button
-                    ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => login1()), // Navigate to signup1 screen
-                        );
-                      },
-                      style: ElevatedButton.styleFrom(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: screenWidth / 15, // 1/15th of screen width
-                          vertical: 20,
+                    SizedBox(
+                      width: screenWidth * 0.3, // 90% of screen width
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => login1()),
+                          );
+                        },
+                        //Color(0xFF000000),
+                        style: ElevatedButton.styleFrom(
+                          padding: EdgeInsets.symmetric(
+                            vertical: 15, // Taller button
+                          ),
+                          backgroundColor: const Color(0xFF050505),
+                          textStyle: GoogleFonts.roboto(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: const Color(0xFFFFFFFF),
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15.0),
+                          ),
                         ),
-                        backgroundColor:  const Color(0xFF7AACA5), // Button color
-                        textStyle: const TextStyle(fontSize: 18),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30.0),
-                        ),
+                        child: const Text("Login"),
                       ),
-                      child: const Text("Login"),
                     ),
                     SizedBox(height: screenHeight / 40), // Vertical space between buttons
 
                     // Third Button
-                    ElevatedButton(
-                      onPressed: () {
-                        print("Button 3 Pressed");
-                      },
-                      style: ElevatedButton.styleFrom(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: screenWidth / 15, // 1/15th of screen width
-                          vertical: 20,
+                    SizedBox(
+                      width: screenWidth * 0.3, // 90% of screen width
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => login1()),
+                          );
+                        },
+                        style: ElevatedButton.styleFrom(
+                          padding: EdgeInsets.symmetric(
+                            vertical: 15, // Taller button
+                          ),
+                          backgroundColor: const Color(0xFF000000),
+                          textStyle: GoogleFonts.roboto(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: const Color(0xFFFFFFFF),
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15.0),
+                          ),
                         ),
-                        backgroundColor: const Color(0xFF39786D), // Button color
-                        textStyle: const TextStyle(fontSize: 18),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30.0),
-                        ),
+                        child: const Text("Guest"),
                       ),
-                      child: const Text("Guest"),
                     ),
                   ],
                 ),

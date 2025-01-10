@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'NotificationsScreen.dart';
 import 'package:dim/widgets/ProfileScreen/MenuItemTile.dart';
-import 'MyPostsScreen.dart';
+import '../ViewPost/MyPostsScreen.dart';
 import 'SubscriptionScreen.dart';
 import 'PreferencesScreen.dart';
 import 'SettingsScreen.dart';
@@ -125,7 +125,7 @@ class _ProfileScreenState extends State<ProfileScreen>
         screen = const PreferencesScreen();
         break;
       case 'Posts':
-        screen = const MyPostsScreen();
+        screen = PostsScreen();
         break;
       case 'Subscription Management':
         screen = const SubscriptionScreen();

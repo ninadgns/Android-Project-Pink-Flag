@@ -88,17 +88,6 @@ flutter:
 #     - images/a_dot_burr.jpeg
 #     - images/a_dot_ham.jpeg
   assets:
-    - assets/image4.png
-    - assets/image7.png
-    - assets/page1Pan.png
-    - assets/jumpingFoodPan.gif
-    - assets/signup1.gif
-    - assets/login.gif
-    - assets/jumpingFoodPan.gif
-    - assets/shoppinglist.gif
-    - assets/chef.gif
-    - assets/pot.gif
-    - assets/cooking.png
     - assets/pumpkin_soup.jpg
     - assets/play_icon.png
     - assets/images/cat.png

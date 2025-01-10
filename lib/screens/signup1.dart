@@ -142,7 +142,7 @@ class _OnboardingState extends State<signup1> {
                           },
                           style: ElevatedButton.styleFrom(
                             padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
-                            backgroundColor: const Color(0xFF39786D),  // Button color
+                            backgroundColor: const Color(0xFF000000),  // Button color
                             textStyle: const TextStyle(fontSize: 18),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(30.0),

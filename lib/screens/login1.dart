@@ -125,7 +125,7 @@ class _OnboardingState extends State<login1> {
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 40, vertical: 15),
                             backgroundColor:
-                                const Color(0xFF39786D), // Button color
+                                const Color(0xFF000000), // Button color
                             textStyle: const TextStyle(fontSize: 18),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(30.0),
