@@ -1,4 +1,3 @@
-// ignore_for_file: prefer_const_constructors
 import 'package:dim/screens/GetStarted.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
@@ -223,7 +222,7 @@ class _SignUpState extends State<SignUp> {
 
       // Insert user data into the Supabase users table
       final supabase = Supabase.instance.client;
-      final response = await supabase.from('users').insert({
+      await supabase.from('users').insert({
         'id': firebaseUid,
         'email': email,
         'display_name': name,
@@ -311,7 +310,7 @@ class _SignUpState extends State<SignUp> {
 
             // Insert or update user in the Supabase users table
             final supabase = Supabase.instance.client;
-            final response = await supabase.from('users').upsert({
+            await supabase.from('users').upsert({
               'id': firebaseUid, // Firebase UID as the unique identifier
               'email': email,
               'display_name': displayName,

@@ -84,33 +84,37 @@ class _OnboardingState extends State<Getstarted> {
                     SizedBox(height: screenHeight / 20),
 
                     // First Button
-                SizedBox(
-                  width: screenWidth * 0.3, // 90% of screen width
-                  child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => signup1(),),
-                      );
-                    },
-                    style: ElevatedButton.styleFrom(
-                      padding: EdgeInsets.symmetric(
-                        vertical: 15, // Taller button
-                      ),
-                      backgroundColor: const Color(0xFF000000),
-                      textStyle: GoogleFonts.roboto(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: const Color(0xFF000000),
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15.0),
+                    SizedBox(
+                      width: screenWidth * 0.3, // 90% of screen width
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => SignUp(),
+                            ),
+                          );
+                        },
+                        style: ElevatedButton.styleFrom(
+                          padding: EdgeInsets.symmetric(
+                            vertical: 15, // Taller button
+                          ),
+                          backgroundColor: const Color(0xFF000000),
+                          textStyle: GoogleFonts.roboto(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: const Color(0xFF000000),
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15.0),
+                          ),
+                        ),
+                        child: const Text("SignUp"),
                       ),
                     ),
-                    child: const Text("SignUp"),
-                  ),
-                ),
-                    SizedBox(height: screenHeight / 40), // Vertical space between buttons
+                    SizedBox(
+                        height: screenHeight /
+                            40), // Vertical space between buttons
 
                     // Second Button
                     SizedBox(
@@ -119,7 +123,7 @@ class _OnboardingState extends State<Getstarted> {
                         onPressed: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => login1()),
+                            MaterialPageRoute(builder: (context) => LogIn()),
                           );
                         },
                         //Color(0xFF000000),
@@ -151,7 +155,7 @@ class _OnboardingState extends State<Getstarted> {
                         onPressed: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => login1()),
+                            MaterialPageRoute(builder: (context) => LogIn()),
                           );
                         },
                         style: ElevatedButton.styleFrom(

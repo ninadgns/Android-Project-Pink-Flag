@@ -2,6 +2,7 @@
 
 import 'package:dim/screens/AddPost/fetchRecipes.dart';
 import 'package:dim/screens/GetStarted.dart';
+import 'package:dim/screens/SignUp.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -11,7 +12,6 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'HomeScreen.dart';
 import 'PasswordField.dart';
-import 'SignUpOld.dart';
 import 'curve.dart';
 
 class LogIn extends StatefulWidget {
@@ -309,14 +309,12 @@ class _LogInState extends State<LogIn> {
 
             // Insert or update user in the Supabase users table
             final supabase = Supabase.instance.client;
-            final response = await supabase.from('users').upsert({
+            await supabase.from('users').upsert({
               'id': firebaseUid, // Firebase UID as the unique identifier
               'email': email,
               'display_name': displayName,
               'photo_url': photoUrl,
             });
-
-            
 
             // Navigate to the home screen on successful login
             if (firebaseUid.isNotEmpty) {

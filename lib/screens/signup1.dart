@@ -1,8 +1,7 @@
-import 'dart:math';
-
+import 'package:dim/screens/GetStarted.dart';
+import 'package:dim/screens/PasswordField.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:liquid_swipe/liquid_swipe.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'HomeScreen.dart';
@@ -17,7 +16,6 @@ class signup1 extends StatefulWidget {
 }
 
 class _OnboardingState extends State<signup1> {
-
   @override
   Widget build(BuildContext context) {
     // Obtain screen dimensions inside build
@@ -37,7 +35,6 @@ class _OnboardingState extends State<signup1> {
               clipper: BigClipper2(),
               child: Container(
                 color: const Color(0xFFCBEAE5), // Background color
-
               ),
             ),
 
@@ -49,20 +46,23 @@ class _OnboardingState extends State<signup1> {
               ),
             ),
 
-               // Text overlay
+            // Text overlay
             Center(
               child: Container(
                 alignment: const Alignment(0.0, 0.0), // Center alignment
                 height: screenHeight, // Full screen height
                 width: screenWidth * 0.9, // Adjust width as needed
-                child: SingleChildScrollView( // Scroll for small screens
+                child: SingleChildScrollView(
+                  // Scroll for small screens
                   child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center, // Align items vertically
-                    crossAxisAlignment: CrossAxisAlignment.start, // Align items to the start horizontally
+                    mainAxisAlignment:
+                        MainAxisAlignment.center, // Align items vertically
+                    crossAxisAlignment: CrossAxisAlignment
+                        .start, // Align items to the start horizontally
                     children: [
-
                       Align(
-                        alignment: const Alignment(0, -0.8), // Adjust the vertical alignment as needed
+                        alignment: const Alignment(
+                            0, -0.8), // Adjust the vertical alignment as needed
                         child: Text(
                           "Signup Here",
                           style: GoogleFonts.satisfy(
@@ -80,10 +80,12 @@ class _OnboardingState extends State<signup1> {
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(30.0),
                           ),
-                          contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                          contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 15),
                         ),
                       ),
-                      SizedBox(height: screenHeight / 40), // Space between fields
+                      SizedBox(
+                          height: screenHeight / 40), // Space between fields
 
                       // Gmail Field
                       TextField(
@@ -93,7 +95,8 @@ class _OnboardingState extends State<signup1> {
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(30.0),
                           ),
-                          contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                          contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 15),
                         ),
                       ),
                       SizedBox(height: screenHeight / 40),
@@ -113,14 +116,15 @@ class _OnboardingState extends State<signup1> {
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(30.0),
                           ),
-                          contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                          contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 15),
                         ),
                         dropdownColor: const Color(0xFFC4E4E1),
                         items: ["Student", "Employee", "Self-Employed", "Other"]
                             .map((occupation) => DropdownMenuItem(
-                          value: occupation,
-                          child: Text(occupation),
-                        ))
+                                  value: occupation,
+                                  child: Text(occupation),
+                                ))
                             .toList(),
                         onChanged: (value) {
                           print("Selected Occupation: $value");
@@ -137,12 +141,15 @@ class _OnboardingState extends State<signup1> {
                             print("Sign Up Pressed");
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => const Homescreen()),
+                              MaterialPageRoute(
+                                  builder: (context) => const Homescreen()),
                             );
                           },
                           style: ElevatedButton.styleFrom(
-                            padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
-                            backgroundColor: const Color(0xFF000000),  // Button color
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 40, vertical: 15),
+                            backgroundColor:
+                                const Color(0xFF000000), // Button color
                             textStyle: const TextStyle(fontSize: 18),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(30.0),
@@ -153,7 +160,8 @@ class _OnboardingState extends State<signup1> {
                       ),
                       SizedBox(height: screenHeight / 40),
                       Align(
-                        alignment: const Alignment(0, -0.8), // Adjust the vertical alignment as needed
+                        alignment: const Alignment(
+                            0, -0.8), // Adjust the vertical alignment as needed
                         child: Text(
                           "Or",
                           style: GoogleFonts.roboto(
@@ -172,13 +180,13 @@ class _OnboardingState extends State<signup1> {
                             print("Google Pressed");
                           },
                           style: ElevatedButton.styleFrom(
-                            padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 40, vertical: 15),
                             backgroundColor: Colors.white, // Button color
                             textStyle: const TextStyle(fontSize: 18),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(0.0),
                             ),
-
                           ),
                           child: const Text("🇬 Continue with Google"),
                         ),
@@ -190,7 +198,8 @@ class _OnboardingState extends State<signup1> {
                           child: RichText(
                             text: TextSpan(
                               text: "Already have an account? ",
-                              style: const TextStyle(color: Colors.black, fontSize: 16),
+                              style: const TextStyle(
+                                  color: Colors.black, fontSize: 16),
                               children: [
                                 TextSpan(
                                   text: "Log in",
@@ -203,7 +212,9 @@ class _OnboardingState extends State<signup1> {
                                     ..onTap = () {
                                       Navigator.push(
                                         context,
-                                        MaterialPageRoute(builder: (context) => const login1()), // Replace with your login page
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                const login1()), // Replace with your login page
                                       );
                                     },
                                 ),
@@ -212,16 +223,11 @@ class _OnboardingState extends State<signup1> {
                           ),
                         ),
                       ),
-
-
-
                     ],
                   ),
                 ),
               ),
             ),
-
-
           ],
         ),
       ),
@@ -242,7 +248,8 @@ class _OnboardingState extends State<signup1> {
                 backgroundColor: Colors.transparent, // Make AppBar transparent
                 elevation: 0, // No shadow
                 leading: IconButton(
-                  icon: const Icon(Icons.arrow_back, color: Colors.black), // Back button icon
+                  icon: const Icon(Icons.arrow_back,
+                      color: Colors.black), // Back button icon
                   onPressed: () {
                     Navigator.pop(context); // Go back to the previous screen
                   },
@@ -256,350 +263,5 @@ class _OnboardingState extends State<signup1> {
         ],
       ),
     );
-
   }
-}
-
-class PasswordField extends StatefulWidget {
-  final String labelText;
-
-  const PasswordField({super.key, required this.labelText});
-
-  @override
-  _PasswordFieldState createState() => _PasswordFieldState();
-}
-
-
-class _PasswordFieldState extends State<PasswordField> {
-  bool _obscureText = true;
-
-  @override
-  Widget build(BuildContext context) {
-    return TextField(
-      obscureText: _obscureText,
-      decoration: InputDecoration(
-        labelText: widget.labelText,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(30.0),
-        ),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-        suffixIcon: IconButton(
-          icon: Icon(
-            _obscureText ? Icons.visibility_off : Icons.visibility,
-          ),
-          onPressed: () {
-            setState(() {
-              _obscureText = !_obscureText;
-            });
-          },
-        ),
-      ),
-    );
-  }
-}
-
-
-
-
-class SoftPastelBackgroundPainter extends CustomPainter {
-  // Normalized positions (as fractions of width and height) and radii
-  final List<Offset> normalizedPositions = [
-    const Offset(0.1, 0.2),
-    const Offset(0.3, 0.5),
-    const Offset(0.6, 0.8),
-    const Offset(0.8, 0.2),
-    const Offset(0.2, 0.6),
-    const Offset(0.4, 1.0),
-    const Offset(0.1, 1.2),
-    const Offset(0.7, 0.7),
-    const Offset(0.5, 0.3),
-    const Offset(1.0, 0.9),
-    const Offset(0.3, 0.1),
-    const Offset(0.9, 0.4),
-    const Offset(0.1, 1.0),
-    const Offset(0.6, 0.5),
-    const Offset(0.8, 1.2),
-  ];
-
-  final List<double> normalizedRadii = [
-    0.1, 0.22, 0.09, 0.41, 0.08, 0.13, 0.1, 0.08, 0.51, 0.12, 0.09, 0.1, 0.08, 0.13, 0.21,
-  ];
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    // Step 1: Draw the background color
-    final backgroundPaint =
-    Paint()..color = const Color(0xfffaf6f2); // Soft background color
-    canvas.drawRect(Rect.fromLTWH(0, 0, size.width, size.height), backgroundPaint);
-
-    // Step 2: Define a list of pastel colors
-    final colors = [
-      const Color(0xFFADD6CF).withOpacity(0.15), // Pastel Blue
-      const Color(0xFFF0AF9E).withOpacity(0.15), // Pastel Pink
-      const Color(0xFFFFD59A).withOpacity(0.15), // Pastel Yellow
-      const Color(0xFFC3B1E1).withOpacity(0.15), // Pastel Purple
-    ];
-
-    // Step 3: Create paint objects for each color
-    final paints = colors.map((color) => Paint()..color = color).toList();
-
-    // Step 4: Draw circles using normalized values
-    for (int i = 0; i < normalizedPositions.length; i++) {
-      // Scale normalized position to screen size
-      final position = Offset(
-        normalizedPositions[i].dx * size.width,
-        normalizedPositions[i].dy * size.height,
-      );
-
-      // Scale normalized radius to screen size
-      final radius = normalizedRadii[i] * size.width; // Assuming radius scales with width
-
-      // Randomize color
-      final paint = paints[i % paints.length];
-
-      // Draw the circle
-      canvas.drawCircle(position, radius, paint);
-    }
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
-}
-
-
-class SoftPastelBackgroundCooker extends CustomPainter {
-  // Normalized positions (as fractions of width and height) and sizes
-  final List<Offset> normalizedPositions = [
-    const Offset(0.1, 0.2),
-    const Offset(0.3, 0.5),
-    const Offset(0.6, 0.8),
-    const Offset(0.8, 0.2),
-    const Offset(0.2, 0.6),
-    const Offset(0.4, 1.0),
-    const Offset(0.7, 0.7),
-    const Offset(0.5, 0.3),
-  ];
-
-  final List<double> normalizedSizes = [
-    0.1, 0.12, 0.09, 0.11, 0.08, 0.13, 0.1, 0.08,
-  ];
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    // Step 1: Draw the background color
-    final backgroundPaint =
-    Paint()..color = const Color(0xfffaf6f2); // Soft background color
-    canvas.drawRect(Rect.fromLTWH(0, 0, size.width, size.height), backgroundPaint);
-
-    // Step 2: Define a list of pastel colors
-    final colors = [
-      const Color(0xFFADD6CF).withOpacity(0.3), // Pastel Blue
-      const Color(0xFFF0AF9E).withOpacity(0.3), // Pastel Pink
-      const Color(0xFFFFD59A).withOpacity(0.3), // Pastel Yellow
-      const Color(0xFFC3B1E1).withOpacity(0.3), // Pastel Purple
-    ];
-
-    // Step 3: Define a list of icons
-    final icons = [
-      Icons.star,
-      Icons.favorite,
-      Icons.home,
-      Icons.accessibility,
-      Icons.flash_on,
-    ];
-
-    // Step 4: Draw icons based on normalized values
-    final textPainter = TextPainter(
-      textDirection: TextDirection.ltr,
-    );
-
-    for (int i = 0; i < normalizedPositions.length; i++) {
-      // Scale normalized position to screen size
-      final position = Offset(
-        normalizedPositions[i].dx * size.width,
-        normalizedPositions[i].dy * size.height,
-      );
-
-      // Scale normalized size to screen size
-      final iconSize = normalizedSizes[i] * size.width; // Size scales with screen width
-
-      // Randomize color and icon
-      final color = colors[i % colors.length];
-      final icon = icons[i % icons.length];
-
-      // Prepare icon as text
-      textPainter.text = TextSpan(
-        text: String.fromCharCode(icon.codePoint),
-        style: TextStyle(
-          fontSize: iconSize,
-          fontFamily: icon.fontFamily,
-          color: color,
-        ),
-      );
-
-      textPainter.layout();
-      textPainter.paint(canvas, position);
-    }
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
-}
-
-class SoftPastelBackgroundOrganize extends CustomPainter {
-  // Normalized positions (as fractions of width and height) and sizes
-  final List<Offset> normalizedPositions = [
-    const Offset(0.1, 0.2),
-    const Offset(0.3, 0.5),
-    const Offset(0.6, 0.8),
-    const Offset(0.8, 0.2),
-    const Offset(0.2, 0.6),
-    const Offset(0.4, 1.0),
-    const Offset(0.7, 0.7),
-    const Offset(0.5, 0.3),
-  ];
-
-  final List<double> normalizedSizes = [
-    0.1, 0.12, 0.09, 0.11, 0.08, 0.13, 0.1, 0.08,
-  ];
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    // Step 1: Draw the background color
-    final backgroundPaint =
-    Paint()..color = const Color(0xffd7edf8); // Soft background color
-    canvas.drawRect(Rect.fromLTWH(0, 0, size.width, size.height), backgroundPaint);
-
-    // Step 2: Define a list of pastel colors
-    final colors = [
-      const Color(0xFFADD6CF).withOpacity(0.3), // Pastel Blue
-      const Color(0xFFF0AF9E).withOpacity(0.3), // Pastel Pink
-      const Color(0xFFFFD59A).withOpacity(0.3), // Pastel Yellow
-      const Color(0xFFC3B1E1).withOpacity(0.3), // Pastel Purple
-    ];
-
-    // Step 3: Define a list of icons
-    final icons = [
-      Icons.star,
-      Icons.favorite,
-      Icons.home,
-      Icons.accessibility,
-      Icons.flash_on,
-    ];
-
-    // Step 4: Draw icons based on normalized values
-    final textPainter = TextPainter(
-      textDirection: TextDirection.ltr,
-    );
-
-    for (int i = 0; i < normalizedPositions.length; i++) {
-      // Scale normalized position to screen size
-      final position = Offset(
-        normalizedPositions[i].dx * size.width,
-        normalizedPositions[i].dy * size.height,
-      );
-
-      // Scale normalized size to screen size
-      final iconSize = normalizedSizes[i] * size.width; // Size scales with screen width
-
-      // Randomize color and icon
-      final color = colors[i % colors.length];
-      final icon = icons[i % icons.length];
-
-      // Prepare icon as text
-      textPainter.text = TextSpan(
-        text: String.fromCharCode(icon.codePoint),
-        style: TextStyle(
-          fontSize: iconSize,
-          fontFamily: icon.fontFamily,
-          color: color,
-        ),
-      );
-
-      textPainter.layout();
-      textPainter.paint(canvas, position);
-    }
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
-}
-
-class SoftPastelBackgroundCommunity extends CustomPainter {
-  // Normalized positions (as fractions of width and height) and sizes
-  final List<Offset> normalizedPositions = [
-    const Offset(0.1, 0.2),
-    const Offset(0.3, 0.5),
-    const Offset(0.6, 0.8),
-    const Offset(0.8, 0.2),
-    const Offset(0.2, 0.6),
-    const Offset(0.4, 1.0),
-    const Offset(0.7, 0.7),
-    const Offset(0.5, 0.3),
-  ];
-
-  final List<double> normalizedSizes = [
-    0.1, 0.12, 0.09, 0.11, 0.08, 0.13, 0.1, 0.08,
-  ];
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    // Step 1: Draw the background color
-    final backgroundPaint =
-    Paint()..color = const Color(0xfff8d7dc); // Soft background color
-    canvas.drawRect(Rect.fromLTWH(0, 0, size.width, size.height), backgroundPaint);
-
-    // Step 2: Define a list of pastel colors
-    final colors = [
-      const Color(0xFFADD6CF).withOpacity(0.3), // Pastel Blue
-      const Color(0xFFF0AF9E).withOpacity(0.3), // Pastel Pink
-      const Color(0xFFFFD59A).withOpacity(0.3), // Pastel Yellow
-      const Color(0xFFC3B1E1).withOpacity(0.3), // Pastel Purple
-    ];
-
-    // Step 3: Define a list of icons
-    final icons = [
-      Icons.star,
-      Icons.favorite,
-      Icons.home,
-      Icons.accessibility,
-      Icons.flash_on,
-    ];
-
-    // Step 4: Draw icons based on normalized values
-    final textPainter = TextPainter(
-      textDirection: TextDirection.ltr,
-    );
-
-    for (int i = 0; i < normalizedPositions.length; i++) {
-      // Scale normalized position to screen size
-      final position = Offset(
-        normalizedPositions[i].dx * size.width,
-        normalizedPositions[i].dy * size.height,
-      );
-
-      // Scale normalized size to screen size
-      final iconSize = normalizedSizes[i] * size.width; // Size scales with screen width
-
-      // Randomize color and icon
-      final color = colors[i % colors.length];
-      final icon = icons[i % icons.length];
-
-      // Prepare icon as text
-      textPainter.text = TextSpan(
-        text: String.fromCharCode(icon.codePoint),
-        style: TextStyle(
-          fontSize: iconSize,
-          fontFamily: icon.fontFamily,
-          color: color,
-        ),
-      );
-
-      textPainter.layout();
-      textPainter.paint(canvas, position);
-    }
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
