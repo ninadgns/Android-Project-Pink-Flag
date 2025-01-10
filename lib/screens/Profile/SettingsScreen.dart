@@ -1,4 +1,11 @@
+// ignore_for_file: prefer_const_constructors
+
+import 'package:dim/screens/GetStarted.dart';
+import 'package:dim/services/user_provider.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:provider/provider.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -39,7 +46,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
           style: const TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.bold,
-
           ),
         ),
         subtitle: subtitle != null ? Text(subtitle) : null,
@@ -118,21 +124,21 @@ class _SettingsScreenState extends State<SettingsScreen> {
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: const Text('Cancel'),
               style: TextButton.styleFrom(
                 foregroundColor: Color(0xFFFF8A80),
               ),
+              child: const Text('Cancel'),
             ),
             TextButton(
               onPressed: () async {
-                if (selectedRating>0) {
+                if (selectedRating > 0) {
                   Navigator.pop(context);
                 }
               },
-              child: const Text('Submit'),
               style: TextButton.styleFrom(
                 foregroundColor: Color(0xFFFF8A80),
               ),
+              child: const Text('Submit'),
             ),
           ],
         ),
@@ -149,16 +155,46 @@ class _SettingsScreenState extends State<SettingsScreen> {
         content: const Text('Are you sure you want to logout?'),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: () => Navigator.pop(context), // Dismiss the dialog
             child: const Text('Cancel'),
             style: TextButton.styleFrom(
               foregroundColor: Color(0xFFFF8A80),
             ),
           ),
           TextButton(
-            onPressed: () {
-              // Implement logout logic
-              Navigator.pop(context);
+            onPressed: () async {
+              try {
+                // Check if the user is signed in
+                User? user = FirebaseAuth.instance.currentUser;
+                print(user);
+                if (user != null) {
+                  // Get the list of sign-in methods for the user
+                  List<String> providers = user.providerData
+                      .map((userInfo) => userInfo.providerId)
+                      .toList();
+
+                  if (providers.contains('google.com')) {
+                    // If signed in with Google, also sign out from Google
+                    GoogleSignIn googleSignIn = GoogleSignIn();
+                    await googleSignIn.signOut();
+                  }
+
+                  // Sign out from Firebase
+                  await FirebaseAuth.instance.signOut();
+                }
+
+                // Navigate to GetStarted screen and clear the navigation stack
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (context) => Getstarted()),
+                  (route) => false, // Remove all routes
+                );
+              } catch (e) {
+                Navigator.pop(context); // Close the dialog
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Logout failed: ${e.toString()}')),
+                );
+              }
             },
             child: const Text('Logout'),
             style: TextButton.styleFrom(
@@ -193,7 +229,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
-                  borderSide: const BorderSide(color: Color(0xFFFF8A80), width: 1),
+                  borderSide:
+                      const BorderSide(color: Color(0xFFFF8A80), width: 1),
                 ),
                 hintText: 'Enter your feedback here...',
               ),
@@ -270,7 +307,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 
-
   void _showAboutDialog() {
     showDialog(
       context: context,
@@ -285,7 +321,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
               Text('Our Mission',
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
               SizedBox(height: 8),
-              Text('We strive to create innovative solutions that make people\'s lives easier and more connected.'),
+              Text(
+                  'We strive to create innovative solutions that make people\'s lives easier and more connected.'),
               SizedBox(height: 16),
               Text('Our Goals',
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
@@ -313,9 +350,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
       ),
     );
   }
-
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -361,71 +395,61 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 child: ListView(
                   padding: const EdgeInsets.symmetric(vertical: 8),
                   children: [
-
                     _buildSettingItem(
-                      icon: Icons.security,
-                      title: 'Account Privacy',
-                      subtitle: 'Manage who can see your profile and posts.',
-                      trailing: Switch(
-                        value: accountPrivacy,
-                        onChanged: (value) => setState(() => accountPrivacy = value),
-                        activeColor: const Color(0xFFFF8A80),
-                      ),
-                      iconColor: Colors.indigoAccent
-                    ),
-
+                        icon: Icons.security,
+                        title: 'Account Privacy',
+                        subtitle: 'Manage who can see your profile and posts.',
+                        trailing: Switch(
+                          value: accountPrivacy,
+                          onChanged: (value) =>
+                              setState(() => accountPrivacy = value),
+                          activeColor: const Color(0xFFFF8A80),
+                        ),
+                        iconColor: Colors.indigoAccent),
                     _buildSettingItem(
-                      icon: Icons.notifications,
-                      title: 'Notifications',
-                      subtitle: 'Control app notifications and alerts.',
-                      trailing: Switch(
-                        value: notifications,
-                        onChanged: (value) => setState(() => notifications = value),
-                        activeColor: const Color(0xFFFF9999),
-                      ),
-                      iconColor: Colors.orange
-                    ),
-
+                        icon: Icons.notifications,
+                        title: 'Notifications',
+                        subtitle: 'Control app notifications and alerts.',
+                        trailing: Switch(
+                          value: notifications,
+                          onChanged: (value) =>
+                              setState(() => notifications = value),
+                          activeColor: const Color(0xFFFF9999),
+                        ),
+                        iconColor: Colors.orange),
                     _buildSettingItem(
-                      icon: Icons.cleaning_services,
-                      title: 'Clear Cache',
-                      subtitle: 'Free up storage by clearing cached data.',
-                      onTap: _showClearCacheDialog,
-                      iconColor: Colors.black26
-                    ),
-
+                        icon: Icons.cleaning_services,
+                        title: 'Clear Cache',
+                        subtitle: 'Free up storage by clearing cached data.',
+                        onTap: _showClearCacheDialog,
+                        iconColor: Colors.black26),
                     _buildSettingItem(
-                      icon: Icons.star,
-                      title: 'Rate App',
-                      subtitle: 'Rate us on the app store and share feedback.',
-                      onTap:  _showRatingDialog,
-                      iconColor: Colors.amber
-                    ),
-
+                        icon: Icons.star,
+                        title: 'Rate App',
+                        subtitle:
+                            'Rate us on the app store and share feedback.',
+                        onTap: _showRatingDialog,
+                        iconColor: Colors.amber),
                     _buildSettingItem(
-                      icon: Icons.feedback,
-                      title: 'Feedback',
-                      subtitle: 'Share your thoughts to help improve the app.',
-                      onTap: _showFeedbackDialog,
-                      iconColor: Colors.teal
-                    ),
-
+                        icon: Icons.feedback,
+                        title: 'Feedback',
+                        subtitle:
+                            'Share your thoughts to help improve the app.',
+                        onTap: _showFeedbackDialog,
+                        iconColor: Colors.teal),
                     _buildSettingItem(
                         icon: Icons.help,
                         title: 'Help Center',
-                        subtitle: 'Get assistance with frequently asked questions.',
+                        subtitle:
+                            'Get assistance with frequently asked questions.',
                         onTap: _showHelpCenterDialog,
-                        iconColor: Colors.deepOrangeAccent
-                    ),
-
+                        iconColor: Colors.deepOrangeAccent),
                     _buildSettingItem(
-                      icon: Icons.info,
-                      title: 'About Us',
-                      subtitle: 'Learn more about our mission.',
-                      onTap: _showAboutDialog,
-                      iconColor: Colors.blue
-                    ),
-
+                        icon: Icons.info,
+                        title: 'About Us',
+                        subtitle: 'Learn more about our mission.',
+                        onTap: _showAboutDialog,
+                        iconColor: Colors.blue),
                     _buildSettingItem(
                       icon: Icons.logout,
                       title: 'Logout',
