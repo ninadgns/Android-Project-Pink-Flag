@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:dim/data/constants.dart';
 import 'package:dim/screens/RecipeDirectionScreen.dart';
 import 'package:dim/widgets/VideoPlayer.dart';
@@ -40,6 +42,7 @@ class _RecipeIntroState extends State<RecipeIntro> {
   void decrement() {
     setState(() {
       count--;
+      count = max(0, count);
     });
   }
 
@@ -205,7 +208,7 @@ class _RecipeIntroState extends State<RecipeIntro> {
                                     Text(
                                       widget.recipe.name,
                                       style: const TextStyle(
-                                        fontSize: 24,
+                                        fontSize: 18,
                                         fontWeight: FontWeight.bold,
                                         color: Colors.black,
                                       ),
@@ -367,12 +370,14 @@ class _RecipeIntroState extends State<RecipeIntro> {
                                         howManyServings: count,
                                       )
                                     : DetailsInfo(
-                                        energy: widget.recipe.energy,
-                                        protein: widget.recipe.protein,
-                                        carbs: widget.recipe.carbs,
-                                        fat: widget.recipe.fat,
+                                        energy: widget.recipe.nutrition.energy(),
+                                        protein: widget.recipe.nutrition.protein,
+                                        carbs: widget.recipe.nutrition.carbs,
+                                        fat: widget.recipe.nutrition.fat,
                                         description:
-                                            widget.recipe.steps.join(' '),
+                                            widget.recipe.steps.map((step){
+                                              return step.description;
+                                            }).join(' '),
                                       ),
                               ],
                             ),
@@ -388,22 +393,22 @@ class _RecipeIntroState extends State<RecipeIntro> {
                                   ),
                                   child: ListTile(
                                     title:
-                                        Text(widget.recipe.ingredients[index]),
+                                        Text(widget.recipe.ingredients[index].name),
                                     trailing: Text(
                                       '${double.tryParse(widget.recipe
-                                                          .ingredientAmounts[
-                                                      index]) !=
+                                                          .ingredients[
+                                                      index].quantity.toString()) !=
                                                   null
                                               ? formatter
                                                   .format((double.parse(widget
                                                               .recipe
-                                                              .ingredientAmounts[
-                                                          index]) *
+                                                              .ingredients[
+                                                          index].quantity.toString()) *
                                                       count /
                                                       widget.recipe.servings))
                                                   .toString()
                                               : widget.recipe
-                                                  .ingredientAmounts[index]} ${widget.recipe.ingredientUnits[index]}',
+                                                  .ingredients[index].quantity} ${widget.recipe.ingredients[index].unit}',
                                     ),
                                   ),
                                 );
@@ -437,7 +442,7 @@ class _RecipeIntroState extends State<RecipeIntro> {
               context,
               MaterialPageRoute(
                 builder: (context) => RecipeDirectionScreen(
-                  recipe: dummyRecipe,
+                  recipe: widget.recipe,
                 ),
               ),
             );

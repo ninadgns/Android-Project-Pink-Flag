@@ -31,7 +31,10 @@ class _HomescreenState extends State<Homescreen> {
       body: Center(
         child: homepageScreens[_current_index],
       ),
-      bottomNavigationBar: BottomNavBar(onItemTapped: _onItemTapped),
+      bottomNavigationBar: BottomNavBar(
+        onItemTapped: _onItemTapped,
+        isSearchScreen: _current_index == 0 ? true : false,
+      ),
     );
   }
 }

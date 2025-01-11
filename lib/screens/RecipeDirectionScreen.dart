@@ -39,7 +39,7 @@ class _RecipeDirectionScreenState extends State<RecipeDirectionScreen> {
   }
 
   void _updateTtsText() {
-    recipeText = widget.recipe.steps[pageIndex];
+    recipeText = widget.recipe.steps[pageIndex].description;
     _words = recipeText.split(' ');
     _duration = _words.length.toDouble();
   }
@@ -63,7 +63,7 @@ class _RecipeDirectionScreenState extends State<RecipeDirectionScreen> {
     super.initState();
     _initTts();
     _pageController.addListener(_onPageChanged);
-    recipeText = widget.recipe.steps[pageIndex];
+    recipeText = widget.recipe.steps[pageIndex].description;
     _words = recipeText.split(' ');
     _duration = _words.length.toDouble();
   }
@@ -75,14 +75,14 @@ class _RecipeDirectionScreenState extends State<RecipeDirectionScreen> {
       _pages.add(recipeBody(
           MediaQuery.of(context).size.width,
           MediaQuery.of(context).size.height,
-          widget.recipe.stepIntervals[i],
-          widget.recipe.steps[i],
+          widget.recipe.steps[i].time,
+          widget.recipe.steps[i].description,
           widget.recipe.titlePhoto,
           i + 1));
     }
     // flutterTts.stop();
     _initTts();
-    recipeText = widget.recipe.steps[pageIndex];
+    recipeText = widget.recipe.steps[pageIndex].description;
     _words = recipeText.split(' ');
     _duration = _words.length.toDouble();
     print(_words);
@@ -218,8 +218,8 @@ class _RecipeDirectionScreenState extends State<RecipeDirectionScreen> {
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
     // pageIndex = _pageController.page!.round();
-    recipeText = widget.recipe.steps[pageIndex];
-    time = widget.recipe.stepIntervals[pageIndex];
+    recipeText = widget.recipe.steps[pageIndex].description;
+    time = widget.recipe.steps[pageIndex].time;
 
     return Scaffold(
       body: Stack(

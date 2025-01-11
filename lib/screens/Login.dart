@@ -57,10 +57,10 @@ class _LogInState extends State<LogIn> {
   // }
 
   void _navigateToHome() {
-    fetchRecipes();
-    Navigator.push(
+    Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(builder: (context) => Homescreen()),
+          (Route<dynamic> route) => false,
     );
   }
 

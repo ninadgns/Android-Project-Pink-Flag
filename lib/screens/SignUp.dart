@@ -27,10 +27,17 @@ class _SignUpState extends State<SignUp> {
       TextEditingController();
 
   // Navigation method for Sign Up button
-  void _navigateToHome() {
-    Navigator.push(
-      context,
+  // void _navigateToHome(BuildContext context) {
+  //   Navigator.pushAndRemoveUntil(
+  //     context,
+  //     MaterialPageRoute(builder: (context) => Homescreen()),
+  //         (Route<dynamic> route) => false,
+  //   );
+  // }
+  void _navigateToHome(BuildContext context) {
+    Navigator.of(context).pushAndRemoveUntil(
       MaterialPageRoute(builder: (context) => Homescreen()),
+          (Route<dynamic> route) => false,
     );
   }
 
@@ -210,7 +217,7 @@ class _SignUpState extends State<SignUp> {
       });
 
       // Navigate to HomeScreen on success
-      _navigateToHome();
+      _navigateToHome(context);
     } catch (e) {
       // Handle sign-up errors
       _showSnackBar("Sign-Up failed: ${e.toString()}");

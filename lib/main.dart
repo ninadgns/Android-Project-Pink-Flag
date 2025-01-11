@@ -56,6 +56,7 @@ class MyApp extends StatelessWidget {
       title: 'Dim',
       theme: appTheme,
       home: (user?.uid == null) ? const Onboarding() : const Homescreen(),
+      // home: const Homescreen(),
     );
   }
 }

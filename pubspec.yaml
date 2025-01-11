@@ -59,6 +59,8 @@ dependencies:
   riverpod_generator: ^2.6.3
   supabase_flutter: ^2.0.0
   google_sign_in: ^6.2.2
+  marquee: ^2.3.0
+  firebase_storage: ^12.4.0
 
 dev_dependencies:
   flutter_test:

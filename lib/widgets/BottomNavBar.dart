@@ -3,8 +3,9 @@ import '../data/constants.dart';
 import '../screens/FilterScreen.dart';
 
 class BottomNavBar extends StatefulWidget {
-  BottomNavBar({super.key, required this.onItemTapped});
+  BottomNavBar({super.key, required this.onItemTapped, required this.isSearchScreen});
   Function(int) onItemTapped;
+  bool isSearchScreen;
   @override
   State<BottomNavBar> createState() => _BottomnavbarState();
 }
@@ -17,7 +18,7 @@ class _BottomnavbarState extends State<BottomNavBar> {
     final width = MediaQuery.of(context).size.width;
     return Stack(
       children: [
-        Positioned(
+        if(widget.isSearchScreen) Positioned(
           bottom: 0,
           left: 0,
           right: 0,

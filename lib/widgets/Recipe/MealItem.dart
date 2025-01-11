@@ -32,12 +32,14 @@ class _MealItemState extends State<MealItem> {
       ),
     );
   }
-@override
+
+  @override
   void initState() {
     // TODO: implement initState
     super.initState();
     widget.recipe.calculateTotalDuration();
   }
+
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -57,7 +59,9 @@ class _MealItemState extends State<MealItem> {
               tag: widget.recipe.id,
               child: FadeInImage(
                 placeholder: MemoryImage(kTransparentImage),
-                image: NetworkImage(widget.recipe.titlePhoto),
+                image: NetworkImage(widget.recipe.titlePhoto == ''
+                    ? 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTxEvt4P1dtrhRqT1B29rtiD9mnwqpfUshyug&s'
+                    : widget.recipe.titlePhoto),
                 fit: BoxFit.cover,
                 height: MediaQuery.of(context).size.height * 0.25,
                 width: double.infinity,

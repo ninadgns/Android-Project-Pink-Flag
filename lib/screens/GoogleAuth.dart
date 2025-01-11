@@ -51,6 +51,12 @@ Future<void> handleGoogleSignIn(
 /// This function handles Google Sign-In and returns a [UserCredential].
 Future<UserCredential> signInWithGoogle() async {
   try {
+    // Create a GoogleSignIn instance
+    final GoogleSignIn googleSignIn = GoogleSignIn.standard();
+
+    // Sign out any existing user to prompt the account selection dialog
+    await googleSignIn.signOut();
+
     // Trigger the authentication flow
     final GoogleSignInAccount? googleUser =
         await GoogleSignIn.standard().signIn();

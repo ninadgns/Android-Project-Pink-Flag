@@ -14,7 +14,7 @@ Future<List<Map<String, dynamic>>> fetchRecipes() async {
           total_duration,
           serving_count,
           created_at,
-          image_url,
+          title_photo,
           nutrition(protein, carbs, fat),
           ingredients(name, quantity, unit),
           steps(description, time, step_order)
@@ -26,7 +26,8 @@ Future<List<Map<String, dynamic>>> fetchRecipes() async {
     }
 
     debugPrint('Recipes fetched successfully.');
-    debugPrint('Recipes: $response');
+    // debugPrint('Recipes: $response');
+    print(response[0]['title_photo']);
     return List<Map<String, dynamic>>.from(response);
   } catch (e) {
     debugPrint('Failed to fetch recipes: $e');

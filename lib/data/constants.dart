@@ -4,7 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-import '../models/RecipeModel.dart';
+import '../models/RecipeModel.dart' as recipe_model;
 import '../screens/LibraryScreen.dart';
 import '../screens/ScannerScreen.dart';
 import '../screens/SearchScreen.dart';
@@ -102,68 +102,40 @@ final suggestedDiets = [
   'Lactose Free',
 ];
 
-final dummyRecipe = Recipe(
+final dummyRecipe = recipe_model.Recipe(
   userId: "user_12345",
   name: "Pumpkin Soup",
   description: "A creamy and comforting soup perfect for fall.",
   difficulty: difficulty[0],
+  nutrition: recipe_model.Nutrition(fat: 12, carbs: 52, protein: 34),
   ingredients: [
-    "Pumpkin",
-    "Onion",
-    "Garlic cloves",
-    "Vegetable stock",
-    "Cream",
-    "Olive oil",
-    "Salt",
-    "Pepper",
-    "Nutmeg"
+    recipe_model.Ingredient(name: "Pumpkin", unit: "g (peeled and chopped)", quantity: 500),
+    recipe_model.Ingredient(name: "Onion", unit: "piece", quantity: 1),
+    recipe_model.Ingredient(name: "Garlic cloves", unit: "cloves", quantity: 2),
+    recipe_model.Ingredient(name: "Vegetable stock", unit: "ml", quantity: 500),
+    recipe_model.Ingredient(name: "Cream", unit: "ml", quantity: 100),
+    recipe_model.Ingredient(name: "Olive oil", unit: "tablespoons", quantity: 2),
+    recipe_model.Ingredient(name: "Salt", unit: " ", quantity: 0),
+    recipe_model.Ingredient(name: "Pepper", unit: " ", quantity: 0),
+    recipe_model.Ingredient(name: "Nutmeg", unit: " ", quantity: 0),
   ],
-  energy: 355,
-  protein: 34,
-  carbs: 52,
-  fat: 12,
-  servings: 4,
-  ingredientAmounts: [
-    "500",
-    "1",
-    "2",
-    "500",
-    "100",
-    "2",
-    "To taste",
-    "To taste",
-    "A pinch"
-  ],
-  ingredientUnits: [
-    "g (peeled and chopped)",
-    'piece',
-    'cloves',
-    'ml',
-    'ml',
-    'tablespoons',
-    ' ',
-    ' ',
-    ' '
-  ],
-  steps: [
-    "Peel and chop the pumpkin into small cubes.",
-    "Peel and finely chop the onion and garlic cloves.",
-    "Heat 2 tablespoons of olive oil in a large pot over medium heat.",
-    "Add the onion and garlic to the pot and sauté until softened, about 5 minutes.",
-    "Add the chopped pumpkin to the pot and stir to combine with the onions and garlic.",
-    "Pour in the vegetable stock, ensuring the pumpkin is fully submerged.",
-    "Bring the mixture to a boil, then reduce the heat and let it simmer for about 20 minutes, or until the pumpkin is tender.",
-    "Remove the pot from heat and use an immersion blender to puree the soup until smooth. Alternatively, transfer the soup in batches to a blender.",
-    "Stir in the cream and season with salt, pepper, and a pinch of nutmeg. Mix well.",
-    "Serve the soup hot in bowls, garnished with a swirl of cream or croutons if desired. Enjoy your meal!"
-  ],
-  stepIntervals: [5, 5, 2, 5, 5, 2, 20, 10, 2, 1],
-  titlePhoto:
-      "https://thebigmansworld.com/wp-content/uploads/2024/09/pumpkin-curry-soup-recipe.jpg",
-  videoInstruction:
-      "https://e...content-available-to-author-only...e.com/video/pumpkin_soup",
-);
 
+  steps: [
+    recipe_model.Step(time: 5, stepOrder: 1, description: "Peel and chop the pumpkin into small cubes."),
+    recipe_model.Step(time: 5, stepOrder: 2, description: "Peel and finely chop the onion and garlic cloves."),
+    recipe_model.Step(time: 2, stepOrder: 3, description: "Heat 2 tablespoons of olive oil in a large pot over medium heat."),
+    recipe_model.Step(time: 5, stepOrder: 4, description: "Add the onion and garlic to the pot and sauté until softened, about 5 minutes."),
+    recipe_model.Step(time: 5, stepOrder: 5, description: "Add the chopped pumpkin to the pot and stir to combine with the onions and garlic."),
+    recipe_model.Step(time: 2, stepOrder: 6, description: "Pour in the vegetable stock, ensuring the pumpkin is fully submerged."),
+    recipe_model.Step(time: 20, stepOrder: 7, description: "Bring the mixture to a boil, then reduce the heat and let it simmer for about 20 minutes, or until the pumpkin is tender."),
+    recipe_model.Step(time: 10, stepOrder: 8, description: "Remove the pot from heat and use an immersion blender to puree the soup until smooth. Alternatively, transfer the soup in batches to a blender."),
+    recipe_model.Step(time: 2, stepOrder: 9, description: "Stir in the cream and season with salt, pepper, and a pinch of nutmeg. Mix well."),
+    recipe_model.Step(time: 1, stepOrder: 10, description: "Serve the soup hot in bowls, garnished with a swirl of cream or croutons if desired. Enjoy your meal!"),
+  ],
+  servings: 4,
+  titlePhoto: "https://thebigmansworld.com/wp-content/uploads/2024/09/pumpkin-curry-soup-recipe.jpg",
+  videoInstruction: "https://e...content-available-to-author-only...e.com/video/pumpkin_soup",
+)..calculateTotalDuration();
 const List<String> Units = ['kg', 'g', 'L', 'ml', 'pieces', 'packs'];
 const Map<String, Color> categoryColors = {
   'Meat, Poultry and Fish': Color(0xFFFFE4E1),

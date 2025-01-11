@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 
 class UpperBar extends StatelessWidget {
@@ -34,7 +33,7 @@ class UpperBar extends StatelessWidget {
           textAlign: TextAlign.start,
           style: TextStyle(
             color: Colors.black,
-            fontSize: height*0.03,
+            fontSize: height * 0.03,
             // fontWeight: FontWeight.bold,
           ),
         ),
@@ -42,20 +41,23 @@ class UpperBar extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Text(
-              name,
-              style: TextStyle(
-                color: Colors.black,
-                fontSize: height*0.037,
-                fontWeight: FontWeight.w600,
+            Container(
+              // color: Colors.red,
+              width: MediaQuery.of(context).size.width * 0.65,
+              child: Text(
+                name,
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: height * 0.037,
+                  fontWeight: FontWeight.w600,
+                ),
+                overflow: TextOverflow.ellipsis,
               ),
             ),
             TextButton(
-              onPressed: () {
-              },
+              onPressed: () {},
               style: ButtonStyle(
-                backgroundColor:
-                WidgetStateProperty.all(Colors.white),
+                backgroundColor: WidgetStateProperty.all(Colors.white),
                 shape: WidgetStateProperty.all(
                   RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20),
