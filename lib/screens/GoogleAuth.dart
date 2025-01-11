@@ -4,7 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'homescreen.dart';
+import 'HomeScreen.dart';
 
 /// This function handles Google Sign-In and navigation to home screen.
 Future<void> handleGoogleSignIn(

@@ -1,26 +1,52 @@
 {
   "project_info": {
-    "project_number": "1057601205894",
-    "project_id": "kitchenkraft-395e0",
-    "storage_bucket": "kitchenkraft-395e0.firebasestorage.app"
+    "project_number": "930235974996",
+    "project_id": "kabya2",
+    "storage_bucket": "kabya2.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1057601205894:android:5117d24661b0f069db0307",
+        "mobilesdk_app_id": "1:930235974996:android:66f6396b1383717f3134c1",
         "android_client_info": {
           "package_name": "com.example.dim"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "930235974996-pr14rculcphgsocthl7irrrj9s9ofac7.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.dim",
+            "certificate_hash": "826ff7eb48ec5786c5fb97e70e733823993b850e"
+          }
+        },
+        {
+          "client_id": "930235974996-r5q17odr4r6bt9heht3qlbufn7585al3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.dim",
+            "certificate_hash": "d0eb3c94714fd6dcfe7c30750100c7325103d7c3"
+          }
+        },
+        {
+          "client_id": "930235974996-shlbqfjp0nsa2t789356u3vovudnsnr6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
-          "current_key": "AIzaSyC422m1nHzdVreKzAsctRk5mfhTGs2sh5g"
+          "current_key": "AIzaSyCyNMYK2_1QPhKKO5W8FDisSoGk1T9MpWE"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "930235974996-bt1ucaut59vtm7buon3mfk46b5t5ribk.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }
