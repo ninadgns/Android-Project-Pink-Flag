@@ -1,10 +1,10 @@
 // ignore_for_file: prefer_const_constructors
 import 'package:dim/screens/GetStarted.dart';
+import 'package:dim/screens/GoogleAuth.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'HomeScreen.dart';
@@ -26,25 +26,6 @@ class _SignUpState extends State<SignUp> {
   final TextEditingController nameController = TextEditingController();
   final TextEditingController confirmPasswordController =
       TextEditingController();
-
-  Future<UserCredential> signInWithGoogle() async {
-    // Trigger the authentication flow
-    final GoogleSignInAccount? googleUser =
-        await GoogleSignIn.standard().signIn();
-
-    // Obtain the auth details from the request
-    final GoogleSignInAuthentication? googleAuth =
-        await googleUser?.authentication;
-
-    // Create a new credential
-    final credential = GoogleAuthProvider.credential(
-      accessToken: googleAuth?.accessToken,
-      idToken: googleAuth?.idToken,
-    );
-
-    // Once signed in, return the UserCredential
-    return await FirebaseAuth.instance.signInWithCredential(credential);
-  }
 
   // Navigation method for Sign Up button
   void _navigateToHome() {
@@ -292,44 +273,7 @@ class _SignUpState extends State<SignUp> {
     return Center(
       child: ElevatedButton(
         onPressed: () async {
-          try {
-            // Sign in with Google using Firebase
-            UserCredential user = await signInWithGoogle();
-            print(user);
-
-            // Show a snackbar on error
-            if (user.user == null) {
-              _showSnackBar("Error signing in with Google");
-              return;
-            }
-
-            // Extract user details
-            String firebaseUid = user.user?.uid ?? '';
-            String email = user.user?.email ?? '';
-            String displayName = user.user?.displayName ?? '';
-            String photoUrl = user.user?.photoURL ?? '';
-
-            // Insert or update user in the Supabase users table
-            final supabase = Supabase.instance.client;
-            final response = await supabase.from('users').upsert({
-              'id': firebaseUid, // Firebase UID as the unique identifier
-              'email': email,
-              'display_name': displayName,
-              'photo_url': photoUrl,
-            });
-
-            // Navigate to the home screen on successful login
-            if (firebaseUid.isNotEmpty) {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => Homescreen()),
-              );
-            }
-          } catch (e) {
-            // Handle any errors
-            print(e);
-            _showSnackBar("Error signing in with Google: ${e.toString()}");
-          }
+          handleGoogleSignIn(context, _showSnackBar);
         },
         style: ElevatedButton.styleFrom(
           padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
