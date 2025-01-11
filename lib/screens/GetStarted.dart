@@ -3,7 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import 'LogIn.dart';
+import 'Login.dart';
 import 'SignUp.dart';
 import 'curve.dart'; // Ensure this file contains BigClipper
 

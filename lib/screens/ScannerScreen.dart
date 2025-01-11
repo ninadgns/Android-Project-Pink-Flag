@@ -158,7 +158,7 @@ class ScannerScreen extends StatelessWidget {
                 DragTarget<Uint8List>(
                   onAcceptWithDetails: (data) {
                     updateState(() {
-                      _imageBytes = data;
+                      _imageBytes = data.data;
                     });
                   },
                   builder: (context, candidateData, rejectedData) {
