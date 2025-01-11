@@ -47,15 +47,18 @@ dependencies:
   flutter_tts: ^4.2.0
   intl: ^0.19.0
   flutter_svg: ^1.0.0+2
+  provider: ^6.1.2
   http: ^1.2.2
   firebase_core: ^3.9.0
   firebase_auth: ^5.3.4
   cloud_firestore: ^5.6.0
   flutter_stripe: ^10.0.0
+
   transparent_image: ^2.0.1
   riverpod_annotation: ^2.6.1
   riverpod_generator: ^2.6.3
   supabase_flutter: ^2.0.0
+  google_sign_in: ^6.2.2
 
 dev_dependencies:
   flutter_test:
@@ -88,17 +91,6 @@ flutter:
 #     - images/a_dot_burr.jpeg
 #     - images/a_dot_ham.jpeg
   assets:
-    - assets/image4.png
-    - assets/image7.png
-    - assets/page1Pan.png
-    - assets/jumpingFoodPan.gif
-    - assets/signup1.gif
-    - assets/login.gif
-    - assets/jumpingFoodPan.gif
-    - assets/shoppinglist.gif
-    - assets/chef.gif
-    - assets/pot.gif
-    - assets/cooking.png
     - assets/pumpkin_soup.jpg
     - assets/play_icon.png
     - assets/images/cat.png

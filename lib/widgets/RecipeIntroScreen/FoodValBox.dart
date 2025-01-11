@@ -26,13 +26,13 @@ class FoodValBox extends StatelessWidget {
         children: [
           Text(
             foodVal,
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.bold,
               color: Colors.black,
             ),
           ),
-          SizedBox(height: 2),
+          const SizedBox(height: 2),
           Text(
             valType,
             style: TextStyle(

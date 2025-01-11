@@ -60,7 +60,7 @@ class _NutritionInputState extends State<NutritionInput> {
               ),
             ],
           );
-        }).toList(),
+        }),
       ],
     );
   }

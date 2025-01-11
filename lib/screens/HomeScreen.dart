@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import '/data/constants.dart';
 
+import '/data/constants.dart';
 import '../widgets/BottomNavBar.dart';
 
 class Homescreen extends StatefulWidget {
@@ -21,8 +20,8 @@ class _HomescreenState extends State<Homescreen> {
 
   @override
   Widget build(BuildContext context) {
-    double _width = MediaQuery.of(context).size.width;
-    double _height = MediaQuery.of(context).size.height;
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
 
     return Scaffold(
       extendBodyBehindAppBar: true,
@@ -30,8 +29,8 @@ class _HomescreenState extends State<Homescreen> {
       resizeToAvoidBottomInset: false,
       // backgroundColor: ,
       body: Center(
-          child: homepageScreens[_current_index],
-        ),
+        child: homepageScreens[_current_index],
+      ),
       bottomNavigationBar: BottomNavBar(onItemTapped: _onItemTapped),
     );
   }

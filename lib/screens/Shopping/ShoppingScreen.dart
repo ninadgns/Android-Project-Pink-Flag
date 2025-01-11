@@ -188,7 +188,7 @@ class _ShoppingScreenState extends State<ShoppingScreen> with SingleTickerProvid
               groceryService: _groceryService,
               onAddItem: () => setState(() {}),
               onUpdate: () => setState(() {}),
-            )).toList(),
+            )),
             const SizedBox(height: 120),
           ],
         ),

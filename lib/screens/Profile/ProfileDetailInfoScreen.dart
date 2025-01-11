@@ -111,10 +111,10 @@ class _ProfileDetailInfoScreenState extends State<ProfileDetailInfoScreen>
                 controller: platformController,
                 decoration: const InputDecoration(
                   labelText: 'Platform (e.g. Instagram)',
-                  labelStyle: const TextStyle(color: Colors.black),
+                  labelStyle: TextStyle(color: Colors.black),
                   border: OutlineInputBorder(),
                   focusedBorder: OutlineInputBorder(
-                    borderSide: const BorderSide(color: Colors.black, width: 1),
+                    borderSide: BorderSide(color: Colors.black, width: 1),
                   ),
                 ),
               ),
@@ -237,7 +237,7 @@ class _ProfileDetailInfoScreenState extends State<ProfileDetailInfoScreen>
         children: [
           Expanded(
             child: Padding(
-              padding: EdgeInsets.symmetric(vertical: 12.0),
+              padding: const EdgeInsets.symmetric(vertical: 12.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -298,7 +298,7 @@ class _ProfileDetailInfoScreenState extends State<ProfileDetailInfoScreen>
                 ],
               ),
             );
-          }).toList(),
+          }),
           const SizedBox(height: 8),
           if (isEditMode)
             TextButton.icon(
@@ -372,7 +372,7 @@ class _ProfileDetailInfoScreenState extends State<ProfileDetailInfoScreen>
       body: Stack(
         children: [
           // Custom Painted Background with soothing patterns
-          Container(
+          SizedBox(
             height: 200, // Adjust height as needed
             width: double.infinity, // Adjust width as needed
             child: CustomPaint(

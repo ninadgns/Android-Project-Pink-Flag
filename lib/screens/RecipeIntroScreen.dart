@@ -1,13 +1,12 @@
 import 'package:dim/data/constants.dart';
-import 'package:dim/data/page_data.dart';
 import 'package:dim/screens/RecipeDirectionScreen.dart';
 import 'package:dim/widgets/VideoPlayer.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import '../models/RecipeModel.dart';
-import '/widgets/RecipeIntroScreen/DetailsInfo.dart';
 
+import '/widgets/RecipeIntroScreen/DetailsInfo.dart';
+import '../models/RecipeModel.dart';
 import '../widgets/RecipeIntroScreen/IngredientsInfo.dart';
 
 class RecipeIntro extends StatefulWidget {
@@ -80,7 +79,7 @@ class _RecipeIntroState extends State<RecipeIntro> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => VideoPlayerWindow(),
+                        builder: (context) => const VideoPlayerWindow(),
                       ),
                     );
                   },
@@ -205,7 +204,7 @@ class _RecipeIntroState extends State<RecipeIntro> {
                                   children: [
                                     Text(
                                       widget.recipe.name,
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                         fontSize: 24,
                                         fontWeight: FontWeight.bold,
                                         color: Colors.black,
@@ -214,7 +213,7 @@ class _RecipeIntroState extends State<RecipeIntro> {
                                     const SizedBox(height: 4),
                                     Text(
                                       widget.recipe.description,
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                         fontSize: 16,
                                         color: Colors.black,
                                       ),
@@ -229,17 +228,16 @@ class _RecipeIntroState extends State<RecipeIntro> {
                                             size: 16, color: Colors.grey),
                                         const SizedBox(width: 4),
                                         Text(
-                                            widget.recipe.totalDuration.toString() +
-                                                ' min',
+                                            '${widget.recipe.totalDuration} min',
                                             style:
-                                                TextStyle(color: Colors.grey)),
+                                                const TextStyle(color: Colors.grey)),
                                         SizedBox(width: width * 0.04),
                                         const Icon(Icons.signal_cellular_alt,
                                             size: 16, color: Colors.grey),
                                         const SizedBox(width: 4),
                                         Text(widget.recipe.difficulty,
                                             style:
-                                                TextStyle(color: Colors.grey)),
+                                                const TextStyle(color: Colors.grey)),
                                         SizedBox(width: width * 0.04),
                                         InkWell(
                                           child: Row(
@@ -373,7 +371,8 @@ class _RecipeIntroState extends State<RecipeIntro> {
                                         protein: widget.recipe.protein,
                                         carbs: widget.recipe.carbs,
                                         fat: widget.recipe.fat,
-                                        description: widget.recipe.steps.join(' '),
+                                        description:
+                                            widget.recipe.steps.join(' '),
                                       ),
                               ],
                             ),
@@ -388,22 +387,23 @@ class _RecipeIntroState extends State<RecipeIntro> {
                                     horizontal: 2,
                                   ),
                                   child: ListTile(
-                                    title: Text(widget.recipe.ingredients[index]),
+                                    title:
+                                        Text(widget.recipe.ingredients[index]),
                                     trailing: Text(
-                                      (double.tryParse(widget.recipe.ingredientAmounts[
+                                      '${double.tryParse(widget.recipe
+                                                          .ingredientAmounts[
                                                       index]) !=
                                                   null
                                               ? formatter
-                                                  .format((double.parse(widget.recipe
+                                                  .format((double.parse(widget
+                                                              .recipe
                                                               .ingredientAmounts[
                                                           index]) *
                                                       count /
                                                       widget.recipe.servings))
                                                   .toString()
                                               : widget.recipe
-                                                  .ingredientAmounts[index]) +
-                                          ' ' +
-                                          widget.recipe.ingredientUnits[index],
+                                                  .ingredientAmounts[index]} ${widget.recipe.ingredientUnits[index]}',
                                     ),
                                   ),
                                 );

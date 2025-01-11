@@ -15,8 +15,8 @@ class GroceryItemCard extends StatelessWidget {
     required this.groceryService,
     required this.onUpdate,
     required this.category,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   static void showAddItemDialog(
       BuildContext context,

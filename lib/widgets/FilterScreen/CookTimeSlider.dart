@@ -30,7 +30,7 @@ class _CookTimeSliderState extends State<CookTimeSlider> {
           width: double.maxFinite, // Set the desired width here
           child: SliderTheme(
             data: SliderThemeData(
-              thumbShape: RoundSliderThumbShape(enabledThumbRadius: 8),
+              thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 8),
               trackShape: CustomTrackShape(),
               trackHeight: 3,
             ),

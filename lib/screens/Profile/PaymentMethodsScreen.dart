@@ -9,11 +9,11 @@ class PaymentMethodsScreen extends StatefulWidget {
   final double amountToPay;
   final String planId;
 
-  PaymentMethodsScreen({
-    Key? key,
+  const PaymentMethodsScreen({
+    super.key,
     required this.amountToPay,
     required this.planId,
-  }) : super(key: key);
+  });
 
   @override
   State<PaymentMethodsScreen> createState() => _PaymentMethodsScreenState();
@@ -158,7 +158,7 @@ class _PaymentMethodsScreenState extends State<PaymentMethodsScreen> {
                   ),
                   const SizedBox(height: 10),
                   Padding(
-                    padding: EdgeInsets.all(8),
+                    padding: const EdgeInsets.all(8),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
@@ -385,10 +385,10 @@ class _PaymentMethodsScreenState extends State<PaymentMethodsScreen> {
               Text('Error: $_error'),
               ElevatedButton(
                 onPressed: _loadPaymentMethods,
-                child: const Text('Retry'),
                 style: TextButton.styleFrom(
                   foregroundColor: Colors.blue.shade300,
                 ),
+                child: const Text('Retry'),
               ),
             ],
           ),

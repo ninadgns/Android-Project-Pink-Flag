@@ -54,8 +54,8 @@ class _ImageUploaderState extends State<ImageUploader> {
           children: [
             ClipRRect(
               borderRadius: BorderRadius.circular(8),
-                    child: Image.file(
-                      _selectedImageFile!,
+              child: Image.file(
+                _selectedImageFile!,
                 width: double.infinity,
                 height: double.infinity,
               ),
@@ -66,7 +66,7 @@ class _ImageUploaderState extends State<ImageUploader> {
               child: GestureDetector(
                 onTap: () {
                   setState(() {
-                          _selectedImageFile = null;
+                    _selectedImageFile = null;
                   });
                 },
                 child: Container(

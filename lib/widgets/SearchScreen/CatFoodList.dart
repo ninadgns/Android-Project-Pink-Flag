@@ -14,7 +14,7 @@ class CatFoodList extends StatefulWidget {
 class _CatFoodListState extends State<CatFoodList> {
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       height: MediaQuery.of(context).size.height * 0.4,
       child: CarouselSlider(
         options: CarouselOptions(

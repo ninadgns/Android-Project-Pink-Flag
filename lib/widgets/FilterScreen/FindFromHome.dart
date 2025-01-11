@@ -23,7 +23,7 @@ class FindFromHome extends StatelessWidget {
         width: double.maxFinite,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(15),
-          color: Color(0xffaed6ce),
+          color: const Color(0xffaed6ce),
         ),
         child: const Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,

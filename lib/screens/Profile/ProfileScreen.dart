@@ -1,8 +1,7 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'NotificationsScreen.dart';
 import 'package:dim/widgets/ProfileScreen/MenuItemTile.dart';
-import 'MyPostsScreen.dart';
+import '../ViewPost/MyPostsScreen.dart';
 import 'SubscriptionScreen.dart';
 import 'PreferencesScreen.dart';
 import 'SettingsScreen.dart';
@@ -125,13 +124,13 @@ class _ProfileScreenState extends State<ProfileScreen>
         screen = const PreferencesScreen();
         break;
       case 'Posts':
-        screen = const MyPostsScreen();
+        screen = const PostsScreen();
         break;
       case 'Subscription Management':
         screen = const SubscriptionScreen();
         break;
       default:
-        screen = ProfileScreen();
+        screen = const ProfileScreen();
     }
 
     Navigator.push(
@@ -247,7 +246,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                       onPressed: () {
                         Navigator.pop(context);
                       },
-                      icon: Icon(Icons.arrow_back_ios),
+                      icon: const Icon(Icons.arrow_back_ios),
                     ),
                     const Text(
                       'Profile',

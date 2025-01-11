@@ -77,10 +77,10 @@ class _StepsInputState extends State<StepsInput> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
             style: TextButton.styleFrom(
               foregroundColor: Colors.black,
             ),
+            child: const Text('Cancel'),
           ),
           ElevatedButton(
             onPressed: () {
@@ -92,10 +92,10 @@ class _StepsInputState extends State<StepsInput> {
               stepTimeController.clear();
               Navigator.pop(context);
             },
-            child: const Text('Add Step'),
             style: ElevatedButton.styleFrom(
               foregroundColor: Colors.black,
             ),
+            child: const Text('Add Step'),
           ),
         ],
       ),

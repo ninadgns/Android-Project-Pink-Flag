@@ -34,7 +34,7 @@ class IngredientsInfo extends StatelessWidget {
                   onPressed: () {
                     onRemove();
                   },
-                  icon: Icon(
+                  icon: const Icon(
                     Icons.remove_circle_rounded,
                     color: Colors.black,
                     size: 40,
@@ -42,7 +42,7 @@ class IngredientsInfo extends StatelessWidget {
                 ),
                 Text(
                   '$howManyServings',
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                     color: Colors.black,
@@ -52,7 +52,7 @@ class IngredientsInfo extends StatelessWidget {
                   onPressed: () {
                     onAdd();
                   },
-                  icon: Icon(
+                  icon: const Icon(
                     Icons.add_circle_rounded,
                     color: Colors.black,
                     size: 40,
@@ -62,11 +62,11 @@ class IngredientsInfo extends StatelessWidget {
             ),
           ],
         ),
-        SizedBox(height: 16),
+        const SizedBox(height: 16),
         // Ingredient List Header
         Text(
           '$numberOfItems Items',
-          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
         ),
       ],
     );

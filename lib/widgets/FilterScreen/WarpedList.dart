@@ -28,14 +28,14 @@ class _WarpedListState extends State<WarpedList> {
           children: [
             ...widget.items.map((item) {
               return FlatButton(item: item);
-            }).toList(),
+            }),
             TextButton(
               style: ButtonStyle(
                   backgroundColor: WidgetStateProperty.all(
                     Colors.white,
                   ),
                   side: WidgetStateProperty.all(
-                    BorderSide(
+                    const BorderSide(
                       color: Colors.grey,
                       width: 0.5,
                     ),

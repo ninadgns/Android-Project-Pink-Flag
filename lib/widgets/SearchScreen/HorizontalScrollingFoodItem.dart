@@ -1,7 +1,5 @@
 import 'package:dim/data/constants.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../screens/RecipeIntroScreen.dart';
 
@@ -14,16 +12,16 @@ class HorizontalScrollingFood extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double _width = MediaQuery.of(context).size.width;
-    double _height = MediaQuery.of(context).size.height;
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
 
-    return Container(
-      width: _width / 1.3,
+    return SizedBox(
+      width: width / 1.3,
       child: Stack(
         children: [
           Positioned(
             bottom: 0,
-            right: _width / 25,
+            right: width / 25,
             child: InkWell(
               borderRadius: BorderRadius.circular(40),
               onTap: () {
@@ -35,16 +33,16 @@ class HorizontalScrollingFood extends StatelessWidget {
                 );
               },
               child: Container(
-                height: _width / 2,
-                width: _width / 2,
+                height: width / 2,
+                width: width / 2,
                 decoration: BoxDecoration(
                   color: color,
                   borderRadius: BorderRadius.circular(40),
                 ),
                 child: Stack(children: [
                   Positioned(
-                    top: _width / 30,
-                    right: _width / 30,
+                    top: width / 30,
+                    right: width / 30,
                     child: IconButton(
                       onPressed: () {
                         print(33333);
@@ -72,9 +70,9 @@ class HorizontalScrollingFood extends StatelessWidget {
                   Stack(
                     children: [
                       Positioned(
-                        bottom: _width / 15,
-                        left: _width / 20,
-                        right: _width / 20, // Allow Row to expand to full width
+                        bottom: width / 15,
+                        left: width / 20,
+                        right: width / 20, // Allow Row to expand to full width
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -145,8 +143,10 @@ class HorizontalScrollingFood extends StatelessWidget {
               },
               child: CircleAvatar(
                 backgroundColor: Colors.white,
-                radius: _width / 4,
+                radius: width / 4,
                 child: CircleAvatar(
+                  backgroundColor: color,
+                  radius: width / 4.5,
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(100),
                     child: Image.asset(
@@ -154,8 +154,6 @@ class HorizontalScrollingFood extends StatelessWidget {
                       fit: BoxFit.cover,
                     ),
                   ),
-                  backgroundColor: color,
-                  radius: _width / 4.5,
                 ),
               ),
             ),

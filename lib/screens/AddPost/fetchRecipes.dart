@@ -20,7 +20,7 @@ Future<List<Map<String, dynamic>>> fetchRecipes() async {
           steps(description, time, step_order)
         ''').order('created_at', ascending: false);
 
-    if (response == null || response.isEmpty) {
+    if (response.isEmpty) {
       debugPrint('No recipes found.');
       return [];
     }

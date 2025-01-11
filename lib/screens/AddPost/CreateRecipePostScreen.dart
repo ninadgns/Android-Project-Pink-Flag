@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
+import 'package:dim/services/user_provider.dart';
+import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
@@ -201,7 +201,7 @@ class _CreateRecipePostScreenState extends State<CreateRecipePostScreen> {
       final imageUrl = await _uploadImageToSupabase(_recipeImage!);
 
       final postData = {
-        'user_id': 'd942d7d5-f9b5-4dc6-a63d-7271f1e22f3a',
+        'user_id': Provider.of<UserProvider>(context).user?.uid,
         'title': _titleController.text,
         'description': _descriptionController.text,
         'difficulty': _difficulty,
@@ -235,28 +235,37 @@ class _CreateRecipePostScreenState extends State<CreateRecipePostScreen> {
         debugPrint(nutritionResponse);
 
         // Insert ingredients
-        for (final ingredient in _ingredients) {
-          final ingredientResponse = await supabase.from('ingredients').insert({
+        final List<Map<String, dynamic>> ingredientBatch =
+            _ingredients.map((ingredient) {
+          return {
             'recipe_id': recipeId,
             'name': ingredient['name'],
             'quantity': ingredient['quantity'],
             'unit': ingredient['unit'],
-          });
+          };
+        }).toList();
 
-          debugPrint(ingredientResponse);
+        if (ingredientBatch.isNotEmpty) {
+          final ingredientsResponse =
+              await supabase.from('ingredients').insert(ingredientBatch);
+          debugPrint(ingredientsResponse);
         }
 
-        // Insert steps with step_order
-        for (int i = 0; i < _steps.length; i++) {
-          final step = _steps[i];
-          final stepResponse = await supabase.from('steps').insert({
+        // Batch insert steps
+        final List<Map<String, dynamic>> stepsBatch =
+            _steps.asMap().entries.map((entry) {
+          final step = entry.value;
+          return {
             'recipe_id': recipeId,
             'description': step['description'],
             'time': step['time'],
-            'step_order': i + 1,
-          });
+            'step_order': entry.key + 1,
+          };
+        }).toList();
 
-          debugPrint(stepResponse);
+        if (stepsBatch.isNotEmpty) {
+          final stepResopnse = await supabase.from('steps').insert(stepsBatch);
+          debugPrint(stepResopnse);
         }
 
         Navigator.pop(context, postData);

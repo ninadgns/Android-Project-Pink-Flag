@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 import 'package:chewie/chewie.dart';
 
-import 'VideoPlayerScreen/VideoDownBar.dart';
 
 class VideoPlayerWindow extends StatefulWidget {
+  const VideoPlayerWindow({super.key});
+
   @override
   _VideoPlayerWindowState createState() => _VideoPlayerWindowState();
 }
@@ -54,7 +55,7 @@ class _VideoPlayerWindowState extends State<VideoPlayerWindow> {
           color: Colors.transparent,
           // height: double.maxFinite, // Black background while loading.
           // width: double.maxFinite,
-          child: Center(
+          child: const Center(
             child: Text(
               'Loading Video...',
               style: TextStyle(color: Colors.white, fontSize: 16),
@@ -85,15 +86,15 @@ class _VideoPlayerWindowState extends State<VideoPlayerWindow> {
     return Scaffold(
       body: Column(
         children: [
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
           Row(
             children: [
-              SizedBox(width: 16),
+              const SizedBox(width: 16),
               IconButton(
                 onPressed: () {
                   Navigator.pop(context);
                 },
-                icon: Icon(
+                icon: const Icon(
                   Icons.arrow_back_ios,
                   color: Colors.black,
                 ),
@@ -101,7 +102,7 @@ class _VideoPlayerWindowState extends State<VideoPlayerWindow> {
               Container(
                 color: Colors.transparent,
                 // padding: EdgeInsets.all(16.0),
-                child: Text(
+                child: const Text(
                   'Pumpkin Soup Recipe',
                   style: TextStyle(
                     color: Colors.black,
@@ -120,7 +121,7 @@ class _VideoPlayerWindowState extends State<VideoPlayerWindow> {
                   ? Chewie(
                       controller: _chewieController!,
                     )
-                  : CircularProgressIndicator(),
+                  : const CircularProgressIndicator(),
             ),
           ),
         ],

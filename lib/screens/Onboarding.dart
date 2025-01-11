@@ -1,4 +1,3 @@
-import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:liquid_swipe/liquid_swipe.dart';
@@ -8,7 +7,7 @@ import 'GetStarted.dart';
 import 'curve.dart'; // Ensure this file contains BigClipper
 
 class Onboarding extends StatefulWidget {
-  const Onboarding({Key? key}) : super(key: key);
+  const Onboarding({super.key});
 
   @override
   State<Onboarding> createState() => _OnboardingState();
@@ -49,7 +48,7 @@ class _OnboardingState extends State<Onboarding> {
                   Text(
                     "Welcome",
                     style: GoogleFonts.satisfy(
-                      fontSize: screenHeight / 12, // Responsive font size
+                      fontSize: screenHeight / 15, // Responsive font size
                       fontWeight: FontWeight.bold,
                       color: const Color(0xFF39786D),
                     ),
@@ -57,7 +56,7 @@ class _OnboardingState extends State<Onboarding> {
                   Text(
                     "to",
                     style: GoogleFonts.satisfy(
-                      fontSize: screenHeight / 12,
+                      fontSize: screenHeight / 15,
                       fontWeight: FontWeight.bold,
                       color: const Color(0xFF39786D),
                     ),
@@ -65,7 +64,7 @@ class _OnboardingState extends State<Onboarding> {
                   Text(
                     "Cooking Diary",
                     style: GoogleFonts.satisfy(
-                      fontSize: screenHeight / 12,
+                      fontSize: screenHeight / 15,
                       fontWeight: FontWeight.bold,
                       color: const Color(0xFF39786D),
                     ),
@@ -107,7 +106,7 @@ class _OnboardingState extends State<Onboarding> {
                   Text(
                     "Welcome",
                     style: GoogleFonts.satisfy(
-                      fontSize: screenHeight / 12, // Responsive font size
+                      fontSize: screenHeight / 15, // Responsive font size
                       fontWeight: FontWeight.bold,
                       color: const Color(0xFFC89A1D),
                     ),
@@ -115,7 +114,7 @@ class _OnboardingState extends State<Onboarding> {
                   Text(
                     "to",
                     style: GoogleFonts.satisfy(
-                      fontSize: screenHeight / 12,
+                      fontSize: screenHeight / 15,
                       fontWeight: FontWeight.bold,
                       color: const Color(0xFFC89A1D),
                     ),
@@ -123,7 +122,7 @@ class _OnboardingState extends State<Onboarding> {
                   Text(
                     "Cooking Diary",
                     style: GoogleFonts.satisfy(
-                      fontSize: screenHeight / 12,
+                      fontSize: screenHeight / 15,
                       fontWeight: FontWeight.bold,
                       color: const Color(0xFFC89A1D),
                     ),
@@ -165,25 +164,25 @@ class _OnboardingState extends State<Onboarding> {
                   Text(
                     "Welcome",
                     style: GoogleFonts.satisfy(
-                      fontSize: screenHeight / 12, // Responsive font size
+                      fontSize: screenHeight / 15, // Responsive font size
                       fontWeight: FontWeight.bold,
-                      color: const Color(0xFF39786D),
+                      color: const Color(0xFF2B5B88),
                     ),
                   ),
                   Text(
                     "to",
                     style: GoogleFonts.satisfy(
-                      fontSize: screenHeight / 12,
+                      fontSize: screenHeight / 15,
                       fontWeight: FontWeight.bold,
-                      color: const Color(0xFF39786D),
+                      color: const Color(0xFF2B5B88),
                     ),
                   ),
                   Text(
                     "Cooking Diary",
                     style: GoogleFonts.satisfy(
-                      fontSize: screenHeight / 12,
+                      fontSize: screenHeight / 15,
                       fontWeight: FontWeight.bold,
-                      color: const Color(0xFF39786D),
+                      color: const Color(0xFF2B5B88),
                     ),
                   ),
                   Text(
@@ -191,7 +190,7 @@ class _OnboardingState extends State<Onboarding> {
                     style: GoogleFonts.shadowsIntoLight(
                       fontSize: screenHeight / 40,
                       fontWeight: FontWeight.bold,
-                      color: const Color(0xFF39786D),
+                      color: const Color(0xFF2B5B88),
                     ),
                   ),
                 ],
@@ -221,25 +220,25 @@ class _OnboardingState extends State<Onboarding> {
                   Text(
                     "Welcome",
                     style: GoogleFonts.satisfy(
-                      fontSize: screenHeight / 12, // Responsive font size
+                      fontSize: screenHeight / 15, // Responsive font size
                       fontWeight: FontWeight.bold,
-                      color: const Color(0xFF39786D),
+                      color: const Color(0xFFC15F6B),
                     ),
                   ),
                   Text(
                     "to",
                     style: GoogleFonts.satisfy(
-                      fontSize: screenHeight / 12,
+                      fontSize: screenHeight / 15,
                       fontWeight: FontWeight.bold,
-                      color: const Color(0xFF39786D),
+                      color: const Color(0xFFC15F6B),
                     ),
                   ),
                   Text(
                     "Cooking Diary",
                     style: GoogleFonts.satisfy(
-                      fontSize: screenHeight / 12,
+                      fontSize: screenHeight / 15,
                       fontWeight: FontWeight.bold,
-                      color: const Color(0xFF39786D),
+                      color: const Color(0xFFC15F6B),
                     ),
                   ),
                   Text(
@@ -247,7 +246,7 @@ class _OnboardingState extends State<Onboarding> {
                     style: GoogleFonts.shadowsIntoLight(
                       fontSize: screenHeight / 40,
                       fontWeight: FontWeight.bold,
-                      color: const Color(0xFF39786D),
+                      color: const Color(0xFFC15F6B),
 
                     ),
                   ),
@@ -255,9 +254,10 @@ class _OnboardingState extends State<Onboarding> {
               ),
             ),
             Align(
-              alignment: Alignment(0, 0.8),
+              alignment: const Alignment(0, 0.85),
 
               child: ElevatedButton(
+
                 onPressed: () {
                   // TODO: Implement navigation to the main app screen
                   // Example:
@@ -265,17 +265,19 @@ class _OnboardingState extends State<Onboarding> {
                   print("Get Started Pressed");
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => Getstarted()),
+                    MaterialPageRoute(builder: (context) => const Getstarted()),
                   );
                 },
                 style: ElevatedButton.styleFrom(
+                  minimumSize: const Size(200, 50),
                   padding:
-                  const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
+                  const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
                   backgroundColor:
-                  const Color(0xFF9E687D), // Button color
+                  const Color(0xFF000000), // Button color
                   textStyle: const TextStyle(fontSize: 18),
+                  iconColor: const Color(0xFFFFFFFF),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30.0),
+                    borderRadius: BorderRadius.circular(15),
                   ),
                 ),
                 child: const Text(
@@ -294,49 +296,67 @@ class _OnboardingState extends State<Onboarding> {
     ];
 
     return Scaffold(
-      body: Stack(
-        children: [
-          LiquidSwipe(
-            pages: pages,
-            enableSideReveal: false, // Disable side reveal
-            fullTransitionValue: 300,
-            slideIconWidget: const Icon(Icons.arrow_back_ios),
-            // Remove slideIconWidget to hide the slide icon
-            onPageChangeCallback: (index) {
-              setState(() {
-                currentPage = index;
-              });
-            },
-            waveType: WaveType.liquidReveal,
-            positionSlideIcon: 0.5,
-            liquidController: _liquidController,
-            // Optionally, you can add more customization here
-          ),
-          // Page Indicators
-          Positioned(
-            bottom: 30,
-            left: 0,
-            right: 0,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: List.generate(
-                pages.length,
-                    (index) => AnimatedContainer(
-                  duration: const Duration(milliseconds: 300),
-                  margin: const EdgeInsets.symmetric(horizontal: 5),
-                  width: currentPage == index ? 12 : 8,
-                  height: currentPage == index ? 12 : 8,
-                  decoration: BoxDecoration(
-                    color: currentPage == index
-                        ? const Color(0xFF39786D)
-                        : Colors.grey,
-                    shape: BoxShape.circle,
+      body: GestureDetector(
+        onHorizontalDragEnd: (details) {
+          if (currentPage == pages.length - 1) {
+// Prevent any swipe on the last page
+            return;
+          } else if (details.primaryVelocity! > 0 && currentPage > 0) {
+// Navigate back to the previous page on left swipe
+            _liquidController.animateToPage(page: currentPage - 1);
+          } else if (details.primaryVelocity! < 0 &&
+              currentPage < pages.length - 1) {
+// Navigate forward to the next page on right swipe
+            _liquidController.animateToPage(page: currentPage + 1);
+          }
+        },
+        child: Stack(
+          children: [
+            LiquidSwipe(
+              pages: pages,
+              enableSideReveal: false,
+              enableLoop: false, // Add this line to prevent looping
+              ignoreUserGestureWhileAnimating: true, // Add this to prevent gesture issues during animation
+              fullTransitionValue: 300,
+              slideIconWidget: currentPage == pages.length - 1
+                  ? null
+                  : const Icon(Icons.arrow_back_ios),
+              onPageChangeCallback: (index) {
+                setState(() {
+                  currentPage = index;
+                });
+              },
+              waveType: WaveType.liquidReveal,
+              positionSlideIcon: 0.5,
+              liquidController: _liquidController,
+              disableUserGesture: currentPage == pages.length - 1, // Add this line to disable gestures on last page
+            ),
+            Positioned(
+              bottom: 30,
+              left: 0,
+              right: 0,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: List.generate(
+                  pages.length,
+                      (index) => AnimatedContainer(
+                    duration: const Duration(milliseconds: 300),
+                    margin: const EdgeInsets.symmetric(horizontal: 5),
+                    width: currentPage == index ? 12 : 8,
+                    height: currentPage == index ? 12 : 8,
+                    decoration: BoxDecoration(
+                      color: currentPage == index
+                          ? const Color(0xFF0E1514)
+                          : Colors.grey,
+                      shape: BoxShape.circle,
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
-        ],
+// Rest of your code remains the same
+          ],
+        ),
       ),
     );
   }
@@ -347,21 +367,21 @@ class _OnboardingState extends State<Onboarding> {
 class SoftPastelBackgroundPainter extends CustomPainter {
   // Normalized positions (as fractions of width and height) and radii
   final List<Offset> normalizedPositions = [
-    Offset(0.1, 0.2),
-    Offset(0.3, 0.5),
-    Offset(0.6, 0.8),
-    Offset(0.8, 0.2),
-    Offset(0.2, 0.6),
-    Offset(0.4, 1.0),
-    Offset(0.1, 1.2),
-    Offset(0.7, 0.7),
-    Offset(0.5, 0.3),
-    Offset(1.0, 0.9),
-    Offset(0.3, 0.1),
-    Offset(0.9, 0.4),
-    Offset(0.1, 1.0),
-    Offset(0.6, 0.5),
-    Offset(0.8, 1.2),
+    const Offset(0.1, 0.2),
+    const Offset(0.3, 0.5),
+    const Offset(0.6, 0.8),
+    const Offset(0.8, 0.2),
+    const Offset(0.2, 0.6),
+    const Offset(0.4, 1.0),
+    const Offset(0.1, 1.2),
+    const Offset(0.7, 0.7),
+    const Offset(0.5, 0.3),
+    const Offset(1.0, 0.9),
+    const Offset(0.3, 0.1),
+    const Offset(0.9, 0.4),
+    const Offset(0.1, 1.0),
+    const Offset(0.6, 0.5),
+    const Offset(0.8, 1.2),
   ];
 
   final List<double> normalizedRadii = [
@@ -413,14 +433,14 @@ class SoftPastelBackgroundPainter extends CustomPainter {
 class SoftPastelBackgroundCooker extends CustomPainter {
   // Normalized positions (as fractions of width and height) and sizes
   final List<Offset> normalizedPositions = [
-    Offset(0.1, 0.2),
-    Offset(0.3, 0.5),
-    Offset(0.6, 0.8),
-    Offset(0.8, 0.2),
-    Offset(0.2, 0.6),
-    Offset(0.4, 1.0),
-    Offset(0.7, 0.7),
-    Offset(0.5, 0.3),
+    const Offset(0.1, 0.2),
+    const Offset(0.3, 0.5),
+    const Offset(0.6, 0.8),
+    const Offset(0.8, 0.2),
+    const Offset(0.2, 0.6),
+    const Offset(0.4, 1.0),
+    const Offset(0.7, 0.7),
+    const Offset(0.5, 0.3),
   ];
 
   final List<double> normalizedSizes = [
@@ -492,14 +512,14 @@ class SoftPastelBackgroundCooker extends CustomPainter {
 class SoftPastelBackgroundOrganize extends CustomPainter {
   // Normalized positions (as fractions of width and height) and sizes
   final List<Offset> normalizedPositions = [
-    Offset(0.1, 0.2),
-    Offset(0.3, 0.5),
-    Offset(0.6, 0.8),
-    Offset(0.8, 0.2),
-    Offset(0.2, 0.6),
-    Offset(0.4, 1.0),
-    Offset(0.7, 0.7),
-    Offset(0.5, 0.3),
+    const Offset(0.1, 0.2),
+    const Offset(0.3, 0.5),
+    const Offset(0.6, 0.8),
+    const Offset(0.8, 0.2),
+    const Offset(0.2, 0.6),
+    const Offset(0.4, 1.0),
+    const Offset(0.7, 0.7),
+    const Offset(0.5, 0.3),
   ];
 
   final List<double> normalizedSizes = [
@@ -571,14 +591,14 @@ class SoftPastelBackgroundOrganize extends CustomPainter {
 class SoftPastelBackgroundCommunity extends CustomPainter {
   // Normalized positions (as fractions of width and height) and sizes
   final List<Offset> normalizedPositions = [
-    Offset(0.1, 0.2),
-    Offset(0.3, 0.5),
-    Offset(0.6, 0.8),
-    Offset(0.8, 0.2),
-    Offset(0.2, 0.6),
-    Offset(0.4, 1.0),
-    Offset(0.7, 0.7),
-    Offset(0.5, 0.3),
+    const Offset(0.1, 0.2),
+    const Offset(0.3, 0.5),
+    const Offset(0.6, 0.8),
+    const Offset(0.8, 0.2),
+    const Offset(0.2, 0.6),
+    const Offset(0.4, 1.0),
+    const Offset(0.7, 0.7),
+    const Offset(0.5, 0.3),
   ];
 
   final List<double> normalizedSizes = [
