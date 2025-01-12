@@ -3,6 +3,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../data/constants.dart';
+import 'HomeScreen.dart';
 import 'Login.dart';
 import 'SignUp.dart';
 import 'curve.dart'; // Ensure this file contains BigClipper
@@ -153,10 +155,21 @@ class _OnboardingState extends State<Getstarted> {
                       width: screenWidth * 0.3, // 90% of screen width
                       child: ElevatedButton(
                         onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => LogIn()),
-                          );
+                          try {
+                            // Navigate to the home screen
+                            login1=false;
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => Homescreen()),
+                            );
+                          } catch (e) {
+                            // Show error message on failure
+                            //_showSnackBar('Failed: ${e.toString()}');
+                          }
+                          // Navigator.push(
+                          //   context,
+                          //   MaterialPageRoute(builder: (context) => LogIn()),
+                          // );
                         },
                         style: ElevatedButton.styleFrom(
                           padding: EdgeInsets.symmetric(

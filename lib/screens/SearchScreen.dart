@@ -1,3 +1,4 @@
+import 'package:dim/screens/GetStarted.dart';
 import 'package:dim/screens/Profile/ProfileScreen.dart';
 import 'package:dim/widgets/SearchScreen/ReicipeListView.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -7,6 +8,7 @@ import '../widgets/SearchScreen/CatFoodList.dart';
 import '../widgets/SearchScreen/HorizontalScrollingCat.dart';
 import '../widgets/SearchScreen/SearchBarHome.dart';
 import 'AddPost/CreateRecipePostScreen.dart';
+import 'package:dim/data/constants.dart';
 
 class SearchScreen extends StatefulWidget {
   const SearchScreen({super.key});
@@ -17,7 +19,9 @@ class SearchScreen extends StatefulWidget {
 
 class _SearchScreenState extends State<SearchScreen> {
   String _selectedCategory = 'Popular';
-  String _profileImageUrl = 'assets/images/profile.png';
+  String _profileImageUrl='assets/images/yellow.jpg';
+
+
   void _onCategorySelected(String category) {
     setState(() {
       _selectedCategory = category;
@@ -57,6 +61,9 @@ class _SearchScreenState extends State<SearchScreen> {
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
+    if(login1){
+      _profileImageUrl= 'assets/images/profile.png'  ;
+    }
     return Scaffold(
       body: SizedBox(
         width: MediaQuery.of(context).size.width,
@@ -75,38 +82,45 @@ class _SearchScreenState extends State<SearchScreen> {
                   ),
                   const Spacer(),
                   SizedBox(width: width * 0.05),
-                  Hero(
-                    tag: 'profile-hero',
-                    child: InkWell(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const ProfileScreen(),
-                          ),
-                        );
-                      },
-                      child: Container(
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.grey.withOpacity(0.5),
-                              spreadRadius: 1,
-                              blurRadius: 4,
-                              offset: const Offset(0, 3),
+                  Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) {
+                                if (login1) {
+                                  return ProfileScreen(imagePath: _profileImageUrl); // Forward image data
+                                } else {
+                                  return const Getstarted(); // Forward image data to another screen
+                                }
+                              },
+                              //=> const ProfileScreen(),
                             ),
-                          ],
-                        ),
-                        child: CircleAvatar(
-                          radius: width / 15, // larger size
-                          backgroundImage: _profileImageUrl.startsWith('http')
-                              ? NetworkImage(_profileImageUrl)
-                              : AssetImage(_profileImageUrl) as ImageProvider,
+                          );
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.5),
+                                spreadRadius: 1,
+                                blurRadius: 4,
+                                offset: const Offset(0, 3),
+                              ),
+                            ],
+                          ),
+                          child: CircleAvatar(
+                            radius: width / 15, // larger size
+                            backgroundImage: _profileImageUrl.startsWith('http')
+                                ? NetworkImage(_profileImageUrl)
+                                : AssetImage(_profileImageUrl) as ImageProvider,
+                          ),
                         ),
                       ),
                     ),
-                  ),
                   SizedBox(width: width * 0.04),
                 ],
               ), // Top text

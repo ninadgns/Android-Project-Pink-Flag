@@ -6,7 +6,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-
+import 'package:dim/data/constants.dart';
 import 'HomeScreen.dart';
 import 'PasswordField.dart';
 import 'curve.dart';
@@ -35,6 +35,7 @@ class _SignUpState extends State<SignUp> {
   //   );
   // }
   void _navigateToHome(BuildContext context) {
+    login1=true;
     Navigator.of(context).pushAndRemoveUntil(
       MaterialPageRoute(builder: (context) => Homescreen()),
           (Route<dynamic> route) => false,

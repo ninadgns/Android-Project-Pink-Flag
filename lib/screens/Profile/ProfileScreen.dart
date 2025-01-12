@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'NotificationsScreen.dart';
 import 'package:dim/widgets/ProfileScreen/MenuItemTile.dart';
@@ -10,7 +11,9 @@ import 'AchievementScreen.dart';
 import 'UsefulArticleScreen.dart';
 
 class ProfileScreen extends StatefulWidget {
-  const ProfileScreen({super.key});
+  final String imagePath;
+
+  const ProfileScreen({super.key, required this.imagePath});
 
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
@@ -29,6 +32,7 @@ class _ProfileScreenState extends State<ProfileScreen>
 
   // Track if animations have already run once
   static bool _hasAnimated = false;
+
 
   @override
   void initState() {
@@ -130,7 +134,7 @@ class _ProfileScreenState extends State<ProfileScreen>
         screen = const SubscriptionScreen();
         break;
       default:
-        screen = const ProfileScreen();
+        screen = ProfileScreen(imagePath: widget.imagePath);
     }
 
     Navigator.push(
@@ -201,187 +205,199 @@ class _ProfileScreenState extends State<ProfileScreen>
 
     return Scaffold(
       backgroundColor: const Color(0xFFFFFCF7),
-      body: Stack(
-        children: [
-          //background designs
-          Positioned(
-            top: -30,
-            left: -30,
-            child: _buildColoredCircle(
-                const Color(0xFF26A69A), 120), // Teal circle
-          ),
-          Positioned(
-            top: 100,
-            right: -40,
-            child:
-                _buildColoredCircle(const Color(0xFFEF9A9A), 80), // Pink circle
-          ),
-          Positioned(
-            bottom: 120,
-            left: -60,
-            child: _buildColoredCircle(
-                const Color(0xFF81C784), 140), // Green circle
-          ),
-          Positioned(
-            bottom: 50,
-            right: -30,
-            child: _buildColoredCircle(
-                const Color(0xFFFFB74D), 100), // Amber circle
-          ),
-          Positioned(
-            top: 260,
-            right: 100,
-            child:
-                _buildColoredCircle(Colors.indigo[300]!, 70), // Indigo circle
-          ),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              children: [
-                // Header with Profile text and notification icon
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    IconButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      icon: const Icon(Icons.arrow_back_ios),
-                    ),
-                    const Text(
-                      'Profile',
-                      style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
+      body: SafeArea(  // Added SafeArea
+        child: Stack(
+          children: [
+            //background designs
+            Positioned(
+              top: -30,
+              left: -30,
+              child: _buildColoredCircle(
+                  const Color(0xFF26A69A), 120), // Teal circle
+            ),
+            Positioned(
+              top: 100,
+              right: -40,
+              child:
+              _buildColoredCircle(const Color(0xFFEF9A9A), 80), // Pink circle
+            ),
+            Positioned(
+              bottom: 120,
+              left: -60,
+              child: _buildColoredCircle(
+                  const Color(0xFF81C784), 140), // Green circle
+            ),
+            Positioned(
+              bottom: 50,
+              right: -30,
+              child: _buildColoredCircle(
+                  const Color(0xFFFFB74D), 100), // Amber circle
+            ),
+            Positioned(
+              top: 260,
+              right: 100,
+              child:
+              _buildColoredCircle(Colors.indigo[300]!, 70), // Indigo circle
+            ),
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                children: [
+                  // Header with Profile text and notification icon
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      IconButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        icon: const Icon(Icons.arrow_back_ios),
                       ),
-                    ),
-                    RotationTransition(
-                      turns: _bellAnimation,
-                      child: IconButton(
-                        icon: const Icon(
-                          Icons.notifications_outlined,
-                          color: Colors.black,
+                      const Text(
+                        'Profile',
+                        style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
                         ),
-                        onPressed: () =>
-                            _navigateToScreen(context, 'Notifications'),
+                      ),
+                      RotationTransition(
+                        turns: _bellAnimation,
+                        child: IconButton(
+                          icon: const Icon(
+                            Icons.notifications_outlined,
+                            color: Colors.black,
+                          ),
+                          onPressed: () =>
+                              _navigateToScreen(context, 'Notifications'),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 35),
+
+                  FadeTransition(
+                    opacity: _profileFade,
+                    child: Center(
+                      child: ConstrainedBox(
+                          constraints: BoxConstraints(
+                            maxHeight: height * 0.3,
+                          ),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              CircleAvatar(
+                                radius: height * 0.07,
+                                backgroundImage: AssetImage(widget.imagePath) as ImageProvider,
+                              ),
+                              SizedBox(height: height * 0.01),
+                              Text(
+                                'Sofia',
+                                style: TextStyle(
+                                  fontSize: height * 0.028,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              SizedBox(height: height * 0.005),
+                              Material(
+                                color: Colors.transparent,
+                                child: InkWell(
+                                  onTap: () => _navigateToScreen(context, 'My Profile'),
+                                  child: FittedBox(
+                                    fit: BoxFit.scaleDown,
+                                    child: Text(
+                                      'My Profile',
+                                      style: TextStyle(
+                                        color: Colors.grey[600],
+                                        fontSize: height * 0.02,
+                                        decoration: TextDecoration.underline, // clickable
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
                     ),
-                  ],
-                ),
-                const SizedBox(height: 40),
+                const SizedBox(height: 30),
 
-                // Profile image, My Profile button
-                FadeTransition(
-                  opacity: _profileFade,
-                  child: Center(
-                    child: Hero(
-                      tag: 'profile-hero',
-                      child: Column(
+                  // Achievements Card
+                  FadeTransition(
+                    opacity: _achievementFade,
+                    child: Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: Colors.blue[50],
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Row(
                         children: [
-                          CircleAvatar(
-                            radius: height*0.08, // larger size
-                            backgroundImage:
-                                const AssetImage('assets/images/profile.png'),
-                          ),
-                          const SizedBox(height: 16),
-                          Text(
-                            'Sofia',
-                            style: TextStyle(
-                              fontSize: height*0.025,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          InkWell(
-                            onTap: () =>
-                                _navigateToScreen(context, 'My Profile'),
-                            child: Text(
-                              'My Profile',
-                              style: TextStyle(
-                                color: Colors.grey[600],
-                                fontSize: height*0.018,
-                                decoration: TextDecoration
-                                    .underline, // indicate it's clickable
+                          _buildAnimatedIcon(Icons.restaurant, Colors.indigo),
+                          const SizedBox(width: 16),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                'Achievements',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.blueAccent,
+                                ),
                               ),
-                            ),
+                              Material(
+                                color: Colors.transparent,
+                                child: InkWell(
+                                  onTap: () =>
+                                      _navigateToScreen(context, 'Achievements'),
+                                  child: Text(
+                                    'Review your progress',
+                                    style: TextStyle(
+                                      color: Colors.grey[600],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
+                          const Spacer(),
                         ],
                       ),
                     ),
                   ),
-                ),
-                const SizedBox(height: 30),
+                  const SizedBox(height: 20),
 
-                // Achievements Card
-                FadeTransition(
-                  opacity: _achievementFade,
-                  child: Container(
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: Colors.blue[50],
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Row(
-                      children: [
-                        _buildAnimatedIcon(Icons.restaurant, Colors.indigo),
-                        const SizedBox(width: 16),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Text(
-                              'Achievements',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.blueAccent,
-                              ),
-                            ),
-                            InkWell(
-                              onTap: () =>
-                                  _navigateToScreen(context, 'Achievements'),
-                              child: Text(
-                                'Review your progress',
-                                style: TextStyle(
-                                  color: Colors.grey[600],
+                  // Menu Items fade in sequentially
+                  Expanded(
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          ...List.generate(
+                            menuItems.length,
+                                (index) {
+                              return FadeTransition(
+                                opacity: _menuItemFades[index],
+                                child: Column(
+                                  children: [
+                                    menuItems[index],
+                                    const SizedBox(height: 10),
+                                  ],
                                 ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        const Spacer(),
-                      ],
+                              );
+                            },
+                          ),
+                          SizedBox(height: height / 7),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-                const SizedBox(height: 20),
-
-                // Menu Items fade in sequentially
-                Expanded(
-                  child: SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        ...List.generate(
-                          menuItems.length,
-                          (index) {
-                            return FadeTransition(
-                              opacity: _menuItemFades[index],
-                              child: Column(
-                                children: [
-                                  menuItems[index],
-                                  const SizedBox(height: 10),
-                                ],
-                              ),
-                            );
-                          },
-                        ),
-                        SizedBox(height: height / 7),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

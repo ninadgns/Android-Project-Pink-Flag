@@ -9,6 +9,10 @@ import '../screens/LibraryScreen.dart';
 import '../screens/ScannerScreen.dart';
 import '../screens/SearchScreen.dart';
 
+
+
+bool login1=false;
+
 final bottomNavigationItems = [
   const BottomNavigationBarItem(
     icon: Icon(CupertinoIcons.search),
@@ -37,7 +41,7 @@ final bottomNavigationItems = [
 ];
 
 final homepageScreens = [
-  const SearchScreen(),
+  SearchScreen(),
   const LibraryScreen(),
   ScannerScreen(),
   const ShoppingScreen(),

@@ -9,7 +9,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-
+import 'package:dim/data/constants.dart';
 import 'HomeScreen.dart';
 import 'PasswordField.dart';
 import 'curve.dart';
@@ -251,6 +251,7 @@ class _LogInState extends State<LogIn> {
       // Supabase login
       print(userCredential);
       // Navigate to the home screen on successful login
+      login1=true;
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => Homescreen()),
