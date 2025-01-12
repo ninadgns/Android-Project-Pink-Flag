@@ -27,13 +27,11 @@ class _PaymentMethodsScreenState extends State<PaymentMethodsScreen> {
   PaymentMethod? selectedMethod;
   String? selectedCardType;
 
-
   final TextEditingController _cardNumberController = TextEditingController();
   final TextEditingController _expiryController = TextEditingController();
   final TextEditingController _cvcController = TextEditingController();
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _zipController = TextEditingController();
-
 
   @override
   void initState() {
@@ -62,7 +60,7 @@ class _PaymentMethodsScreenState extends State<PaymentMethodsScreen> {
       // Toggle selection - if same card is selected, deselect it
       selectedMethod = selectedMethod?.id == method.id ? null : method;
 
-       if (selectedMethod == null) {
+      if (selectedMethod == null) {
         _cardNumberController.clear();
         _expiryController.clear();
         _cvcController.clear();
@@ -81,11 +79,7 @@ class _PaymentMethodsScreenState extends State<PaymentMethodsScreen> {
   }
 
   Widget _buildCardTypeOptionWithState(
-      IconData icon,
-      String type,
-      Color color,
-      StateSetter setModalState
-      ) {
+      IconData icon, String type, Color color, StateSetter setModalState) {
     return Row(
       children: [
         Radio<String>(
@@ -121,10 +115,7 @@ class _PaymentMethodsScreenState extends State<PaymentMethodsScreen> {
         builder: (context, StateSetter setModalState) {
           return Padding(
             padding: EdgeInsets.only(
-              bottom: MediaQuery
-                  .of(context)
-                  .viewInsets
-                  .bottom,
+              bottom: MediaQuery.of(context).viewInsets.bottom,
             ),
             child: Container(
               padding: const EdgeInsets.all(20),
@@ -166,26 +157,16 @@ class _PaymentMethodsScreenState extends State<PaymentMethodsScreen> {
                             FontAwesomeIcons.ccVisa,
                             'VISA',
                             Colors.indigoAccent.shade400,
-                            setModalState
-                        ),
+                            setModalState),
                         _buildCardTypeOptionWithState(
                             FontAwesomeIcons.ccMastercard,
                             'MASTER',
                             Colors.indigo.shade900,
-                            setModalState
-                        ),
-                        _buildCardTypeOptionWithState(
-                            FontAwesomeIcons.ccJcb,
-                            'JCB',
-                            Colors.black,
-                            setModalState
-                        ),
-                        _buildCardTypeOptionWithState(
-                            FontAwesomeIcons.ccPaypal,
-                            'PAYPAL',
-                            Colors.indigoAccent,
-                            setModalState
-                        ),
+                            setModalState),
+                        _buildCardTypeOptionWithState(FontAwesomeIcons.ccJcb,
+                            'JCB', Colors.black, setModalState),
+                        _buildCardTypeOptionWithState(FontAwesomeIcons.ccPaypal,
+                            'PAYPAL', Colors.indigoAccent, setModalState),
                       ],
                     ),
                   ),
@@ -201,8 +182,8 @@ class _PaymentMethodsScreenState extends State<PaymentMethodsScreen> {
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
-                        borderSide: const BorderSide(color: Colors.black12,
-                            width: 1),
+                        borderSide:
+                            const BorderSide(color: Colors.black12, width: 1),
                       ),
                       hintText: 'XXXX XXXX XXXX XXXX',
                     ),
@@ -257,7 +238,8 @@ class _PaymentMethodsScreenState extends State<PaymentMethodsScreen> {
                           ),
                           keyboardType: TextInputType.number,
                           inputFormatters: [
-                            FilteringTextInputFormatter.allow(RegExp(r'^\d{0,4}$')),
+                            FilteringTextInputFormatter.allow(
+                                RegExp(r'^\d{0,4}$')),
                           ],
                         ),
                       ),
@@ -275,13 +257,14 @@ class _PaymentMethodsScreenState extends State<PaymentMethodsScreen> {
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
-                        borderSide: const BorderSide(color: Colors.black12,
-                            width: 1),
+                        borderSide:
+                            const BorderSide(color: Colors.black12, width: 1),
                       ),
                     ),
                     keyboardType: TextInputType.name,
                     inputFormatters: [
-                      FilteringTextInputFormatter.allow(RegExp(r"[a-zA-Z\s\.\']")),
+                      FilteringTextInputFormatter.allow(
+                          RegExp(r"[a-zA-Z\s\.\']")),
                     ],
                   ),
                   const SizedBox(height: 15),
@@ -296,8 +279,8 @@ class _PaymentMethodsScreenState extends State<PaymentMethodsScreen> {
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
-                        borderSide: const BorderSide(color: Colors.black12,
-                            width: 1),
+                        borderSide:
+                            const BorderSide(color: Colors.black12, width: 1),
                       ),
                     ),
                     keyboardType: TextInputType.number,
@@ -307,8 +290,8 @@ class _PaymentMethodsScreenState extends State<PaymentMethodsScreen> {
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return 'Please enter the ZIP/Postal Code';
-                      } else if (value.length != 5 || !RegExp(r'^\d{5}$').hasMatch(
-                          value)) {
+                      } else if (value.length != 5 ||
+                          !RegExp(r'^\d{5}$').hasMatch(value)) {
                         return 'ZIP/Postal Code must be 5 digits';
                       }
                       return null;
@@ -364,9 +347,6 @@ class _PaymentMethodsScreenState extends State<PaymentMethodsScreen> {
       ),
     );
   }
-
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -448,7 +428,6 @@ class _PaymentMethodsScreenState extends State<PaymentMethodsScreen> {
             ),
           ),
 
-
           const Padding(
             padding: EdgeInsets.symmetric(horizontal: 16),
             child: Row(
@@ -474,11 +453,11 @@ class _PaymentMethodsScreenState extends State<PaymentMethodsScreen> {
               itemBuilder: (context, index) {
                 final method = _paymentMethods[index];
                 return PaymentMethodCard(
-                      paymentMethod: method,
-                      isSelected: selectedMethod?.id == method.id,
-                      onSelect: () => _handleMethodSelection(method),
-                      onDelete: () {/* Handle delete */},
-                 );
+                  paymentMethod: method,
+                  isSelected: selectedMethod?.id == method.id,
+                  onSelect: () => _handleMethodSelection(method),
+                  onDelete: () {/* Handle delete */},
+                );
               },
             ),
           ),
@@ -491,7 +470,7 @@ class _PaymentMethodsScreenState extends State<PaymentMethodsScreen> {
                 showPaymentBottomSheet(context, widget.amountToPay);
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor:  Colors.blue.shade300,
+                backgroundColor: Colors.blue.shade300,
                 minimumSize: const Size.fromHeight(50),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
@@ -512,18 +491,3 @@ class _PaymentMethodsScreenState extends State<PaymentMethodsScreen> {
     );
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
