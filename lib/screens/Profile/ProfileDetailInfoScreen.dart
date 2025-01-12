@@ -6,6 +6,9 @@ import 'package:share_plus/share_plus.dart';
 import 'dart:typed_data';
 import 'package:dim/models/ProfileInfoModel.dart';
 import 'package:intl/intl.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+
+import '../../services/ProfileService.dart';
 
 
 
@@ -20,18 +23,65 @@ class _ProfileDetailInfoScreenState extends State<ProfileDetailInfoScreen>
     with SingleTickerProviderStateMixin {
 
   bool isEditMode = false;
-  static SocialMediaHandle insta= SocialMediaHandle(platform: 'Instagram',handle: '@sofiacooks');
+  bool isLoading = true;
+  ProfileInfoModel? profileinfo;
+  late final ProfileService _profileService;
 
-  static List<SocialMediaHandle> socialMediaIds = [insta];
-  static Uint8List? profileImageBytes;
+  @override
+  void initState() {
+    super.initState();
+    _profileService = ProfileService(supabase: Supabase.instance.client);
+    _loadUserProfile();
+  }
 
-  ProfileInfoModel profileinfo= ProfileInfoModel(id: '1', userName: 'Sofia', fullName: 'Sofia Anderson',
-      email: 'sofia@example.com', phoneNumber: '+1 234 567 8900', dateofBirth: DateTime(2000, 5, 15),
-      bio: 'Food lover, cook, and traveler.', city: 'New York',
-      workplace: 'Culinary Institute of America', profileImagePath: 'assets/images/profile.png',
-      profileImageBytes: profileImageBytes,
-      followerCount: 98, followingCount: 142,
-      recipesCount:  23, socialMediaHandles: socialMediaIds);
+  Future<void> _loadUserProfile() async {
+    try {
+      setState(() => isLoading = true);
+      final profile = await _profileService.getCurrentUserProfile();
+      print(profile);
+      setState(() {
+        profileinfo = profile;
+        print(profileinfo);
+        isLoading = false;
+      });
+    } catch (e) {
+      setState(() => isLoading = false);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error loading profile: $e')),
+      );
+    }
+  }
+
+  Future<void> _saveChanges() async {
+    try {
+      if (profileinfo == null) return;
+
+      await _profileService.updateProfile(profileinfo!);
+      setState(() => isEditMode = false);
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Changes saved successfully')),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error saving changes: $e')),
+      );
+    }
+  }
+
+
+  // static SocialMediaHandle insta= SocialMediaHandle(platform: 'Instagram',handle: '@sofiacooks');
+  //
+  // static List<SocialMediaHandle> socialMediaIds = [insta];
+  // static Uint8List? profileImageBytes;
+  //
+  // ProfileInfoModel profileinfo= ProfileInfoModel(id: '1', userName: 'Sofia', fullName: 'Sofia Anderson',
+  //     email: 'sofia@example.com', phoneNumber: '+1 234 567 8900', dateofBirth: DateTime(2000, 5, 15),
+  //     bio: 'Food lover, cook, and traveler.', city: 'New York',
+  //     workplace: 'Culinary Institute of America', profileImagePath: 'assets/images/profile.png',
+  //     profileImageBytes: profileImageBytes,
+  //     followerCount: 98, followingCount: 142,
+  //     recipesCount:  23, socialMediaHandles: socialMediaIds);
 
 
   Future<void> _pickImage() async {
@@ -40,8 +90,8 @@ class _ProfileDetailInfoScreenState extends State<ProfileDetailInfoScreen>
     if (pickedFile != null) {
       final bytes = await pickedFile.readAsBytes();
       setState(() {
-        profileinfo.profileImageBytes = bytes;
-        profileinfo.profileImagePath = pickedFile.path;
+        profileinfo?.profileImageBytes = bytes;
+        profileinfo?.profileImagePath = pickedFile.path;
       });
     }
   }
@@ -74,7 +124,7 @@ class _ProfileDetailInfoScreenState extends State<ProfileDetailInfoScreen>
               onPressed: () {
                 setState(() {
                   String newHandle = controller.text;
-                  socialMediaIds = socialMediaIds.map((item) {
+                  var socialMediaIds = profileinfo!.socialMediaHandles.map((item) {
                     if (item.platform == media.platform) {
                        return SocialMediaHandle(platform: item.platform, handle: newHandle);
                     }
@@ -147,7 +197,7 @@ class _ProfileDetailInfoScreenState extends State<ProfileDetailInfoScreen>
                     handleController.text.isNotEmpty) {
                   setState(() {
                     SocialMediaHandle fb= SocialMediaHandle(platform: platformController.text,handle: handleController.text);
-                    socialMediaIds.add(fb);
+                    profileinfo!.socialMediaHandles.add(fb);
                   });
                   Navigator.pop(context);
                 }
@@ -214,7 +264,7 @@ class _ProfileDetailInfoScreenState extends State<ProfileDetailInfoScreen>
 
   void _shareProfile() {
     // A unique link could be generated from user's name
-    final profileLink = 'https://example.com/users/${profileinfo.fullName.replaceAll(' ', '_')}';
+    final profileLink = 'https://example.com/users/${profileinfo?.fullName.replaceAll(' ', '_')}';
     Share.share('Check out my profile: $profileLink');
   }
 
@@ -278,7 +328,7 @@ class _ProfileDetailInfoScreenState extends State<ProfileDetailInfoScreen>
           Text('Social Media',
               style: TextStyle(color: Colors.grey[700], fontWeight: FontWeight.bold)),
           const SizedBox(height: 8),
-          ...socialMediaIds.map((item) {
+          ...profileinfo!.socialMediaHandles.map((item) {
             return Padding(
               padding: const EdgeInsets.symmetric(vertical: 4),
               child: Row(
@@ -354,16 +404,32 @@ class _ProfileDetailInfoScreenState extends State<ProfileDetailInfoScreen>
 
   @override
   Widget build(BuildContext context) {
+    if (isLoading) {
+      return const Scaffold(
+        body: Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
+
+    if (profileinfo == null) {
+      return const Scaffold(
+        body: Center(
+          child: Text('Error loading profile'),
+        ),
+      );
+    }
+
     ImageProvider backgroundImage;
-    if (profileinfo.profileImageBytes != null) {
-      backgroundImage = MemoryImage(profileinfo.profileImageBytes!);
-    } else if (profileinfo.profileImagePath.startsWith('assets/')) {
-      backgroundImage = AssetImage(profileinfo.profileImagePath);
+    if (profileinfo?.profileImageBytes != null) {
+      backgroundImage = MemoryImage(profileinfo!.profileImageBytes!);
+    } else if (profileinfo!.profileImagePath.startsWith('assets/')) {
+      backgroundImage = AssetImage(profileinfo!.profileImagePath);
     } else {
       if (kIsWeb) {
         backgroundImage = const AssetImage('assets/images/profile.png');
       } else {
-        backgroundImage = FileImage(File(profileinfo.profileImagePath));
+        backgroundImage = FileImage(File(profileinfo!.profileImagePath));
       }
     }
 
@@ -462,15 +528,15 @@ class _ProfileDetailInfoScreenState extends State<ProfileDetailInfoScreen>
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
                               Expanded(
-                                child: _buildStat(profileinfo.recipesCount, 'Recipes'),
+                                child: _buildStat(profileinfo!.recipesCount, 'Recipes'),
                               ),
                               const SizedBox(width: 10),
                               Expanded(
-                                child: _buildStat(profileinfo.followingCount, 'Following'),
+                                child: _buildStat(profileinfo!.followingCount, 'Following'),
                               ),
                               const SizedBox(width: 10),
                               Expanded(
-                                child: _buildStat(profileinfo.followerCount, 'Followers'),
+                                child: _buildStat(profileinfo!.followerCount, 'Followers'),
                               ),
                             ],
                           ),
@@ -478,11 +544,11 @@ class _ProfileDetailInfoScreenState extends State<ProfileDetailInfoScreen>
                         const SizedBox(height: 30),
                         _buildEditableField(
                           label: 'Full Name',
-                          value: profileinfo.fullName,
-                          onEdit: () => _editField('Full Name', profileinfo.fullName, false, (newVal) {
+                          value: profileinfo!.fullName,
+                          onEdit: () => _editField('Full Name', profileinfo!.fullName, false, (newVal) {
                             final nameRegExp = RegExp(r"^[a-zA-Zà-úÀ-Ú\s'-]{2,40}$");
                             if (nameRegExp.hasMatch(newVal)) {
-                              setState(() => profileinfo.fullName = newVal);
+                              setState(() => profileinfo!.fullName = newVal);
                             } else {
                               // Handle invalid input
                               ScaffoldMessenger.of(context).showSnackBar(
@@ -493,18 +559,18 @@ class _ProfileDetailInfoScreenState extends State<ProfileDetailInfoScreen>
                         ),
                         _buildEditableField(
                           label: 'User Name',
-                          value: profileinfo.userName,
-                          onEdit: () => _editField('User Name', profileinfo.userName, false, (newVal) {
-                            setState(() => profileinfo.userName = newVal);
+                          value: profileinfo!.userName,
+                          onEdit: () => _editField('User Name', profileinfo!.userName, false, (newVal) {
+                            setState(() => profileinfo!.userName = newVal);
                           }),
                         ),
                         _buildEditableField(
                           label: 'Email',
-                          value: profileinfo.email,
-                          onEdit: () => _editField('Email', profileinfo.email, false, (newVal) {
+                          value: profileinfo!.email,
+                          onEdit: () => _editField('Email', profileinfo!.email, false, (newVal) {
                             final emailRegExp = RegExp(r'^[\w-.]+@[\w-]+\.(com|org|net|edu|gov)$');
                             if (emailRegExp.hasMatch(newVal)) {
-                              setState(() => profileinfo.email = newVal);
+                              setState(() => profileinfo!.email = newVal);
                             } else {
                               ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(content: Text('Invalid email address. Use a valid format (e.g., user@example.com).'))
@@ -514,11 +580,11 @@ class _ProfileDetailInfoScreenState extends State<ProfileDetailInfoScreen>
                         ),
                         _buildEditableField(
                           label: 'Phone Number',
-                          value: profileinfo.phoneNumber,
-                          onEdit: () => _editField('Phone Number', profileinfo.phoneNumber, false, (newVal) {
+                          value: profileinfo!.phoneNumber,
+                          onEdit: () => _editField('Phone Number', profileinfo!.phoneNumber, false, (newVal) {
                             final phoneRegExp = RegExp(r'^\+?\d{10,15}$');
                             if (phoneRegExp.hasMatch(newVal)) {
-                              setState(() => profileinfo.phoneNumber = newVal);
+                              setState(() => profileinfo!.phoneNumber = newVal);
                             } else {
                               ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(content: Text('Invalid phone number. Use digits with optional +.'))
@@ -528,36 +594,36 @@ class _ProfileDetailInfoScreenState extends State<ProfileDetailInfoScreen>
                         ),
                         _buildEditableField(
                           label: 'Date of Birth',
-                          value: profileinfo.dateofBirth != null
-                              ? DateFormat('yyyy-MM-dd').format(profileinfo.dateofBirth!) : '',
+                          value: profileinfo!.dateofBirth != null
+                              ? DateFormat('yyyy-MM-dd').format(profileinfo!.dateofBirth!) : '',
                           onEdit: () => _editField('Date of Birth',
-                                 profileinfo.dateofBirth != null
-                                  ? DateFormat('yyyy-MM-dd').format(profileinfo.dateofBirth!) : '',
+                                 profileinfo!.dateofBirth != null
+                                  ? DateFormat('yyyy-MM-dd').format(profileinfo!.dateofBirth!) : '',
                                  false, (newVal) {
-                            setState(() => profileinfo.dateofBirth = DateTime.parse(newVal));
+                            setState(() => profileinfo!.dateofBirth = DateTime.parse(newVal));
                           }),
                         ),
                         _buildEditableField(
                           label: 'Bio',
-                          value: profileinfo.bio,
+                          value: profileinfo!.bio,
                           isMultiline: true,
-                          onEdit: () => _editField('Bio', profileinfo.bio, true, (newVal) {
-                            setState(() => profileinfo.bio = newVal);
+                          onEdit: () => _editField('Bio', profileinfo!.bio, true, (newVal) {
+                            setState(() => profileinfo!.bio = newVal);
                           }),
                         ),
                         _buildEditableField(
                           label: 'Workplace',
-                          value: profileinfo.workplace,
+                          value: profileinfo!.workplace,
                           isMultiline: true,
-                          onEdit: () => _editField('Workplace', profileinfo.workplace, false, (newVal) {
-                            setState(() => profileinfo.workplace = newVal);
+                          onEdit: () => _editField('Workplace', profileinfo!.workplace, false, (newVal) {
+                            setState(() => profileinfo!.workplace = newVal);
                           }),
                         ),
                         _buildEditableField(
                           label: 'Living City',
-                          value: profileinfo.city,
-                          onEdit: () => _editField('Living City', profileinfo.city, false, (newVal) {
-                            setState(() => profileinfo.city = newVal);
+                          value: profileinfo!.city,
+                          onEdit: () => _editField('Living City', profileinfo!.city, false, (newVal) {
+                            setState(() => profileinfo!.city = newVal);
                           }),
                         ),
                         _buildSocialMediaSection(),
@@ -567,7 +633,7 @@ class _ProfileDetailInfoScreenState extends State<ProfileDetailInfoScreen>
                             padding: const EdgeInsets.all(16.0),
                             child: ElevatedButton(
                               onPressed: () {
-                                // Implement save changes logic
+                                _profileService.updateProfile(profileinfo!);
                                 setState(() {
                                   isEditMode = false;
                                 });

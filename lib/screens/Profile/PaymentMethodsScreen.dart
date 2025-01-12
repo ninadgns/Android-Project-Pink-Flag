@@ -4,6 +4,7 @@ import 'package:dim/services/PaymentServices.dart';
 import 'package:dim/models/PaymentModels.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class PaymentMethodsScreen extends StatefulWidget {
   final double amountToPay;
@@ -20,7 +21,7 @@ class PaymentMethodsScreen extends StatefulWidget {
 }
 
 class _PaymentMethodsScreenState extends State<PaymentMethodsScreen> {
-  final PaymentService _paymentService = PaymentService();
+  late final PaymentService _paymentService;
   bool _isLoading = true;
   String? _error;
   late List<PaymentMethod> _paymentMethods;
@@ -38,6 +39,7 @@ class _PaymentMethodsScreenState extends State<PaymentMethodsScreen> {
   @override
   void initState() {
     super.initState();
+    _paymentService = PaymentService(supabase: Supabase.instance.client);
     _loadPaymentMethods();
   }
 
@@ -170,7 +172,7 @@ class _PaymentMethodsScreenState extends State<PaymentMethodsScreen> {
                         ),
                         _buildCardTypeOptionWithState(
                             FontAwesomeIcons.ccMastercard,
-                            'MASTER',
+                            'MASTERCARD',
                             Colors.indigo.shade900,
                             setModalState
                         ),
@@ -181,8 +183,8 @@ class _PaymentMethodsScreenState extends State<PaymentMethodsScreen> {
                             setModalState
                         ),
                         _buildCardTypeOptionWithState(
-                            FontAwesomeIcons.ccPaypal,
-                            'PAYPAL',
+                            FontAwesomeIcons.ccAmex,
+                            'AMEX',
                             Colors.indigoAccent,
                             setModalState
                         ),

@@ -3,6 +3,7 @@ import 'package:dim/models/SubscriptionModels.dart';
 import 'package:dim/widgets/SubscriptionScreen/SubscriptionPlanWidget.dart';
 import 'package:dim/widgets/SubscriptionScreen/CurrentSubscriptionWidget.dart';
 import 'package:dim/services/PaymentServices.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'PaymentMethodsScreen.dart';
 
 
@@ -16,7 +17,7 @@ class SubscriptionScreen extends StatefulWidget {
 
 class _SubscriptionScreenState extends State<SubscriptionScreen> {
   final PageController _pageController = PageController(viewportFraction: 0.93);
-  final PaymentService _paymentService = PaymentService();
+  late final PaymentService _paymentService;
   int _currentPage = 0;
   bool _isLoading = true;
   String? _error;
@@ -28,6 +29,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
   @override
   void initState() {
     super.initState();
+    _paymentService = PaymentService(supabase: Supabase.instance.client);
     _loadInitialData();
   }
 
@@ -37,10 +39,10 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
 
       // Load all necessary data
       final currentPlan = await _paymentService.getCurrentSubscription();
-      final availablePlans = await _paymentService.getAvailablePlans();
+      final availablePlans = await _paymentService.getSubscriptionPlans();
 
       setState(() {
-        _currentSubscription = currentPlan;
+        _currentSubscription = currentPlan as CurrentSubscription;
         _plans = availablePlans;
         _isLoading = false;
       });
