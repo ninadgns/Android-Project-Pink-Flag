@@ -26,41 +26,11 @@ class _LogInState extends State<LogIn> {
   final TextEditingController passwordController = TextEditingController();
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  // Future<firebase_auth.User?> _signInWithGoogle() async {
-  //   try {
-  //     // Trigger the Google Authentication flow
-  //     final GoogleSignInAccount? googleUser =
-  //         await GoogleSignIn.standard().signIn();
-
-  //     if (googleUser == null) {
-  //       // User canceled the sign-in
-  //       return null;
-  //     }
-
-  //     final GoogleSignInAuthentication googleAuth =
-  //         await googleUser.authentication;
-
-  //     // Create a new credential
-  //     final OAuthCredential credential = GoogleAuthProvider.credential(
-  //       accessToken: googleAuth.accessToken,
-  //       idToken: googleAuth.idToken,
-  //     );
-
-  //     // Sign in with Firebase
-  //     final UserCredential userCredential =
-  //         await _auth.signInWithCredential(credential);
-  //     return userCredential.user;
-  //   } catch (e) {
-  //     print("Error signing in with Google: $e");
-  //     return null;
-  //   }
-  // }
-
   void _navigateToHome() {
     Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(builder: (context) => Homescreen()),
-          (Route<dynamic> route) => false,
+      (Route<dynamic> route) => false,
     );
   }
 
