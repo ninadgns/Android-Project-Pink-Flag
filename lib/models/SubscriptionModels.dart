@@ -53,7 +53,7 @@ final List<SubscriptionPlan> defaultPlans = [
          'Limited Recipe Library',
          'Ads Included',
      ],
-     color: Colors.lightGreen.shade200,
+     color: Color(0xFFA5D6A7),
    ),
   SubscriptionPlan(
      id: 'premium_plan',
@@ -85,7 +85,7 @@ final List<SubscriptionPlan> defaultPlans = [
     ],
     isPopular: true,
     //color: const Color(0xFF80CBC4),
-    color: Colors.teal.shade100,
+    color: Color(0xFFB2DFDB),
   )
 ];
 

@@ -1,3 +1,4 @@
+import 'dart:ui';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../models/PaymentModels.dart';
@@ -13,13 +14,16 @@ class PaymentService {
   })  : _supabase = supabase,
         _firebaseAuth = firebaseAuth ?? FirebaseAuth.instance;
 
-  // Get all available subscription plans
   Future<List<SubscriptionPlan>> getSubscriptionPlans() async {
     try {
       final response = await _supabase
           .from('subscription_plans')
-          .select()
-          .order('price');
+          .select('id, title, price, period, features, is_popular, color')
+          .order('price', ascending: true);
+
+      if (response.isEmpty) {
+        return []; // Return an empty list if no plans are found
+      }
 
       return response.map<SubscriptionPlan>((plan) {
         return SubscriptionPlan(
@@ -28,7 +32,8 @@ class PaymentService {
           price: (plan['price'] as num).toDouble(),
           period: plan['period'],
           features: (plan['features'] as List).cast<String>(),
-          isPopular: false, // You might want to add this to the database
+          isPopular: plan['is_popular'] as bool,
+          color: Color(int.parse(plan['color'].toString())) as Color,
         );
       }).toList();
     } catch (e) {
@@ -36,23 +41,32 @@ class PaymentService {
     }
   }
 
-  // Get user's current subscription
   Future<CurrentSubscription?> getCurrentSubscription() async {
     try {
       final String? uid = _firebaseAuth.currentUser?.uid;
-      if (uid == null) throw Exception('No authenticated user found');
+      if (uid == null) return null; // Return null if no authenticated user found
 
       final response = await _supabase
           .from('user_subscriptions')
           .select('*, subscription_plans!inner(*)')
           .eq('user_id', uid)
           .eq('is_active', true)
-          .single();
+          .order('expires_at', ascending: false)
+          .limit(1);
 
-      if (response == null) return null;
+      if (response.isEmpty) {
+        return CurrentSubscription(
+          planId: '',
+          planName: '',
+          price: 0.0,
+          renewalDate: DateTime.now(),
+          isPastDue: false,
+          daysOverdue: 0,
+        );
+      }
 
-      final plan = response['subscription_plans'];
-      final renewalDate = DateTime.parse(response['expires_at']);
+      final plan = response.first['subscription_plans'];
+      final renewalDate = DateTime.parse(response.first['expires_at']);
       final now = DateTime.now();
 
       return CurrentSubscription(

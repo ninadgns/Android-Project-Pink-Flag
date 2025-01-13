@@ -214,7 +214,7 @@ class _SignUpState extends State<SignUp> {
       await supabase.from('users').insert({
         'id': firebaseUid,
         'email': email,
-        'display_name': name,
+        'full_name': name,
       });
 
       // Navigate to HomeScreen on success

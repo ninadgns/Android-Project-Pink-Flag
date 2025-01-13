@@ -1,4 +1,5 @@
 import 'package:dim/screens/HomeScreen.dart';
+import 'package:dim/screens/Login.dart';
 import 'package:dim/services/user_provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -52,7 +53,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Dim',
       theme: appTheme,
-      home: (user?.uid == null) ? const Onboarding() : const Homescreen(),
+      home: (user?.uid == null) ? const LogIn() : const Homescreen(),
        //home: const Homescreen(),
     );
   }
