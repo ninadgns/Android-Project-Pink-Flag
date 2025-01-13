@@ -36,33 +36,63 @@ class ScannerScreen extends StatelessWidget {
   }
 
   Future<void> _uploadImage(BuildContext context, Function updateState) async {
-    if (_imageBytes == null) return;
+    if (_imageBytes == null) {
+      _showErrorDialog(context, "No image selected.");
+      return;
+    }
 
-    final url = Uri.parse('http://localhost:5000/predict'); // Backend URL
-    final request = http.MultipartRequest('POST', url);
-    request.files.add(
-        http.MultipartFile.fromBytes(
-            'image', _imageBytes!, filename: 'image.png'));
+    const String clarifaiPAT = '8d791a58ddeb4ed0a1b57df02fa4fadc';
+    const String userId = 'clarifai';
+    const String appId = 'main';
+    const String modelId = 'food-item-recognition';
+    const String modelVersionId = '1d5fd481e0cf4826aa72ec3ff049e044';
+
+    final String url =
+        'https://api.clarifai.com/v2/models/$modelId/versions/$modelVersionId/outputs';
+
+    final String base64Image = base64Encode(_imageBytes!);
+
+    final requestBody = {
+      "user_app_id": {"user_id": userId, "app_id": appId},
+      "inputs": [
+        {
+          "data": {
+            "image": {"base64": base64Image}
+          }
+        }
+      ]
+    };
 
     try {
-      final response = await request.send();
-      final responseData = await response.stream.bytesToString();
+      final response = await http.post(
+        Uri.parse(url),
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'Key $clarifaiPAT',
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode(requestBody),
+      );
+
+      print("Response Status: ${response.statusCode}");
+      print("Response Body: ${response.body}");
 
       if (response.statusCode == 200) {
-        final predictions = jsonDecode(responseData);
+        final responseData = jsonDecode(response.body);
+        final predictions = responseData['outputs'][0]['data']['concepts'];
         print(predictions);
+
         updateState(() {
           _ingredients.clear();
           _ingredients.addAll(predictions
               .where((prediction) =>
-          prediction.containsKey('value') && prediction['value'] >= 0.2)
-              .map<Map<String, dynamic>>((prediction) =>
-          {
-            'name': prediction['name']
-          }));
+                  prediction.containsKey('value') && prediction['value'] >= 0.2)
+              .map<Map<String, dynamic>>(
+                  (prediction) => {'name': prediction['name']}));
         });
       } else {
-        _showErrorDialog(context, "Error: ${response.statusCode}");
+        _showErrorDialog(
+            context, "Error: ${response.statusCode} - ${response.body}");
       }
     } catch (e) {
       _showErrorDialog(context, "An error occurred: $e");
@@ -86,44 +116,41 @@ class ScannerScreen extends StatelessWidget {
     final cartItems = _ingredients.map((e) => e['name']).join(", ");
     showDialog(
       context: context,
-      builder: (context) =>
-          AlertDialog(
-            title: const Text("Items Added to Cart"),
-            content: Text(cartItems.isEmpty
-                ? "No items in the list."
-                : "Items: $cartItems"),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(),
-                style: TextButton.styleFrom(
-                  foregroundColor: const Color(0xffd2a85d),
-                  backgroundColor: Colors.transparent,
-                ),
-                child: const Text("Close"),
-              )
-            ],
-          ),
+      builder: (context) => AlertDialog(
+        title: const Text("Items Added to Cart"),
+        content: Text(
+            cartItems.isEmpty ? "No items in the list." : "Items: $cartItems"),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            style: TextButton.styleFrom(
+              foregroundColor: const Color(0xffd2a85d),
+              backgroundColor: Colors.transparent,
+            ),
+            child: const Text("Close"),
+          )
+        ],
+      ),
     );
   }
 
   void _showErrorDialog(BuildContext context, String message) {
     showDialog(
       context: context,
-      builder: (context) =>
-          AlertDialog(
-            title: const Text("Error"),
-            content: Text(message),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(),
-                style: TextButton.styleFrom(
-                  foregroundColor: const Color(0xffd2a85d),
-                  backgroundColor: Colors.transparent,
-                ),
-                child: const Text("Close"),
-              )
-            ],
-          ),
+      builder: (context) => AlertDialog(
+        title: const Text("Error"),
+        content: Text(message),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            style: TextButton.styleFrom(
+              foregroundColor: const Color(0xffd2a85d),
+              backgroundColor: Colors.transparent,
+            ),
+            child: const Text("Close"),
+          )
+        ],
+      ),
     );
   }
 
@@ -170,35 +197,35 @@ class ScannerScreen extends StatelessWidget {
                       ),
                       child: _imageBytes != null
                           ? Stack(
-                        alignment: Alignment.topRight,
-                        children: [
-                          Center(
-                            child: Image.memory(
-                              _imageBytes!,
-                              fit: BoxFit.contain,
-                              width: double.infinity,
-                              height: 200,
-                            ),
-                          ),
-                          IconButton(
-                            icon: const Icon(
-                              Icons.delete,
-                              color: Colors.red,
-                            ),
-                            onPressed: () {
-                              updateState(() {
-                                _imageBytes = null;
-                              });
-                            },
-                          ),
-                        ],
-                      )
+                              alignment: Alignment.topRight,
+                              children: [
+                                Center(
+                                  child: Image.memory(
+                                    _imageBytes!,
+                                    fit: BoxFit.contain,
+                                    width: double.infinity,
+                                    height: 200,
+                                  ),
+                                ),
+                                IconButton(
+                                  icon: const Icon(
+                                    Icons.delete,
+                                    color: Colors.red,
+                                  ),
+                                  onPressed: () {
+                                    updateState(() {
+                                      _imageBytes = null;
+                                    });
+                                  },
+                                ),
+                              ],
+                            )
                           : const Center(
-                        child: Text(
-                          'Your image will be shown here',
-                          style: TextStyle(color: Colors.grey),
-                        ),
-                      ),
+                              child: Text(
+                                'Your image will be shown here',
+                                style: TextStyle(color: Colors.grey),
+                              ),
+                            ),
                     );
                   },
                 ),
@@ -215,7 +242,8 @@ class ScannerScreen extends StatelessWidget {
                             borderRadius: BorderRadius.circular(16),
                           ),
                         ),
-                        child: const Text('Pick Image',
+                        child: const Text(
+                          'Pick Image',
                           style: TextStyle(
                             fontSize: 18,
                             color: Colors.black45,
@@ -227,8 +255,10 @@ class ScannerScreen extends StatelessWidget {
                     Expanded(
                       child: ElevatedButton.icon(
                         onPressed: () => _takePhoto(context, updateState),
-                        icon: const Icon(Icons.camera_alt, color: Colors.black45),
-                        label: const Text('Camera',
+                        icon:
+                            const Icon(Icons.camera_alt, color: Colors.black45),
+                        label: const Text(
+                          'Camera',
                           style: TextStyle(
                             fontSize: 18,
                             color: Colors.black45,
@@ -255,7 +285,8 @@ class ScannerScreen extends StatelessWidget {
                       borderRadius: BorderRadius.circular(16),
                     ),
                   ),
-                  child: const Text('Upload and Predict',
+                  child: const Text(
+                    'Upload and Predict',
                     style: TextStyle(
                       fontSize: 18,
                       color: Colors.black45,
@@ -289,7 +320,8 @@ class ScannerScreen extends StatelessWidget {
                       borderRadius: BorderRadius.circular(16),
                     ),
                   ),
-                  child: const Text('Add to available list',
+                  child: const Text(
+                    'Add to available list',
                     style: TextStyle(
                       fontSize: 18,
                       color: Colors.black45,
@@ -310,11 +342,12 @@ class ScannerScreen extends StatelessWidget {
                           title: Text(ingredient['name']),
                           subtitle: ingredient['confidence'] != null
                               ? Text(
-                              'Confidence: ${(ingredient['confidence'] * 100).toStringAsFixed(2)}%')
+                                  'Confidence: ${(ingredient['confidence'] * 100).toStringAsFixed(2)}%')
                               : null,
                           trailing: IconButton(
                             icon: const Icon(Icons.delete, color: Colors.red),
-                            onPressed: () => _removeIngredient(index, updateState),
+                            onPressed: () =>
+                                _removeIngredient(index, updateState),
                           ),
                         ),
                       );

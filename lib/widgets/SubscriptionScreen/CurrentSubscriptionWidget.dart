@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:dim/models/SubscriptionModels.dart';
 
-
 class CurrentPlanCard extends StatelessWidget {
   final CurrentSubscription subscription;
 
@@ -40,7 +39,8 @@ class CurrentPlanCard extends StatelessWidget {
               ),
               if (subscription.isPastDue)
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
                     color: Colors.red[50],
                     borderRadius: BorderRadius.circular(8),
@@ -48,8 +48,7 @@ class CurrentPlanCard extends StatelessWidget {
                   child: Row(
                     children: [
                       Icon(Icons.warning_amber_rounded,
-                          color: Colors.red[700],
-                          size: 16),
+                          color: Colors.red[700], size: 16),
                       const SizedBox(width: 4),
                       Text(
                         '${subscription.daysOverdue} days overdue',
@@ -98,11 +97,7 @@ class CurrentPlanCard extends StatelessWidget {
     );
   }
 
-
   String _formatDate(DateTime date) {
     return '${date.month}/${date.day}/${date.year}';
   }
 }
-
-
-
