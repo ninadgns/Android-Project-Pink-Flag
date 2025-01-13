@@ -8,14 +8,14 @@ import 'HomeScreen.dart';
 
 /// This function handles Google Sign-In and navigation to home screen.
 Future<void> handleGoogleSignIn(
-    BuildContext context, Function(String) _showSnackBar) async {
+    BuildContext context, Function(String) showSnackBar) async {
   try {
     // Sign in with Google using Firebase
     UserCredential user = await signInWithGoogle();
 
     // Show a snackbar on error
     if (user.user == null) {
-      _showSnackBar("Error signing in with Google");
+      showSnackBar("Error signing in with Google");
       return;
     }
 
@@ -30,7 +30,7 @@ Future<void> handleGoogleSignIn(
     final response = await supabase.from('users').upsert({
       'id': firebaseUid, // Firebase UID as the unique identifier
       'email': email,
-      'display_name': displayName,
+      'full_name': displayName,
       'photo_url': photoUrl,
     });
 
@@ -38,13 +38,13 @@ Future<void> handleGoogleSignIn(
     if (firebaseUid.isNotEmpty) {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => Homescreen()),
+        MaterialPageRoute(builder: (context) => const Homescreen()),
       );
     }
   } catch (e) {
     // Handle any errors
     print(e);
-    _showSnackBar("Error signing in with Google: ${e.toString()}");
+    showSnackBar("Error signing in with Google: ${e.toString()}");
   }
 }
 
@@ -67,7 +67,7 @@ Future<UserCredential> signInWithGoogle() async {
     }
 
     // Obtain the auth details from the request
-    final GoogleSignInAuthentication? googleAuth =
+    final GoogleSignInAuthentication googleAuth =
         await googleUser.authentication;
 
     // Create a new credential

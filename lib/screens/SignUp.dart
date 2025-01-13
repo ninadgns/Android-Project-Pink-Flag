@@ -37,7 +37,7 @@ class _SignUpState extends State<SignUp> {
   void _navigateToHome(BuildContext context) {
     Navigator.of(context).pushAndRemoveUntil(
       MaterialPageRoute(builder: (context) => Homescreen()),
-          (Route<dynamic> route) => false,
+      (Route<dynamic> route) => false,
     );
   }
 
@@ -213,7 +213,7 @@ class _SignUpState extends State<SignUp> {
       await supabase.from('users').insert({
         'id': firebaseUid,
         'email': email,
-        'display_name': name,
+        'full_name': name,
       });
 
       // Navigate to HomeScreen on success

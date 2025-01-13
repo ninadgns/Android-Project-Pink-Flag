@@ -6,11 +6,12 @@ class SearchBarHome extends StatefulWidget {
     super.key,
     required this.width,
     required this.height,
+    required this.onSubmitted,
   });
 
   final double width;
   final double height;
-
+  final Function(String) onSubmitted;
   @override
   _SearchBarHomeState createState() => _SearchBarHomeState();
 }
@@ -36,15 +37,16 @@ class _SearchBarHomeState extends State<SearchBarHome> {
       width: widget.width * 0.85,
       height: widget.height * 0.068,
       child: TextFormField(
+        onFieldSubmitted: (value) => widget.onSubmitted(value),
         controller: _controller,
         style: Theme.of(context).textTheme.titleMedium?.copyWith(
-          color: Colors.black87,
-        ),
+              color: Colors.black87,
+            ),
         decoration: InputDecoration(
           hintText: 'Recipe, ingredients',
           hintStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
-            color: Colors.grey,
-          ),
+                color: Colors.grey,
+              ),
           filled: true,
           fillColor: Colors.white,
           border: OutlineInputBorder(
@@ -52,7 +54,7 @@ class _SearchBarHomeState extends State<SearchBarHome> {
             borderSide: BorderSide.none,
           ),
           contentPadding:
-          const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+              const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
           prefixIcon: const Icon(
             CupertinoIcons.search,
             color: Colors.grey,

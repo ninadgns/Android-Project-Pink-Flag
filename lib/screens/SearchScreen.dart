@@ -18,6 +18,14 @@ class SearchScreen extends StatefulWidget {
 class _SearchScreenState extends State<SearchScreen> {
   String _selectedCategory = 'Popular';
   String _profileImageUrl = 'assets/images/profile.png';
+  String _searchText = '';
+
+  void _updateSearchText(String text) {
+    setState(() {
+      _searchText = text;
+    });
+  }
+
   void _onCategorySelected(String category) {
     setState(() {
       _selectedCategory = category;
@@ -111,7 +119,8 @@ class _SearchScreenState extends State<SearchScreen> {
                 ],
               ), // Top text
               SizedBox(height: height * 0.03),
-              SearchBarHome(width: width, height: height),
+              SearchBarHome(
+                  width: width, height: height, onSubmitted: _updateSearchText),
               SizedBox(height: height * 0.01),
               HorizontalScrollingCat(
                   width: width, onCategorySelected: _onCategorySelected),
@@ -186,7 +195,7 @@ class _SearchScreenState extends State<SearchScreen> {
                 ],
               ),
               SizedBox(height: height * 0.01),
-              RecipeListView(),
+              RecipeListView(searchQuery: _searchText),
               SizedBox(height: height * 0.03),
               Container(
                 height: height * 0.2,
