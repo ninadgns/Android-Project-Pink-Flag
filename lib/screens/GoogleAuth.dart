@@ -44,7 +44,7 @@ Future<void> handleGoogleSignIn(
   } catch (e) {
     // Handle any errors
     print(e);
-    _showSnackBar("Error signing in with Google: \${e.toString()}");
+    _showSnackBar("Error signing in with Google: ${e.toString()}");
   }
 }
 
@@ -80,6 +80,6 @@ Future<UserCredential> signInWithGoogle() async {
     return await FirebaseAuth.instance.signInWithCredential(credential);
   } catch (e) {
     // Handle sign-in errors
-    throw Exception('Failed to sign in with Google: \$e');
+    throw Exception('Failed to sign in with Google: $e');
   }
 }
