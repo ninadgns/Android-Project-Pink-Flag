@@ -29,8 +29,8 @@ class CategorySection extends StatelessWidget {
         const double itemHeight = 60.0;
 
         final double categoryHeight = items.isEmpty
-            ? minCategoryHeight
-            : minCategoryHeight + (items.length * itemHeight);
+           ? minCategoryHeight
+           : minCategoryHeight + (items.length * itemHeight);
 
         return Container(
           height: categoryHeight,
@@ -48,6 +48,7 @@ class CategorySection extends StatelessWidget {
             ],
           ),
           child: Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
               Padding(
                 padding: const EdgeInsets.all(16),
