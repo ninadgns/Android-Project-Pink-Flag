@@ -16,6 +16,7 @@ class RecipeListView extends StatefulWidget {
 
 class _RecipeListViewState extends State<RecipeListView> {
   late List<Recipe> _recipeList = [];
+  bool _isLoading = false;
 
   @override
   void initState() {
@@ -32,32 +33,41 @@ class _RecipeListViewState extends State<RecipeListView> {
   }
 
   void _fetchAndSetRecipes(String query) async {
+    setState(() {
+      _isLoading = true; // Show loading indicator
+    });
+
     List<Map<String, dynamic>> response;
     if (query.isEmpty) {
-      // Call fetchRecipes if searchQuery is empty
       response = await fetchRecipes();
     } else {
-      // Call searchRecipesByPrompt if searchQuery is not empty
       response = await searchRecipesByPrompt(query);
     }
 
-    // Convert response to Recipe objects
     final converted = parseRecipes(response);
+
     setState(() {
       _recipeList = converted;
+      _isLoading = false; // Hide loading indicator
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    if (_isLoading) {
+      return Center(child: Text("Loading recipes..."));
+    }
+
+    if (_recipeList.isEmpty) {
+      return Center(child: Text("No recipes found"));
+    }
+
     return Column(
-      children: _recipeList.isEmpty
-          ? [Center(child: Text("No recipes found"))]
-          : _recipeList.map((recipe) {
-              return MealItem(
-                recipe: recipe,
-              );
-            }).toList(),
+      children: _recipeList.map((recipe) {
+        return MealItem(
+          recipe: recipe,
+        );
+      }).toList(),
     );
   }
 }

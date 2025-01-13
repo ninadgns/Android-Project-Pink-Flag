@@ -12,6 +12,7 @@ class SearchBarHome extends StatefulWidget {
   final double width;
   final double height;
   final Function(String) onSubmitted;
+
   @override
   _SearchBarHomeState createState() => _SearchBarHomeState();
 }
@@ -60,6 +61,22 @@ class _SearchBarHomeState extends State<SearchBarHome> {
             color: Colors.grey,
             size: 30,
           ),
+          suffixIcon: _controller.text.isNotEmpty
+              ? IconButton(
+                  icon: const Icon(
+                    Icons.clear,
+                    color: Colors.grey,
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      _controller.clear(); // Clear the text
+                    });
+                    FocusScope.of(context).unfocus(); // Close the keyboard
+                    widget
+                        .onSubmitted(''); // Notify parent of the cleared input
+                  },
+                )
+              : null,
         ),
       ),
     );

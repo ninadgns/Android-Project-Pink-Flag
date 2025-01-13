@@ -1,12 +1,13 @@
-import 'package:dim/screens/Profile/ProfileScreen.dart';
 import 'package:dim/widgets/SearchScreen/ReicipeListView.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/material.dart';
+
 import '../widgets/SearchScreen/CatFoodList.dart';
 import '../widgets/SearchScreen/HorizontalScrollingCat.dart';
 import '../widgets/SearchScreen/SearchBarHome.dart';
 import 'AddPost/CreateRecipePostScreen.dart';
+import 'Profile/ProfileScreen.dart';
 
 class SearchScreen extends StatefulWidget {
   const SearchScreen({super.key});
@@ -20,6 +21,32 @@ class _SearchScreenState extends State<SearchScreen> {
   String _profileImageUrl = 'assets/images/profile.png';
   String _searchText = '';
 
+  @override
+  void initState() {
+    super.initState();
+    _loadProfileImage();
+  }
+
+  Future<void> _loadProfileImage() async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      String? imageUrl = user.photoURL; // Google account profile image URL
+      if (imageUrl == null) {
+        try {
+          // Try to get the image from Firebase Storage
+          imageUrl = await FirebaseStorage.instance
+              .ref('profile_images/${user.uid}.png')
+              .getDownloadURL();
+        } catch (_) {
+          imageUrl = 'assets/images/profile.png'; // Default fallback image
+        }
+      }
+      setState(() {
+        _profileImageUrl = imageUrl!;
+      });
+    }
+  }
+
   void _updateSearchText(String text) {
     setState(() {
       _searchText = text;
@@ -32,177 +59,163 @@ class _SearchScreenState extends State<SearchScreen> {
     });
   }
 
-  Future<void> _loadProfileImage() async {
-    User? user = FirebaseAuth.instance.currentUser;
-    if (user != null) {
-      String? imageUrl =
-          user.photoURL; // Get the Google account profile image URL
-      if (imageUrl == null) {
-        try {
-          // Try to get the image from Firebase Storage
-          imageUrl = await FirebaseStorage.instance
-              .ref('profile_images/${user.uid}.png')
-              .getDownloadURL();
-        } catch (e) {
-          // Fallback to a default image if the image is not found
-          imageUrl = 'assets/images/profile.png';
-        }
-      }
-      setState(() {
-        _profileImageUrl = imageUrl!;
-      });
-    }
+  Widget _buildProfileAvatar(BuildContext context, double width) {
+    return Hero(
+      tag: 'profile-hero',
+      child: InkWell(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const ProfileScreen(),
+            ),
+          );
+        },
+        child: Container(
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.5),
+                spreadRadius: 1,
+                blurRadius: 4,
+                offset: const Offset(0, 3),
+              ),
+            ],
+          ),
+          child: CircleAvatar(
+            radius: width / 15,
+            backgroundImage: _profileImageUrl.startsWith('http')
+                ? NetworkImage(_profileImageUrl)
+                : AssetImage(_profileImageUrl) as ImageProvider,
+          ),
+        ),
+      ),
+    );
   }
 
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    _loadProfileImage();
+  Widget _buildHeader(BuildContext context, double height, double width) {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: width * 0.05),
+      child: Row(
+        children: [
+          Text(
+            'What do you want\nto cook today?',
+            style: Theme.of(context).textTheme.displayMedium,
+          ),
+          const Spacer(),
+          _buildProfileAvatar(context, width),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCategoryAndFoodList(double width, double height) {
+    return Column(
+      children: [
+        SizedBox(height: height * 0.01),
+        HorizontalScrollingCat(
+          width: width,
+          onCategorySelected: _onCategorySelected,
+        ),
+        Row(
+          children: [
+            SizedBox(width: width * 0.04),
+            Text(
+              '$_selectedCategory ',
+              style: Theme.of(context)
+                  .textTheme
+                  .displayMedium!
+                  .copyWith(fontSize: width / 18),
+            ),
+            Text(
+              'Recipes',
+              style: Theme.of(context)
+                  .textTheme
+                  .headlineMedium!
+                  .copyWith(fontSize: width / 18),
+            ),
+            const Spacer(),
+            TextButton(
+              onPressed: () {},
+              child: Text(
+                'View All',
+                style: Theme.of(context)
+                    .textTheme
+                    .titleMedium!
+                    .copyWith(fontSize: width / 25),
+              ),
+            ),
+            SizedBox(width: width * 0.02),
+          ],
+        ),
+        const CatFoodList(),
+        Row(
+          children: [
+            SizedBox(width: width * 0.03),
+            Text(
+              'For you',
+              style: Theme.of(context).textTheme.displayMedium,
+            ),
+            const Spacer(),
+            TextButton.icon(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const CreateRecipePostScreen(),
+                  ),
+                );
+              },
+              icon: const Icon(Icons.add_circle_outline_rounded,
+                  color: Colors.white),
+              label: Text(
+                'Add Yours',
+                style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                      fontSize: width / 25,
+                      color: Colors.white,
+                    ),
+              ),
+              style: TextButton.styleFrom(backgroundColor: Colors.black),
+            ),
+            SizedBox(width: width * 0.03),
+          ],
+        ),
+      ],
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    double height = MediaQuery.of(context).size.height;
-    double width = MediaQuery.of(context).size.width;
+    final double height = MediaQuery.of(context).size.height;
+    final double width = MediaQuery.of(context).size.width;
+
     return Scaffold(
-      body: SizedBox(
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height,
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              SizedBox(height: height * 0.03),
-              Row(
-                children: [
-                  SizedBox(width: width * 0.05),
-                  Text(
-                    'What do you want\nto cook today?',
-                    style: Theme.of(context).textTheme.displayMedium,
-                  ),
-                  const Spacer(),
-                  SizedBox(width: width * 0.05),
-                  Hero(
-                    tag: 'profile-hero',
-                    child: InkWell(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const ProfileScreen(),
-                          ),
-                        );
-                      },
-                      child: Container(
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.grey.withOpacity(0.5),
-                              spreadRadius: 1,
-                              blurRadius: 4,
-                              offset: const Offset(0, 3),
-                            ),
-                          ],
-                        ),
-                        child: CircleAvatar(
-                          radius: width / 15, // larger size
-                          backgroundImage: _profileImageUrl.startsWith('http')
-                              ? NetworkImage(_profileImageUrl)
-                              : AssetImage(_profileImageUrl) as ImageProvider,
-                        ),
-                      ),
-                    ),
-                  ),
-                  SizedBox(width: width * 0.04),
-                ],
-              ), // Top text
-              SizedBox(height: height * 0.03),
-              SearchBarHome(
-                  width: width, height: height, onSubmitted: _updateSearchText),
-              SizedBox(height: height * 0.01),
-              HorizontalScrollingCat(
-                  width: width, onCategorySelected: _onCategorySelected),
-              // SizedBox(height: _height * 0.01),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  SizedBox(width: width * 0.04),
-                  Text(
-                    '$_selectedCategory ',
-                    style: Theme.of(context)
-                        .textTheme
-                        .displayMedium!
-                        .copyWith(fontSize: width / 18),
-                  ),
-                  Text(
-                    'Recipes',
-                    style: Theme.of(context)
-                        .textTheme
-                        .headlineMedium!
-                        .copyWith(fontSize: width / 18),
-                  ),
-                  const Spacer(),
-                  TextButton(
-                    onPressed: () {},
-                    child: Text(
-                      'View All',
-                      style: Theme.of(context)
-                          .textTheme
-                          .titleMedium!
-                          .copyWith(fontSize: width / 25),
-                    ),
-                  ),
-                  SizedBox(width: width * 0.02),
-                ],
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            SizedBox(height: height * 0.03),
+            _buildHeader(context, height, width),
+            SizedBox(height: height * 0.03),
+            SearchBarHome(
+              width: width,
+              height: height,
+              onSubmitted: _updateSearchText,
+            ),
+            AnimatedSwitcher(
+              duration: const Duration(milliseconds: 300),
+              transitionBuilder: (Widget child, Animation<double> animation) =>
+                  FadeTransition(
+                opacity: animation,
+                child: child,
               ),
-              // SizedBox(height: 5),
-              const CatFoodList(),
-              // SizedBox(height: _height * 0.03),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  SizedBox(width: width * 0.03),
-                  Text('For you',
-                      style: Theme.of(context).textTheme.displayMedium),
-                  const Spacer(),
-                  TextButton.icon(
-                    onPressed: () async {
-                      final result = await Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const CreateRecipePostScreen(),
-                        ),
-                      );
-                    },
-                    icon: const Icon(Icons.add_circle_outline_rounded,
-                        color: Colors.white),
-                    iconAlignment: IconAlignment.start,
-                    label: Text(
-                      'Add Yours',
-                      style: Theme.of(context)
-                          .textTheme
-                          .titleMedium!
-                          .copyWith(fontSize: width / 25, color: Colors.white),
-                    ),
-                    style: TextButton.styleFrom(
-                      backgroundColor: Colors.black,
-                    ),
-                  ),
-                  SizedBox(width: width * 0.03),
-                ],
-              ),
-              SizedBox(height: height * 0.01),
-              RecipeListView(searchQuery: _searchText),
-              SizedBox(height: height * 0.03),
-              Container(
-                height: height * 0.2,
-                color: const Color(0xfffaf6f2),
-              ),
-            ],
-          ),
+              child: _searchText.isEmpty
+                  ? _buildCategoryAndFoodList(width, height)
+                  : SizedBox.shrink(), // Hide when not needed
+            ),
+            RecipeListView(searchQuery: _searchText),
+            SizedBox(height: height * 0.03),
+          ],
         ),
       ),
     );
