@@ -12,7 +12,7 @@ class LibraryScreen extends StatefulWidget {
 
 class _LibraryScreenState extends State<LibraryScreen> {
   // State variable for the button
-  bool isCollectionsSelected = true; // Default to Collections
+  bool isCollectionsSelected = false; // Default to Collections
 
   @override
   Widget build(BuildContext context) {

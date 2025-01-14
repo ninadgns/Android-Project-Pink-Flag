@@ -201,14 +201,14 @@ class _CreateRecipePostScreenState extends State<CreateRecipePostScreen> {
       final imageUrl = await _uploadImageToSupabase(_recipeImage!);
 
       final postData = {
-        'user_id': Provider.of<UserProvider>(context).user?.uid,
+        'user_id': Provider.of<UserProvider>(context, listen: false).user?.uid,
         'title': _titleController.text,
         'description': _descriptionController.text,
         'difficulty': _difficulty,
         'total_duration':
             _steps.fold(0, (sum, step) => sum + step['time'] as int),
         'serving_count': int.tryParse(_servingCountController.text) ?? 1,
-        'image_url': imageUrl,
+        'title_photo': imageUrl,
       };
 
       try {

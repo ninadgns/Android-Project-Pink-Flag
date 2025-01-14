@@ -3,9 +3,11 @@ import 'dart:math';
 import 'package:dim/data/constants.dart';
 import 'package:dim/screens/RecipeDirectionScreen.dart';
 import 'package:dim/widgets/VideoPlayer.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '/widgets/RecipeIntroScreen/DetailsInfo.dart';
 import '../models/RecipeModel.dart';
@@ -30,13 +32,31 @@ class _RecipeIntroState extends State<RecipeIntro> {
   late int count;
   final formatter =
       NumberFormat('#.##'); // Up to two decimal places, no trailing zeros.
-
+  bool isSaved = false;
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     count = widget.recipe.servings;
     widget.recipe.calculateTotalDuration();
+    final userId = FirebaseAuth.instance.currentUser!.uid;
+    final recipeId = widget.recipe.id;
+    _isRecipeSaved(userId, recipeId).then((value) {
+      setState(() {
+        isSaved = value;
+      });
+    });
+  }
+
+  Future<bool> _isRecipeSaved(String userId, String recipeId) async {
+    final supabase = Supabase.instance.client;
+    final response = await supabase
+        .from('saved_recipes')
+        .select('id')
+        .eq('user_id', userId)
+        .eq('recipe_id', recipeId)
+        .maybeSingle();
+    return response != null;
   }
 
   void decrement() {
@@ -44,6 +64,66 @@ class _RecipeIntroState extends State<RecipeIntro> {
       count--;
       count = max(0, count);
     });
+  }
+
+  Future<void> _toggleSaveRecipe(
+      String userId, String recipeId, BuildContext context) async {
+    setState(() {
+      isSaved = !isSaved;
+    });
+    try {
+      final supabase = Supabase.instance.client;
+
+      // Check if the record exists
+      final response = await supabase
+          .from('saved_recipes')
+          .select('id')
+          .eq('user_id', userId)
+          .eq('recipe_id', recipeId)
+          .maybeSingle();
+      print(response);
+      if (response != null) {
+        // Record exists, so delete it
+        final deleteResponse = await supabase
+            .from('saved_recipes')
+            .delete()
+            .eq('user_id', userId)
+            .eq('recipe_id', recipeId)
+            .select('id')
+            .single();
+
+        if (deleteResponse == null) {
+          print('Error deleting recipe');
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Recipe removed successfully')),
+          );
+
+          print('Recipe removed successfully');
+        }
+      } else {
+        // Record does not exist, so insert it
+        final insertResponse = await supabase
+            .from('saved_recipes')
+            .insert({
+              'user_id': userId,
+              'recipe_id': recipeId,
+            })
+            .select('id')
+            .single();
+
+        if (insertResponse == null) {
+          print('Error saving recipe');
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Recipe saved successfully')),
+          );
+          print('Recipe saved successfully');
+        }
+      }
+    } on Exception catch (e) {
+      print('Error toggling recipe save: $e');
+    }
   }
 
   void increment() {
@@ -107,13 +187,33 @@ class _RecipeIntroState extends State<RecipeIntro> {
                       },
                       icon: const Icon(
                         Icons.arrow_back_ios,
-                        color: Colors.black,
+                      ),
+                      color: Colors.white,
+                      iconSize: 18.0,
+                      padding: const EdgeInsets.all(0),
+                      splashRadius: 14.0,
+                      highlightColor: Colors.black12,
+                      constraints: const BoxConstraints(
+                        minHeight: 36,
+                        minWidth: 36,
+                      ),
+                      style: ButtonStyle(
+                        backgroundColor: WidgetStateProperty.all(
+                          Colors.black.withOpacity(0.15),
+                        ),
+                        shape: WidgetStateProperty.all(const CircleBorder()),
                       ),
                     ),
                     IconButton(
-                      onPressed: () {},
-                      icon: const Icon(
-                        Icons.bookmark_border_rounded,
+                      onPressed: () {
+                        final userID = FirebaseAuth.instance.currentUser!.uid;
+                        final recipeID = widget.recipe.id;
+                        _toggleSaveRecipe(userID, recipeID, context);
+                      },
+                      icon: Icon(
+                        isSaved
+                            ? Icons.bookmark_rounded
+                            : Icons.bookmark_border_rounded,
                       ),
                       color: Colors.white,
                       iconSize: 18.0,
@@ -232,15 +332,15 @@ class _RecipeIntroState extends State<RecipeIntro> {
                                         const SizedBox(width: 4),
                                         Text(
                                             '${widget.recipe.totalDuration} min',
-                                            style:
-                                                const TextStyle(color: Colors.grey)),
+                                            style: const TextStyle(
+                                                color: Colors.grey)),
                                         SizedBox(width: width * 0.04),
                                         const Icon(Icons.signal_cellular_alt,
                                             size: 16, color: Colors.grey),
                                         const SizedBox(width: 4),
                                         Text(widget.recipe.difficulty,
-                                            style:
-                                                const TextStyle(color: Colors.grey)),
+                                            style: const TextStyle(
+                                                color: Colors.grey)),
                                         SizedBox(width: width * 0.04),
                                         InkWell(
                                           child: Row(
@@ -370,14 +470,16 @@ class _RecipeIntroState extends State<RecipeIntro> {
                                         howManyServings: count,
                                       )
                                     : DetailsInfo(
-                                        energy: widget.recipe.nutrition.energy(),
-                                        protein: widget.recipe.nutrition.protein,
+                                        energy:
+                                            widget.recipe.nutrition.energy(),
+                                        protein:
+                                            widget.recipe.nutrition.protein,
                                         carbs: widget.recipe.nutrition.carbs,
                                         fat: widget.recipe.nutrition.fat,
                                         description:
-                                            widget.recipe.steps.map((step){
-                                              return step.description;
-                                            }).join(' '),
+                                            widget.recipe.steps.map((step) {
+                                          return step.description;
+                                        }).join(' '),
                                       ),
                               ],
                             ),
@@ -392,23 +494,10 @@ class _RecipeIntroState extends State<RecipeIntro> {
                                     horizontal: 2,
                                   ),
                                   child: ListTile(
-                                    title:
-                                        Text(widget.recipe.ingredients[index].name),
+                                    title: Text(
+                                        widget.recipe.ingredients[index].name),
                                     trailing: Text(
-                                      '${double.tryParse(widget.recipe
-                                                          .ingredients[
-                                                      index].quantity.toString()) !=
-                                                  null
-                                              ? formatter
-                                                  .format((double.parse(widget
-                                                              .recipe
-                                                              .ingredients[
-                                                          index].quantity.toString()) *
-                                                      count /
-                                                      widget.recipe.servings))
-                                                  .toString()
-                                              : widget.recipe
-                                                  .ingredients[index].quantity} ${widget.recipe.ingredients[index].unit}',
+                                      '${double.tryParse(widget.recipe.ingredients[index].quantity.toString()) != null ? formatter.format((double.parse(widget.recipe.ingredients[index].quantity.toString()) * count / widget.recipe.servings)).toString() : widget.recipe.ingredients[index].quantity} ${widget.recipe.ingredients[index].unit}',
                                     ),
                                   ),
                                 );
