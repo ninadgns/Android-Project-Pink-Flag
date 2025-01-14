@@ -1,7 +1,9 @@
 import 'package:dim/screens/HomeScreen.dart';
 import 'package:dim/screens/Login.dart';
 import 'package:dim/services/user_provider.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -17,7 +19,7 @@ void main() async {
   await Supabase.initialize(
     url: 'https://ftxynincmxoriezkggdi.supabase.co',
     anonKey:
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ0eHluaW5jbXhvcmllemtnZ2RpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzYxMzk2MTgsImV4cCI6MjA1MTcxNTYxOH0.78nIJvy_EjK0N_qL2lQQYNXDxIIJ2GuOuT30aTXp8jc',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ0eHluaW5jbXhvcmllemtnZ2RpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzYxMzk2MTgsImV4cCI6MjA1MTcxNTYxOH0.78nIJvy_EjK0N_qL2lQQYNXDxIIJ2GuOuT30aTXp8jc',
   );
 
   runApp(
@@ -47,14 +49,31 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
-    final user = Provider.of<UserProvider>(context).user;
-    print(user?.email);
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Dim',
       theme: appTheme,
-      home: (user?.uid == null) ? const Onboarding() : const Homescreen(),
-       //home: const Homescreen(),
+      home: const AuthWrapper(),
+    );
+  }
+}
+
+class AuthWrapper extends StatelessWidget {
+  const AuthWrapper({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<auth.User?>(
+      stream: FirebaseAuth.instance.authStateChanges(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const CircularProgressIndicator();
+        } else if (snapshot.hasData) {
+          return const Homescreen();
+        } else {
+          return const Onboarding();
+        }
+      },
     );
   }
 }

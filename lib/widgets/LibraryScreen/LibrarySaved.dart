@@ -1,35 +1,81 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import '../../models/RecipeModel.dart';
+import '../../screens/AddPost/fetchRecipes.dart';
+import '../Recipe/MealItem.dart';
 import '/widgets/LibraryScreen/SavedItem.dart';
 
 import '../../data/constants.dart';
 import '../../screens/RecipeIntroScreen.dart';
 
-class LibrarySaved extends StatelessWidget {
+class LibrarySaved extends StatefulWidget {
   const LibrarySaved({super.key});
+
+  @override
+  State<LibrarySaved> createState() => _LibrarySavedState();
+}
+
+class _LibrarySavedState extends State<LibrarySaved> {
+  late List<Recipe> _recipeList = [];
+  bool _isLoading = false;
+  @override
+  void initState() {
+    super.initState();
+    _fetchAndSetRecipes();
+  }
+
+  void _fetchAndSetRecipes() async {
+    setState(() {
+      _isLoading = true; // Show loading indicator
+    });
+    List<dynamic> savedRecipesResponse = await Supabase.instance.client
+        .from('saved_recipes')
+        .select('recipe_id')
+        .eq('user_id', FirebaseAuth.instance.currentUser!.uid);
+    List<String> savedRecipes = savedRecipesResponse
+        .map((item) => item['recipe_id'] as String)
+        .toList();
+    List<Map<String, dynamic>> response = await fetchRecipes();
+    final converted = parseRecipes(response);
+    converted.retainWhere((element) => savedRecipes.contains(element.id));
+
+    setState(() {
+      _recipeList = converted;
+      _isLoading = false; // Hide loading indicator
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
-    return GridView.builder(
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2, // Number of columns
-        mainAxisSpacing: 8.0, // Spacing between rows
-        crossAxisSpacing: 10.0, // Spacing between columns
-        childAspectRatio: 1.0, // Aspe+ct ratio of each item
-        mainAxisExtent: height / 4.2, // Height of each item
+    if (_isLoading) {
+      return Center(
+          child: Column(
+        children: [
+          CircularProgressIndicator(),
+          SizedBox(height: height * 0.02),
+          Text("Loading recipes..."),
+        ],
+      ));
+    }
+
+    if (_recipeList.isEmpty) {
+      return Center(child: Text("No recipes found"));
+    }
+
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          ..._recipeList.map((recipe) {
+            return MealItem(
+              recipe: recipe,
+            );
+          }),
+          SizedBox(height: height * 0.15)
+        ],
       ),
-      itemBuilder: (context, index) {
-        return InkWell(
-          onTap: () {
-            Navigator.push(
-                context, MaterialPageRoute(builder: (ctx) => RecipeIntro(recipe: dummyRecipe,)));
-          },
-          child: SavedItem(
-            index: index,
-          ),
-        );
-      },
-      itemCount: 10,
     );
   }
 }
