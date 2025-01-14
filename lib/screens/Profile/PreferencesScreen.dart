@@ -1,4 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:dim/widgets/Preferences/PreferenceSection.dart';
+import 'package:dim/models/PreferenceModel.dart';
+import 'package:dim/data/constants.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+
+import '../../services/PreferencesService.dart';
 
 class PreferencesScreen extends StatefulWidget {
   const PreferencesScreen({super.key});
@@ -8,107 +14,97 @@ class PreferencesScreen extends StatefulWidget {
 }
 
 class _PreferencesScreenState extends State<PreferencesScreen> with SingleTickerProviderStateMixin {
-  final List<String> selectedDiets = [];
-  final List<String> selectedAllergies = [];
-  final List<String> selectedMaterials = [];
-  final List<String> selectedDishes = [];
-
-  // For changing text
-  Map<String, bool> showExtra = {
-    'diet': false,
-    'allergies': false,
-    'materials': false,
-    'dishes': false,
-  };
-
-  // Show/hide additional options showing
-  final Map<String, bool> showMore = {
-    'diet': false,
-    'allergies': false,
-    'materials': false,
-    'dishes': false,
-  };
-
-  // Custom inputs from users
-  final Map<String, List<String>> customInputs = {
-    'diet': [],
-    'allergies': [],
-    'materials': [],
-    'dishes': [],
-  };
-
-  // Show/hide input fields
-  final Map<String, bool> showInputField = {
-    'diet': false,
-    'allergies': false,
-    'materials': false,
-    'dishes': false,
-  };
-
-  // Controllers for user input
-  final Map<String, TextEditingController> inputControllers = {
-    'diet': TextEditingController(),
-    'allergies': TextEditingController(),
-    'materials': TextEditingController(),
-    'dishes': TextEditingController(),
-  };
-
-
-  final Map<String, List<String>> extendedOptions = {
-    'diet': [
-      'Vegetarian', 'Vegan', 'Gluten Free', 'Sugar Free', 'Halal', 'Keto',
-      'Paleo', 'Lactose Free', 'Low Fat', 'Mediterranean', 'Pescatarian',
-      'Low Carb', 'Dairy Free', 'Kosher', 'Raw Food',
-      'High Protein', 'Low Sodium', 'Diabetic-Friendly'
-    ],
-    'allergies': [
-      'Peanut', 'Soy', 'Prawns', 'Walnuts', 'Cashews', 'Cows\' milk',
-      'Tree Nuts', 'Shellfish', 'Wheat', 'Eggs', 'Fish', 'Seafood',
-      'Sesame', 'Mustard', 'Celery', 'Lupin', 'Sulfites', 'Mushrooms',
-      'Garlic', 'Onions'
-    ],
-    'materials': [
-      'Meat', 'Cabbage', 'Carrot', 'Sweet Potato', 'Eggs', 'Prawns',
-      'Fish', 'Broccoli', 'Corn', 'Wheat', 'Tomatoes', 'Cheese', 'Tofu',
-      'Lentils', 'Chickpeas', 'Rice', 'Potatoes', 'Spinach', 'Mushrooms', 'Peppers'
-    ],
-    'dishes': [
-      'Pasta', 'Soup', 'Salad', 'Pizza', 'Bowl', 'Dessert', 'Stew',
-      'Sandwiches', 'Curry', 'Stir Fry', 'Roast', 'Grill', 'Casserole',
-      'Sushi', 'Tacos', 'Burgers', 'Rice Dishes', 'Noodles', 'Wraps',
-      'Fritters'
-    ]
-  };
-
-  // Animation
-  late AnimationController _controller;
-  late Animation<double> _dietFade;
-  late Animation<double> _allergiesFade;
-  late Animation<double> _materialsFade;
-  late Animation<double> _dishesFade;
+  late final PreferenceData preferenceData;
+  late final AnimationController _controller;
+  late final Map<String, Animation<double>> _fadeAnimations;
+  final PreferencesService _preferencesService = PreferencesService(supabase: Supabase.instance.client);
+  bool _isLoading = true;
 
   static bool _hasAnimated = false;
 
   @override
   void initState() {
     super.initState();
+    _loadUserPreferences();
+    preferenceData = PreferenceData();
+    _initializeAnimations();
+  }
 
+
+  Future<void> _loadUserPreferences() async {
+    try {
+      setState(() => _isLoading = true);
+
+      final preferences = await _preferencesService.fetchUserPreferences();
+      if (preferences == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Failed to load preferences')),
+        );
+        return;
+      }
+
+      setState(() {
+        preferenceData.selectedItems['diet'] = preferences['diets'] ?? [];
+        preferenceData.selectedItems['allergies'] = preferences['allergies'] ?? [];
+        preferenceData.selectedItems['materials'] = preferences['ingredients'] ?? [];
+        preferenceData.selectedItems['dishes'] = preferences['dishes'] ?? [];
+        preferenceData.customInputs['diet'] = preferences['custom_diets'] ?? [];
+        preferenceData.customInputs['allergies'] = preferences['custom_allergies'] ?? [];
+        preferenceData.customInputs['materials'] = preferences['custom_ingredients'] ?? [];
+        preferenceData.customInputs['dishes'] = preferences['custom_dishes'] ?? [];
+      });
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error loading preferences: ${e.toString()}')),
+      );
+    } finally {
+      setState(() => _isLoading = false);
+    }
+  }
+
+
+  Future<void> _savePreferences() async {
+    try {
+      setState(() => _isLoading = true); // Add loading state
+
+      await _preferencesService.saveUserPreferences(
+        diets: preferenceData.selectedItems['diet'] ?? [],
+        allergies: preferenceData.selectedItems['allergies'] ?? [],
+        ingredients: preferenceData.selectedItems['materials'] ?? [],
+        dishes: preferenceData.selectedItems['dishes'] ?? [],
+        custom_diets: preferenceData.customInputs['diet'] ?? [],
+        custom_allergies: preferenceData.customInputs['allergies'] ?? [],
+        custom_ingredients: preferenceData.customInputs['materials'] ?? [],
+        custom_dishes: preferenceData.customInputs['dishes'] ?? [],
+      );
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Preferences saved successfully')),
+      );
+      Navigator.pop(context);
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to save preferences: ${e.toString()}')),
+      );
+    } finally {
+      setState(() => _isLoading = false);
+    }
+  }
+
+
+  void _initializeAnimations() {
     _controller = AnimationController(
       duration: const Duration(milliseconds: 2000),
       vsync: this,
     );
 
-    // Intervals to fade in the sections one by one
-    _dietFade = Tween(begin: 0.0, end: 1.0).animate(
-        CurvedAnimation(parent: _controller, curve: const Interval(0.0, 0.33, curve: Curves.easeIn)));
-    _allergiesFade = Tween(begin: 0.0, end: 1.0).animate(
-        CurvedAnimation(parent: _controller, curve: const Interval(0.33, 0.66, curve: Curves.easeIn)));
-    _materialsFade = Tween(begin: 0.0, end: 1.0).animate(
-        CurvedAnimation(parent: _controller, curve: const Interval(0.33, 0.66, curve: Curves.easeIn)));
-    _dishesFade = Tween(begin: 0.0, end: 1.0).animate(
-        CurvedAnimation(parent: _controller, curve: const Interval(0.66, 1.0, curve: Curves.easeIn)));
+    _fadeAnimations = {
+      'diet': _createFadeAnimation(0.0, 0.33),
+      'allergies': _createFadeAnimation(0.33, 0.66),
+      'materials': _createFadeAnimation(0.33, 0.66),
+      'dishes': _createFadeAnimation(0.66, 1.0),
+    };
 
-    // Run animations
     if (!_hasAnimated) {
       _controller.forward().then((_) {
         _hasAnimated = true;
@@ -118,246 +114,143 @@ class _PreferencesScreenState extends State<PreferencesScreen> with SingleTicker
     }
   }
 
+  Animation<double> _createFadeAnimation(double begin, double end) {
+    return Tween(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: Interval(begin, end, curve: Curves.easeIn),
+      ),
+    );
+  }
+
   @override
   void dispose() {
-    for (var controller in inputControllers.values) {
-      controller.dispose();
-    }
     _controller.dispose();
+    preferenceData.dispose();
     super.dispose();
   }
 
-  Widget _buildSelectionChip(String label, bool isSelected, Function(bool) onSelected,
-      {bool isCustom = false}) {
-    return Padding(
-      padding: const EdgeInsets.only(right: 8.0, bottom: 8.0),
-      child: FilterChip(
-        label: Text(
-          label,
-          style: TextStyle(
-            color: isSelected ? Colors.white : const Color(0xFF004D40),
-          ),
-        ),
-        selected: isSelected,
-        onSelected: onSelected,
-        showCheckmark: false,
-        backgroundColor: const Color(0xFFE0F2F1),
-        selectedColor: const Color(0xFF26A69A),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-          side: BorderSide(
-            color: Colors.grey.shade300,
-          ),
-        ),
-        labelPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 2),
-      ),
-    );
+  void _clearAllPreferences() {
+    setState(() {
+      preferenceData.clearAll();
+    });
   }
 
-  Widget _buildInputField(String sectionKey) {
-    return AnimatedContainer(
-      duration: const Duration(milliseconds: 300),
-      height: showInputField[sectionKey]! ? 50 : 0,
-      child: showInputField[sectionKey]! ? Focus(
-        onFocusChange: (hasFocus) {
-          if (!hasFocus && inputControllers[sectionKey]!.text.isEmpty) {
-            setState(() {
-              showInputField[sectionKey] = false;
-            });
-          }
-        },
-        child: TextField(
-          controller: inputControllers[sectionKey],
-          decoration: InputDecoration(
-            hintText: 'Add custom $sectionKey...',
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(20),
-              borderSide: BorderSide(color: Colors.grey.shade300),
-            ),
-            fillColor: Colors.white,
-            filled: true,
-            suffixIcon: IconButton(
-              icon: const Icon(Icons.check),
-              onPressed: () {
-                final value = inputControllers[sectionKey]!.text.trim();
-                if (value.isNotEmpty) {
-                  if (extendedOptions[sectionKey]!.contains(value) ||
-                      customInputs[sectionKey]!.contains(value)) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Already in the options'),
-                        duration: Duration(seconds: 2),
-                      ),
-                    );
-                  } else {
-                    setState(() {
-                      customInputs[sectionKey]!.add(value);
-                      showInputField[sectionKey] = false;
-                      inputControllers[sectionKey]!.clear();
-                    });
-                  }
-                  // Hide keyboard
-                  FocusScope.of(context).unfocus();
-                }
-              },
-            ),
-          ),
-          autofocus: true,
-          onSubmitted: (value) {
-            if (value.isNotEmpty) {
-              if (extendedOptions[sectionKey]!.contains(value) ||
-                  customInputs[sectionKey]!.contains(value)) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Already in the options'),
-                    duration: Duration(seconds: 2),
-                  ),
-                );
-              } else {
-                setState(() {
-                  customInputs[sectionKey]!.add(value);
-                  showInputField[sectionKey] = false;
-                  inputControllers[sectionKey]!.clear();
-                });
-              }
-              FocusScope.of(context).unfocus();
-            }
-          },
-          textCapitalization: TextCapitalization.sentences,
-        ),
-      )
-          : const SizedBox.shrink(),
-    );
-  }
-
-  Widget _buildCustomInputsSection(String sectionKey) {
-    return AnimatedContainer(
-      duration: const Duration(milliseconds: 300),
-      height: customInputs[sectionKey]!.isEmpty ? 0 : 60,
-      child: Wrap(
-        children: customInputs[sectionKey]!.map((input) {
-          return _buildSelectionChip(
-            input,
-            true,
-                (selected) {
-              setState(() {
-                if (!selected) {
-                  customInputs[sectionKey]!.remove(input);
-                }
-              });
-            },
-            isCustom: true,
-          );
-        }).toList(),
-      ),
-    );
-  }
-
-  Widget _buildSection(String title, String sectionKey, List<String> selectedItems) {
-    List<String> displayedOptions = showMore[sectionKey]!
-        ? extendedOptions[sectionKey]!
-        : extendedOptions[sectionKey]!.sublist(0, 6);
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          title,
-          style: const TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-            color: Color(0xFF004D40),
-          ),
-        ),
-        const SizedBox(height: 16),
-        Wrap(
-          children: displayedOptions.map((option) {
-            final isSelected = selectedItems.contains(option);
-            return _buildSelectionChip(
-              option,
-              isSelected,
-                  (selected) {
-                setState(() {
-                  if (selected) {
-                    selectedItems.add(option);
-                  } else {
-                    selectedItems.remove(option);
-                  }
-                });
-              },
-            );
-          }).toList(),
-        ),
-        _buildCustomInputsSection(sectionKey),
-        Padding(
-          padding: const EdgeInsets.only(top: 8.0, bottom: 24.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              TextButton(
-                onPressed: () {
-                  setState(() {
-                    // Toggle the value of the `showMore` and `showExtra`
-                    showMore[sectionKey] = !showMore[sectionKey]!;
-                    showExtra[sectionKey] = !showExtra[sectionKey]!;
-                  });
-                },
-                child: Text(
-                  showExtra[sectionKey]! ? 'Show less' : 'Show more',
-                  style: TextStyle(
-                    color: Colors.grey[600],
-                    fontSize: 14,
-                  ),
-                ),
-              ),
-              TextButton(
-                onPressed: () {
-                  setState(() {
-                    showInputField[sectionKey] = !showInputField[sectionKey]!;
-                    if (showInputField[sectionKey]!) {
-                      // Show keyboard when input field appears
-                      Future.delayed(const Duration(milliseconds: 100), () {
-                        FocusScope.of(context).requestFocus(FocusNode());
-                        inputControllers[sectionKey]!.text = '';
-                      });
-                    } else {
-                      // Hide keyboard when input field is closed
-                      FocusScope.of(context).unfocus();
-                    }
-                  });
-                },
-                child: Text(
-                  'Write',
-                  style: TextStyle(
-                    color: Colors.grey[600],
-                    fontSize: 14,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-        if (showInputField[sectionKey]!) _buildInputField(sectionKey),
-      ],
-    );
-  }
-
-  // Use cooking-related icons
   Widget _buildCookingIconPattern(IconData icon, Color color, double size, {double opacity = 0.1, double rotation = 0}) {
     return Transform.rotate(
       angle: rotation,
       child: Icon(
         icon,
         size: size,
-        color: color.withOpacity(0.1),
+        color: color.withOpacity(opacity),
       ),
+    );
+  }
+
+  Widget _buildBackgroundPattern() {
+    return Stack(
+      children: [
+        Positioned(
+          top: -30,
+          left: -30,
+          child: _buildCookingIconPattern(Icons.restaurant_menu, const Color(0xFF26A69A), 200, opacity: 0.05),
+        ),
+        Positioned(
+          top: 150,
+          right: -40,
+          child: _buildCookingIconPattern(Icons.icecream, const Color(0xFFEF9A9A), 150, opacity: 0.05, rotation: 0.5),
+        ),
+        Positioned(
+          bottom: 200,
+          left: -60,
+          child: _buildCookingIconPattern(Icons.lunch_dining, const Color(0xFF81C784), 220, opacity: 0.05, rotation: -0.3),
+        ),
+        Positioned(
+          bottom: 60,
+          right: -30,
+          child: _buildCookingIconPattern(Icons.emoji_food_beverage, const Color(0xFFFFB74D), 180, opacity: 0.05, rotation: 0.7),
+        ),
+        Positioned(
+          top: 300,
+          right: 120,
+          child: _buildCookingIconPattern(Icons.fastfood, Colors.indigo[300]!, 100, opacity: 0.05, rotation: -0.5),
+        ),
+      ],
+    );
+  }
+
+  PreferredSizeWidget _buildCustomAppBar() {
+    return AppBar(
+      leading: IconButton(
+        icon: Icon(Icons.close, color: Colors.grey[600]),
+        onPressed: () => Navigator.pop(context),
+      ),
+      actions: [
+        TextButton(
+          onPressed: _clearAllPreferences,
+          child: Text(
+            'Clear all',
+            style: TextStyle(
+              color: Colors.grey[600],
+              fontSize: 16,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSavePreferencesButton() {
+    return SafeArea(
+      child: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: ElevatedButton(
+          onPressed: _savePreferences,
+          style: ElevatedButton.styleFrom(
+            backgroundColor: const Color(0xFFE0F2F1),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(30),
+            ),
+            padding: const EdgeInsets.symmetric(vertical: 16),
+          ),
+          child: const Text(
+            'Save Preferences',
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              color: Color(0xFF26A69A),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPreferenceSections() {
+    final sections = [
+      ('Choose your diet', 'diet'),
+      ('Do you have allergies?', 'allergies'),
+      ('What\'s your favourite materials?', 'materials'),
+      ('Favorite dishes', 'dishes'),
+    ];
+
+    return Column(
+      children: sections.map((section) {
+        return FadeTransition(
+          opacity: _fadeAnimations[section.$2]!,
+          child: PreferenceSection(
+            title: section.$1,
+            sectionKey: section.$2,
+            preferenceData: preferenceData,
+            onStateChanged: () => setState(() {}),
+          ),
+        );
+      }).toList(),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    const backgroundColor = Colors.white;
-
     return Theme(
       data: Theme.of(context).copyWith(
         appBarTheme: Theme.of(context).appBarTheme.copyWith(
@@ -366,137 +259,54 @@ class _PreferencesScreenState extends State<PreferencesScreen> with SingleTicker
           systemOverlayStyle: null,
         ),
       ),
-      child: Scaffold(
-        backgroundColor: backgroundColor,
-        appBar: AppBar(
-          leading: IconButton(
-            icon: Icon(Icons.close, color: Colors.grey[600]),
-            onPressed: () => Navigator.pop(context),
+      child: Stack(
+        children: [
+          Scaffold(
+            backgroundColor: Colors.white,
+            appBar: _buildCustomAppBar(),
+            body: Stack(
+              children: [
+                _buildBackgroundPattern(),
+                SingleChildScrollView(
+                  padding: const EdgeInsets.all(20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Your preferences',
+                        style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        'Tell us about your preferences and we can choose the best recipes for you',
+                        style: TextStyle(
+                          color: Colors.grey[600],
+                          fontSize: 16,
+                        ),
+                      ),
+                      const SizedBox(height: 32),
+                      _buildPreferenceSections(),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            bottomNavigationBar: _buildSavePreferencesButton(),
           ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                setState(() {
-                  selectedDiets.clear();
-                  selectedAllergies.clear();
-                  selectedMaterials.clear();
-                  selectedDishes.clear();
-                  customInputs.forEach((key, value) => value.clear());
-                });
-              },
-              child: Text(
-                'Clear all',
-                style: TextStyle(
-                  color: Colors.grey[600],
-                  fontSize: 16,
+          if (_isLoading)
+            const Positioned.fill(
+              child: ColoredBox(
+                color: Colors.black26,
+                child: Center(
+                  child: CircularProgressIndicator(),
                 ),
               ),
             ),
-          ],
-        ),
-        body: Stack(
-          children: [
-            // cooking-related icons
-            Positioned(
-              top: -30,
-              left: -30,
-              child: _buildCookingIconPattern(Icons.restaurant_menu, const Color(0xFF26A69A), 200, opacity: 0.05),
-            ),
-            Positioned(
-              top: 150,
-              right: -40,
-              child: _buildCookingIconPattern(Icons.icecream, const Color(0xFFEF9A9A), 150, opacity: 0.05, rotation: 0.5),
-            ),
-            Positioned(
-              bottom: 200,
-              left: -60,
-              child: _buildCookingIconPattern(Icons.lunch_dining, const Color(0xFF81C784), 220, opacity: 0.05, rotation: -0.3),
-            ),
-            Positioned(
-              bottom: 60,
-              right: -30,
-              child: _buildCookingIconPattern(Icons.emoji_food_beverage, const Color(0xFFFFB74D), 180, opacity: 0.05, rotation: 0.7),
-            ),
-            Positioned(
-              top: 300,
-              right: 120,
-              child: _buildCookingIconPattern(Icons.fastfood, Colors.indigo[300]!, 100, opacity: 0.05, rotation: -0.5),
-            ),
-
-            SingleChildScrollView(
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'Your preferences',
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Tell us about your preferences and we can choose the best recipes for you',
-                    style: TextStyle(
-                      color: Colors.grey[600],
-                      fontSize: 16,
-                    ),
-                  ),
-                  const SizedBox(height: 32),
-
-                  // Diet section fade in
-                  FadeTransition(
-                    opacity: _dietFade,
-                    child: _buildSection('Choose your diet', 'diet', selectedDiets),
-                  ),
-
-                  // Allergies section fade in
-                  FadeTransition(
-                    opacity: _allergiesFade,
-                    child: _buildSection('Do you have allergies?', 'allergies', selectedAllergies),
-                  ),
-
-                  FadeTransition(
-                    opacity: _materialsFade,
-                    child: _buildSection('What\'s your favourite materials?', 'materials', selectedMaterials),
-                  ),
-                  // Dishes section fade in
-                  FadeTransition(
-                    opacity: _dishesFade,
-                    child: _buildSection('Favorite dishes', 'dishes', selectedDishes),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-        bottomNavigationBar: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: ElevatedButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFFE0F2F1),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30),
-                ),
-                padding: const EdgeInsets.symmetric(vertical: 16),
-              ),
-              child: const Text(
-                'Save Preferences',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xFF26A69A),
-                ),
-              ),
-            ),
-          ),
-        ),
+        ],
       ),
     );
   }

@@ -152,3 +152,33 @@ const Map<String, Color> categoryColors = {
   'Oils & Vinegars': Color(0xFFFFCFD0),
   'Sauces & Condiments': Color(0xFFE6D3B4),
 };
+
+
+class PreferenceOptions {
+  static const Map<String, List<String>> extendedOptions = {
+    'diet': [
+      'Vegetarian', 'Vegan', 'Gluten Free', 'Sugar Free', 'Halal', 'Keto',
+      'Paleo', 'Lactose Free', 'Low Fat', 'Mediterranean', 'Pescatarian',
+      'Low Carb', 'Dairy Free', 'Kosher', 'Raw Food',
+      'High Protein', 'Low Sodium', 'Diabetic-Friendly'
+    ],
+    'allergies': [
+      'Peanut', 'Soy', 'Prawns', 'Walnuts', 'Cashews', 'Cows\' milk',
+      'Tree Nuts', 'Shellfish', 'Wheat', 'Eggs', 'Fish', 'Seafood',
+      'Sesame', 'Mustard', 'Celery', 'Lupin', 'Sulfites', 'Mushrooms',
+      'Garlic', 'Onions'
+    ],
+    'materials': [
+      'Meat', 'Cabbage', 'Carrot', 'Sweet Potato', 'Eggs', 'Prawns',
+      'Fish', 'Broccoli', 'Corn', 'Wheat', 'Tomatoes', 'Cheese', 'Tofu',
+      'Lentils', 'Chickpeas', 'Rice', 'Potatoes', 'Spinach', 'Mushrooms', 'Peppers'
+    ],
+    'dishes': [
+      'Pasta', 'Soup', 'Salad', 'Pizza', 'Bowl', 'Dessert', 'Stew',
+      'Sandwiches', 'Curry', 'Stir Fry', 'Roast', 'Grill', 'Casserole',
+      'Sushi', 'Tacos', 'Burgers', 'Rice Dishes', 'Noodles', 'Wraps',
+      'Fritters'
+    ]
+  };
+}
+

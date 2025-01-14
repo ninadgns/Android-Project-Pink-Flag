@@ -13,7 +13,9 @@ import '../../services/ProfileService.dart';
 
 
 class ProfileDetailInfoScreen extends StatefulWidget {
-  const ProfileDetailInfoScreen({super.key});
+  final String imagePath;
+
+  const ProfileDetailInfoScreen({super.key, required this.imagePath});
 
   @override
   State<ProfileDetailInfoScreen> createState() => _ProfileDetailInfoScreenState();
@@ -68,20 +70,6 @@ class _ProfileDetailInfoScreenState extends State<ProfileDetailInfoScreen>
       );
     }
   }
-
-
-  // static SocialMediaHandle insta= SocialMediaHandle(platform: 'Instagram',handle: '@sofiacooks');
-  //
-  // static List<SocialMediaHandle> socialMediaIds = [insta];
-  // static Uint8List? profileImageBytes;
-  //
-  // ProfileInfoModel profileinfo= ProfileInfoModel(id: '1', userName: 'Sofia', fullName: 'Sofia Anderson',
-  //     email: 'sofia@example.com', phoneNumber: '+1 234 567 8900', dateofBirth: DateTime(2000, 5, 15),
-  //     bio: 'Food lover, cook, and traveler.', city: 'New York',
-  //     workplace: 'Culinary Institute of America', profileImagePath: 'assets/images/profile.png',
-  //     profileImageBytes: profileImageBytes,
-  //     followerCount: 98, followingCount: 142,
-  //     recipesCount:  23, socialMediaHandles: socialMediaIds);
 
 
   Future<void> _pickImage() async {
@@ -427,7 +415,7 @@ class _ProfileDetailInfoScreenState extends State<ProfileDetailInfoScreen>
       backgroundImage = AssetImage(profileinfo!.profileImagePath);
     } else {
       if (kIsWeb) {
-        backgroundImage = const AssetImage('assets/images/profile.png');
+        backgroundImage = AssetImage(widget.imagePath);
       } else {
         backgroundImage = FileImage(File(profileinfo!.profileImagePath));
       }

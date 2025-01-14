@@ -6,6 +6,7 @@ import 'package:dim/models/PaymentModels.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:intl/intl.dart';
 
 class PaymentMethodsScreen extends StatefulWidget {
   final SubscriptionPlan? newPlan;
@@ -163,7 +164,7 @@ class _PaymentMethodsScreenState extends State<PaymentMethodsScreen> {
                   ),
                   const SizedBox(height: 10),
                   Padding(
-                    padding: const EdgeInsets.all(8),
+                    padding: const EdgeInsets.all(4),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
@@ -420,6 +421,15 @@ class _PaymentMethodsScreenState extends State<PaymentMethodsScreen> {
       planId= widget.newPlan?.id;
     }
 
+    if(widget.way==2
+        && widget.newPlan!=null
+        && widget.currentPlan?.planId==widget.newPlan?.id){
+      amountToPay=widget.currentPlan?.price;
+      planId= widget.currentPlan?.planId;
+      if (widget.currentPlan!.renewalDate.isAfter(DateTime.now())) {
+        renewDate= widget.currentPlan!.renewalDate;
+      }
+    }
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -508,7 +518,7 @@ class _PaymentMethodsScreenState extends State<PaymentMethodsScreen> {
                       ),
 
                       Text(
-                        '${renewDate.toString()}',
+                        DateFormat('yyyy-MM-dd').format(renewDate).toString(),
                         style: const TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,

@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import '../Onboarding.dart';
 import 'NotificationsScreen.dart';
 import 'package:dim/widgets/ProfileScreen/MenuItemTile.dart';
@@ -33,11 +34,38 @@ class _ProfileScreenState extends State<ProfileScreen>
 
   // Track if animations have already run once
   static bool _hasAnimated = false;
+  String userName = '';
+
 
   @override
   void initState() {
     super.initState();
+    _loadUserData();
+    _initializeAnimations();
+  }
 
+  Future<void> _loadUserData() async {
+    try {
+      final String? uid = FirebaseAuth.instance.currentUser?.uid;
+      if (uid != null) {
+        final response = await Supabase.instance.client
+            .from('users')
+            .select('full_name')
+            .eq('id', uid)
+            .single();
+
+        if (mounted) {
+          setState(() {
+            userName = response['full_name'] ?? '';
+          });
+        }
+      }
+    } catch (e) {
+      print('Error loading user data: $e');
+    }
+  }
+
+  void _initializeAnimations(){
     // Main controller for one-time fade/slide animations
     _mainController = AnimationController(
       duration: const Duration(milliseconds: 2000),
@@ -122,7 +150,7 @@ class _ProfileScreenState extends State<ProfileScreen>
         screen = const UsefulArticleScreen();
         break;
       case 'My Profile':
-        screen = const ProfileDetailInfoScreen();
+        screen = ProfileDetailInfoScreen(imagePath: widget.imagePath);
         break;
       case 'Preferences':
         screen = const PreferencesScreen();
@@ -159,10 +187,10 @@ class _ProfileScreenState extends State<ProfileScreen>
     );
   }
 
+
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
-    double width = MediaQuery.of(context).size.width;
     final menuItems = [
       MenuItemTile(
         icon: Icons.article_outlined,
@@ -202,7 +230,8 @@ class _ProfileScreenState extends State<ProfileScreen>
         onTap: () => _navigateToScreen(context, 'Settings'),
       ),
     ];
-    final user = FirebaseAuth.instance.currentUser!;
+
+
     return Scaffold(
       backgroundColor: const Color(0xFFFFFCF7),
       body: SafeArea(
@@ -283,7 +312,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                                     (Route<dynamic> route) => false,
                               );
                             },
-                            child: Column(
+                            child: const Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               mainAxisSize: MainAxisSize.min,
                               children: [
@@ -324,7 +353,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                             ),
                             SizedBox(height: height * 0.01),
                             Text(
-                              user.displayName!,
+                              userName,
                               style: TextStyle(
                                 fontSize: height * 0.028,
                                 fontWeight: FontWeight.bold,

@@ -55,34 +55,74 @@ class PaymentService {
           .limit(1);
 
       if (response.isEmpty) {
+        final historyResponse = await _supabase
+            .from('user_subscription_history')
+            .select('subscription_plan_id, user_subscription_id')
+            .eq('user_id', uid);
+        final history = historyResponse.length > 0 ? historyResponse[0] : null;
+
+        if (history != null) {
+          final showResponse = await _supabase
+              .from('user_subscriptions')
+              .select('subscription_plan_id, expires_at')
+              .eq('id', history['user_subscription_id']);
+
+          final show = showResponse.length > 0 ? showResponse[0] : null;
+          if (show != null) {
+            final abc = await _supabase
+                .from('subscription_plans')
+                .select('id, title, price')
+                .eq('id', show['subscription_plan_id']);
+            final a = abc.length > 0 ? abc[0] : null;
+            return CurrentSubscription(
+              planId: show['subscription_plan_id'],
+              planName: a?['title'] ?? '',
+              price: (a?['price'] as num?)?.toDouble() ?? 0.0,
+              renewalDate: DateTime.tryParse(show['expires_at']) ?? DateTime.now(),
+              isPastDue: true,
+              daysOverdue: 0,
+            );
+          }else {
+            return CurrentSubscription(
+              planId: 'No Selected Plan',
+              planName: '',
+              price: 0.0,
+              renewalDate: DateTime.now(),
+              isPastDue: false,
+              daysOverdue: 0,
+            );
+          }
+        } else {
+          return CurrentSubscription(
+            planId: 'No Selected Plan',
+            planName: '',
+            price: 0.0,
+            renewalDate: DateTime.now(),
+            isPastDue: false,
+            daysOverdue: 0,
+          );
+        }
+      } else {
+        final plan = response.first['subscription_plans'];
+        final renewalDate = DateTime.parse(response.first['expires_at']);
+        final now = DateTime.now();
+
         return CurrentSubscription(
-          planId: '',
-          planName: '',
-          price: 0.0,
-          renewalDate: DateTime.now(),
-          isPastDue: false,
-          daysOverdue: 0,
+          planId: plan['id'],
+          planName: plan['title'],
+          price: (plan['price'] as num).toDouble(),
+          renewalDate: renewalDate,
+          isPastDue: now.isAfter(renewalDate),
+          daysOverdue: now.isAfter(renewalDate)
+              ? now.difference(renewalDate).inDays
+              : 0,
         );
       }
-
-      final plan = response.first['subscription_plans'];
-      final renewalDate = DateTime.parse(response.first['expires_at']);
-      final now = DateTime.now();
-
-      return CurrentSubscription(
-        planId: plan['id'],
-        planName: plan['title'],
-        price: (plan['price'] as num).toDouble(),
-        renewalDate: renewalDate,
-        isPastDue: now.isAfter(renewalDate),
-        daysOverdue: now.isAfter(renewalDate)
-            ? now.difference(renewalDate).inDays
-            : 0,
-      );
     } catch (e) {
       throw Exception('Failed to fetch current subscription: $e');
     }
   }
+
 
   // Get user's payment methods
   Future<List<PaymentMethod>> getPaymentMethods() async {
