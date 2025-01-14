@@ -1,5 +1,6 @@
-
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import '../Onboarding.dart';
 import 'NotificationsScreen.dart';
 import 'package:dim/widgets/ProfileScreen/MenuItemTile.dart';
 import '../ViewPost/MyPostsScreen.dart';
@@ -32,7 +33,6 @@ class _ProfileScreenState extends State<ProfileScreen>
 
   // Track if animations have already run once
   static bool _hasAnimated = false;
-
 
   @override
   void initState() {
@@ -202,10 +202,11 @@ class _ProfileScreenState extends State<ProfileScreen>
         onTap: () => _navigateToScreen(context, 'Settings'),
       ),
     ];
-
+    final user = FirebaseAuth.instance.currentUser!;
     return Scaffold(
       backgroundColor: const Color(0xFFFFFCF7),
-      body: SafeArea(  // Added SafeArea
+      body: SafeArea(
+        // Added SafeArea
         child: Stack(
           children: [
             //background designs
@@ -218,8 +219,8 @@ class _ProfileScreenState extends State<ProfileScreen>
             Positioned(
               top: 100,
               right: -40,
-              child:
-              _buildColoredCircle(const Color(0xFFEF9A9A), 80), // Pink circle
+              child: _buildColoredCircle(
+                  const Color(0xFFEF9A9A), 80), // Pink circle
             ),
             Positioned(
               bottom: 120,
@@ -237,7 +238,7 @@ class _ProfileScreenState extends State<ProfileScreen>
               top: 260,
               right: 100,
               child:
-              _buildColoredCircle(Colors.indigo[300]!, 70), // Indigo circle
+                  _buildColoredCircle(Colors.indigo[300]!, 70), // Indigo circle
             ),
             Padding(
               padding: const EdgeInsets.all(16.0),
@@ -246,6 +247,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                   // Header with Profile text and notification icon
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       IconButton(
                         onPressed: () {
@@ -260,16 +262,46 @@ class _ProfileScreenState extends State<ProfileScreen>
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      RotationTransition(
-                        turns: _bellAnimation,
-                        child: IconButton(
-                          icon: const Icon(
-                            Icons.notifications_outlined,
-                            color: Colors.black,
-                          ),
-                          onPressed: () =>
-                              _navigateToScreen(context, 'Notifications'),
-                        ),
+                      Row(
+                        children: [
+                          // RotationTransition(
+                          //   turns: _bellAnimation,
+                          //   child: IconButton(
+                          //     icon: const Icon(
+                          //       Icons.notifications_outlined,
+                          //       color: Colors.black,
+                          //     ),
+                          //     onPressed: () =>
+                          //         _navigateToScreen(context, 'Notifications'),
+                          //   ),
+                          // ),
+                          InkWell(
+                            onTap: () async {
+                              await FirebaseAuth.instance.signOut();
+                              Navigator.of(context).pushAndRemoveUntil(
+                                MaterialPageRoute(builder: (context) => const Onboarding()),
+                                    (Route<dynamic> route) => false,
+                              );
+                            },
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  Icons.logout_rounded,
+                                  color: Colors.red,
+                                ),
+                                Text(
+                                  'Logout',
+                                  style: TextStyle(
+                                    color: Colors.red,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          )
+                        ],
                       ),
                     ],
                   ),
@@ -279,49 +311,51 @@ class _ProfileScreenState extends State<ProfileScreen>
                     opacity: _profileFade,
                     child: Center(
                       child: ConstrainedBox(
-                          constraints: BoxConstraints(
-                            maxHeight: height * 0.3,
-                          ),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              CircleAvatar(
-                                radius: height * 0.07,
-                                backgroundImage: AssetImage(widget.imagePath) as ImageProvider,
+                        constraints: BoxConstraints(
+                          maxHeight: height * 0.3,
+                        ),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            CircleAvatar(
+                              radius: height * 0.07,
+                              backgroundImage: NetworkImage(widget.imagePath),
+                            ),
+                            SizedBox(height: height * 0.01),
+                            Text(
+                              user.displayName!,
+                              style: TextStyle(
+                                fontSize: height * 0.028,
+                                fontWeight: FontWeight.bold,
                               ),
-                              SizedBox(height: height * 0.01),
-                              Text(
-                                'Sofia',
-                                style: TextStyle(
-                                  fontSize: height * 0.028,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              SizedBox(height: height * 0.005),
-                              Material(
-                                color: Colors.transparent,
-                                child: InkWell(
-                                  onTap: () => _navigateToScreen(context, 'My Profile'),
-                                  child: FittedBox(
-                                    fit: BoxFit.scaleDown,
-                                    child: Text(
-                                      'My Profile',
-                                      style: TextStyle(
-                                        color: Colors.grey[600],
-                                        fontSize: height * 0.02,
-                                        decoration: TextDecoration.underline, // clickable
-                                      ),
+                            ),
+                            SizedBox(height: height * 0.005),
+                            Material(
+                              color: Colors.transparent,
+                              child: InkWell(
+                                onTap: () =>
+                                    _navigateToScreen(context, 'My Profile'),
+                                child: FittedBox(
+                                  fit: BoxFit.scaleDown,
+                                  child: Text(
+                                    'My Profile',
+                                    style: TextStyle(
+                                      color: Colors.grey[600],
+                                      fontSize: height * 0.02,
+                                      decoration:
+                                          TextDecoration.underline, // clickable
                                     ),
                                   ),
                                 ),
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
                       ),
                     ),
-                const SizedBox(height: 30),
+                  ),
+                  const SizedBox(height: 30),
 
                   // Achievements Card
                   FadeTransition(
@@ -350,8 +384,8 @@ class _ProfileScreenState extends State<ProfileScreen>
                               Material(
                                 color: Colors.transparent,
                                 child: InkWell(
-                                  onTap: () =>
-                                      _navigateToScreen(context, 'Achievements'),
+                                  onTap: () => _navigateToScreen(
+                                      context, 'Achievements'),
                                   child: Text(
                                     'Review your progress',
                                     style: TextStyle(
@@ -376,7 +410,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                         children: [
                           ...List.generate(
                             menuItems.length,
-                                (index) {
+                            (index) {
                               return FadeTransition(
                                 opacity: _menuItemFades[index],
                                 child: Column(
