@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:dim/models/SubscriptionModels.dart';
 
 class CurrentPlanCard extends StatelessWidget {
-  final CurrentSubscription subscription;
+  final CurrentSubscription? subscription;
 
   const CurrentPlanCard({
     super.key,
@@ -37,7 +37,7 @@ class CurrentPlanCard extends StatelessWidget {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              if (subscription.isPastDue)
+              if (subscription!.isPastDue)
                 Container(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
@@ -51,7 +51,7 @@ class CurrentPlanCard extends StatelessWidget {
                           color: Colors.red[700], size: 16),
                       const SizedBox(width: 4),
                       Text(
-                        '${subscription.daysOverdue} days overdue',
+                        '${subscription!.daysOverdue} days overdue',
                         style: TextStyle(
                           color: Colors.red[700],
                           fontSize: 12,
@@ -68,14 +68,14 @@ class CurrentPlanCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                subscription.planName,
+                subscription!.planName,
                 style: const TextStyle(
                   fontSize: 16,
                   color: Colors.black87,
                 ),
               ),
               Text(
-                '\$${subscription.price.toStringAsFixed(2)}/month',
+                '\$${subscription!.price.toStringAsFixed(2)}/month',
                 style: TextStyle(
                   fontSize: 16,
                   color: Theme.of(context).primaryColor,
@@ -85,13 +85,14 @@ class CurrentPlanCard extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 4),
-          Text(
-            'Renews on ${_formatDate(subscription.renewalDate)}',
-            style: TextStyle(
-              fontSize: 14,
-              color: subscription.isPastDue ? Colors.red : Colors.grey[600],
+          if(subscription!.price!=0.0)
+            Text(
+              'Renews on ${_formatDate(subscription!.renewalDate)}',
+              style: TextStyle(
+                fontSize: 14,
+                color: subscription!.isPastDue ? Colors.red : Colors.grey[600],
+              ),
             ),
-          ),
         ],
       ),
     );
