@@ -53,7 +53,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Dim',
       theme: appTheme,
-      home: (user?.uid == null) ? const Onboarding() : const Homescreen(),
+      home: (user?.uid == null) ? const LogIn() : const Homescreen(),
        //home: const Homescreen(),
     );
   }

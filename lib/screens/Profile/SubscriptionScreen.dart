@@ -23,7 +23,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
   String? _error;
 
   // State management
-  late CurrentSubscription _currentSubscription;
+  late CurrentSubscription? _currentSubscription;
   late List<SubscriptionPlan> _plans;
 
   @override
@@ -54,20 +54,21 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
     }
   }
 
-  void _navigateToPayments(SubscriptionPlan plan) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => PaymentMethodsScreen(
-          amountToPay: plan.price,
-          planId: plan.id,
+  void _navigateToPayments(int id, SubscriptionPlan? newPlan, CurrentSubscription? currentPlan) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => PaymentMethodsScreen(
+            way: id,
+            newPlan: newPlan,
+            currentPlan: currentPlan,
+          ),
         ),
-      ),
-    ).then((result) {
-      if (result == true) {
-        _loadInitialData(); // Refresh data after successful payment
-      }
-    });
+      ).then((result) {
+        if (result == true) {
+          _loadInitialData(); // Refresh data after successful payment
+        }
+      });
   }
 
 
@@ -157,7 +158,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20.0),
               child: ElevatedButton(
-                onPressed: () => _navigateToPayments(_plans[_currentPage]),
+                onPressed: () => _navigateToPayments(1,null,_currentSubscription),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF80CBC4),
                   minimumSize: const Size.fromHeight(50),
@@ -197,7 +198,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                   return SubscriptionPlanCard(
                     plan: _plans[index],
                     isSelected: index == _currentPage,
-                    onSubscribe: (plan) => _navigateToPayments(plan),
+                    onSubscribe: (plan) => _navigateToPayments(2, plan, _currentSubscription),
                   );
                 },
               ),

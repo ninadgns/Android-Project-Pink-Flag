@@ -1,3 +1,4 @@
+import 'package:dim/models/SubscriptionModels.dart';
 import 'package:flutter/material.dart';
 import 'package:dim/widgets/SubscriptionScreen/PaymentWidgets.dart';
 import 'package:dim/services/PaymentServices.dart';
@@ -7,13 +8,15 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class PaymentMethodsScreen extends StatefulWidget {
-  final double amountToPay;
-  final String planId;
+  final SubscriptionPlan? newPlan;
+  final CurrentSubscription? currentPlan;
+  final int way;
 
   const PaymentMethodsScreen({
     super.key,
-    required this.amountToPay,
-    required this.planId,
+    required this.way,
+    required this.newPlan,
+    required this.currentPlan,
   });
 
   @override
@@ -398,6 +401,26 @@ class _PaymentMethodsScreenState extends State<PaymentMethodsScreen> {
       );
     }
 
+    double? amountToPay=0.0;
+    String? planId= 'No Selected Plan';
+    DateTime? renewDate=null;
+
+    if(widget.way==1
+        && widget.currentPlan?.price!=0.0 && widget.newPlan==null){
+      amountToPay=widget.currentPlan?.price;
+      planId= widget.currentPlan?.planId;
+      if (widget.currentPlan!.renewalDate.isAfter(DateTime.now())) {
+        renewDate= widget.currentPlan!.renewalDate;
+      }
+    }
+    if(widget.way==2
+        && widget.newPlan!=null
+        && (widget.currentPlan?.planId!=widget.newPlan?.id || widget.currentPlan==null)){
+      amountToPay=widget.newPlan?.price;
+      planId= widget.newPlan?.id;
+    }
+
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -428,24 +451,72 @@ class _PaymentMethodsScreenState extends State<PaymentMethodsScreen> {
               color: Colors.lightBlue.shade50,
               borderRadius: BorderRadius.circular(12),
             ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            child: Column(
               children: [
-                const Text(
-                  'Amount to Pay:',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      'Amount to Pay:',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+
+                    Text(
+                      '\$${amountToPay!.toStringAsFixed(2)}',
+                      style: const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.blue,
+                      ),
+                    ),
+                  ],
                 ),
-                Text(
-                  '\$${widget.amountToPay.toStringAsFixed(2)}',
-                  style: const TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.blue,
-                  ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      'Subscription Plan:',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+
+                    Text(
+                      '${planId!.toString()}',
+                      style: const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.blue,
+                      ),
+                    ),
+                  ],
                 ),
+                if(renewDate!=null)
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text(
+                        'Renewal Date:',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+
+                      Text(
+                        '${renewDate.toString()}',
+                        style: const TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.blue,
+                        ),
+                      ),
+                    ],
+                  ),
               ],
             ),
           ),
@@ -490,7 +561,40 @@ class _PaymentMethodsScreenState extends State<PaymentMethodsScreen> {
             padding: const EdgeInsets.all(16),
             child: ElevatedButton(
               onPressed: () {
-                showPaymentBottomSheet(context, widget.amountToPay);
+                if(renewDate!=null || amountToPay==0.0){
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: const Text('Notice'),
+                        content: const Text('Your payment amount is \$0.0 or renewal date for current plan is not over'),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        backgroundColor: Colors.white,
+                        titleTextStyle: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),
+                        contentTextStyle: const TextStyle(
+                          fontSize: 16,
+                          color: Colors.black87,
+                        ),
+                        actions: [
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            child: const Text('OK'),
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                }else {
+                  showPaymentBottomSheet(context, amountToPay!);
+                }
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor:  Colors.blue.shade300,
