@@ -215,7 +215,7 @@ class _SearchScreenState extends State<SearchScreen> {
                   : SizedBox.shrink(), // Hide when not needed
             ),
             RecipeListView(searchQuery: _searchText),
-            SizedBox(height: height * 0.03),
+            SizedBox(height: height * 0.3),
           ],
         ),
       ),
