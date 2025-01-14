@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:dim/screens/HomeScreen.dart';
 import 'package:dim/services/user_provider.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter/material.dart';
@@ -201,7 +203,7 @@ class _CreateRecipePostScreenState extends State<CreateRecipePostScreen> {
       final imageUrl = await _uploadImageToSupabase(_recipeImage!);
 
       final postData = {
-        'user_id': Provider.of<UserProvider>(context, listen: false).user?.uid,
+        'user_id': FirebaseAuth.instance.currentUser!.uid,
         'title': _titleController.text,
         'description': _descriptionController.text,
         'difficulty': _difficulty,
@@ -225,9 +227,9 @@ class _CreateRecipePostScreenState extends State<CreateRecipePostScreen> {
         // Insert nutrition data
         final nutritionData = {
           'recipe_id': recipeId,
-          'protein': _nutritionData['Protein'],
-          'carbs': _nutritionData['Carbs'],
-          'fat': _nutritionData['Fat'],
+          'protein': _nutritionData['Protein'] ?? 0,
+          'carbs': _nutritionData['Carbs'] ?? 0,
+          'fat': _nutritionData['Fat'] ?? 0,
         };
 
         final nutritionResponse =
@@ -268,8 +270,15 @@ class _CreateRecipePostScreenState extends State<CreateRecipePostScreen> {
           debugPrint(stepResopnse);
         }
 
-        Navigator.pop(context, postData);
+        // Navigator.pop(context, postData);
         _showPostCreatedDialog(postData);
+        Navigator.pop(context);
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => Homescreen(),
+          ),
+        );
       } catch (e) {
         debugPrint('Exception occurred during post creation: $e');
         ScaffoldMessenger.of(context).showSnackBar(
@@ -344,7 +353,7 @@ class _CreateRecipePostScreenState extends State<CreateRecipePostScreen> {
                   ),
                   value: _difficulty,
                   onChanged: (value) => setState(() => _difficulty = value),
-                  items: ['Easy', 'Moderate', 'Cook Like a Pro']
+                  items: ['Easy', 'Moderate', 'Hard']
                       .map((level) => DropdownMenuItem(
                             value: level,
                             child: Text(level),

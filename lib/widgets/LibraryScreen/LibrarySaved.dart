@@ -54,6 +54,7 @@ class _LibrarySavedState extends State<LibrarySaved> {
       return Center(
           child: Column(
         children: [
+          SizedBox(height: height * 0.04),
           CircularProgressIndicator(),
           SizedBox(height: height * 0.02),
           Text("Loading recipes..."),
@@ -62,7 +63,14 @@ class _LibrarySavedState extends State<LibrarySaved> {
     }
 
     if (_recipeList.isEmpty) {
-      return Center(child: Text("No recipes found"));
+      return Center(
+          child: Column(
+        children: [
+          SizedBox(height: height * 0.04),
+          SizedBox(height: height * 0.2),
+          Text("No recipes found"),
+        ],
+      ));
     }
 
     return SingleChildScrollView(

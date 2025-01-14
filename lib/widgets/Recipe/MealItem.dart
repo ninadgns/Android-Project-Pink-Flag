@@ -96,17 +96,18 @@ class _MealItemState extends State<MealItem> {
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
+
                       children: [
                         MealItemTrait(
                           icon: Icons.schedule,
                           label: '${widget.recipe.totalDuration} min',
                         ),
-                        const SizedBox(width: 12),
+                        const SizedBox(width: 10),
                         MealItemTrait(
                           icon: Icons.work,
                           label: capitalize(widget.recipe.difficulty),
                         ),
-                        const SizedBox(width: 12),
+                        const SizedBox(width: 10),
                         MealItemTrait(
                           icon: Icons.star_border_rounded,
                           label: capitalize("4.5"),

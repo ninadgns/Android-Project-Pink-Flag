@@ -55,11 +55,23 @@ class _RecipeListViewState extends State<RecipeListView> {
   @override
   Widget build(BuildContext context) {
     if (_isLoading) {
-      return Center(child: Text("Loading recipes..."));
+      return Center(
+          child: Column(
+        children: [
+          SizedBox(height: MediaQuery.of(context).size.height * 0.2),
+          Text("Loading recipes..."),
+        ],
+      ));
     }
 
     if (_recipeList.isEmpty) {
-      return Center(child: Text("No recipes found"));
+      return Center(
+          child: Column(
+        children: [
+          SizedBox(height: MediaQuery.of(context).size.height * 0.2),
+          Text("No recipes found"),
+        ],
+      ));
     }
 
     return Column(
