@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:dim/services/user_provider.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter/material.dart';
@@ -201,7 +202,7 @@ class _CreateRecipePostScreenState extends State<CreateRecipePostScreen> {
       final imageUrl = await _uploadImageToSupabase(_recipeImage!);
 
       final postData = {
-        'user_id': Provider.of<UserProvider>(context, listen: false).user?.uid,
+        'user_id': FirebaseAuth.instance.currentUser!.uid,
         'title': _titleController.text,
         'description': _descriptionController.text,
         'difficulty': _difficulty,
