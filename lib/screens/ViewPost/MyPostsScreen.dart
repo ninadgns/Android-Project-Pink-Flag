@@ -36,7 +36,7 @@ class _PostsScreenState extends State<PostsScreen> {
                       onPressed: () => Navigator.pop(context),
                     ),
                     const Text(
-                      'Posts',
+                      'My Posts',
                       style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.w600,
@@ -47,68 +47,68 @@ class _PostsScreenState extends State<PostsScreen> {
               ),
 
               // Custom Tab Bar
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: Container(
-                  height: 45,
-                  decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.5),
-                    borderRadius: BorderRadius.circular(25),
-                  ),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: GestureDetector(
-                          onTap: () => setState(() => selectedIndex = 0),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: selectedIndex == 0
-                                  ? Colors.black
-                                  : Colors.transparent,
-                              borderRadius: BorderRadius.circular(25),
-                            ),
-                            child: Center(
-                              child: Text(
-                                'My Posts',
-                                style: TextStyle(
-                                  color: selectedIndex == 0
-                                      ? Colors.white
-                                      : Colors.black54,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        child: GestureDetector(
-                          onTap: () => setState(() => selectedIndex = 1),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: selectedIndex == 1
-                                  ? Colors.black
-                                  : Colors.transparent,
-                              borderRadius: BorderRadius.circular(25),
-                            ),
-                            child: Center(
-                              child: Text(
-                                'All Posts',
-                                style: TextStyle(
-                                  color: selectedIndex == 1
-                                      ? Colors.white
-                                      : Colors.black54,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
+              // Padding(
+              //   padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              //   child: Container(
+              //     height: 45,
+              //     decoration: BoxDecoration(
+              //       color: Colors.white.withOpacity(0.5),
+              //       borderRadius: BorderRadius.circular(25),
+              //     ),
+              //     child: Row(
+              //       children: [
+              //         Expanded(
+              //           child: GestureDetector(
+              //             onTap: () => setState(() => selectedIndex = 0),
+              //             child: Container(
+              //               decoration: BoxDecoration(
+              //                 color: selectedIndex == 0
+              //                     ? Colors.black
+              //                     : Colors.transparent,
+              //                 borderRadius: BorderRadius.circular(25),
+              //               ),
+              //               child: Center(
+              //                 child: Text(
+              //                   'My Posts',
+              //                   style: TextStyle(
+              //                     color: selectedIndex == 0
+              //                         ? Colors.white
+              //                         : Colors.black54,
+              //                     fontWeight: FontWeight.w500,
+              //                   ),
+              //                 ),
+              //               ),
+              //             ),
+              //           ),
+              //         ),
+              //         // Expanded(
+              //         //   child: GestureDetector(
+              //         //     onTap: () => setState(() => selectedIndex = 1),
+              //         //     child: Container(
+              //         //       decoration: BoxDecoration(
+              //         //         color: selectedIndex == 1
+              //         //             ? Colors.black
+              //         //             : Colors.transparent,
+              //         //         borderRadius: BorderRadius.circular(25),
+              //         //       ),
+              //         //       child: Center(
+              //         //         child: Text(
+              //         //           'All Posts',
+              //         //           style: TextStyle(
+              //         //             color: selectedIndex == 1
+              //         //                 ? Colors.white
+              //         //                 : Colors.black54,
+              //         //             fontWeight: FontWeight.w500,
+              //         //           ),
+              //         //         ),
+              //         //       ),
+              //         //     ),
+              //         //   ),
+              //         // ),
+              //       ],
+              //     ),
+              //   ),
+              // ),
 
               // Content
               Expanded(
@@ -116,7 +116,7 @@ class _PostsScreenState extends State<PostsScreen> {
                   index: selectedIndex,
                   children: const [
                     MyPostsTab(),
-                    AllPostsTab(),
+                    //AllPostsTab(),
                   ],
                 ),
               ),

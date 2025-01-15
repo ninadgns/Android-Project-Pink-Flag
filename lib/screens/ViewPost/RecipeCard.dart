@@ -54,15 +54,20 @@ class RecipeCard extends StatelessWidget {
               children: [
                 Text(
                   title,
-                  style: Theme.of(context).textTheme.titleMedium,
+                  style: TextStyle(
+                    fontSize: 18.0,
+                    fontWeight: FontWeight.bold, // Optional: make text bold
+                    color: Colors.black, // Optional: set text color
+                  ),
+
                 ),
                 const SizedBox(width: 8),
-                Text(
-                  'by ${user['name']}',
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Colors.grey[600],
-                  ),
-                ),
+                // Text(
+                //   'by ${user['name']}',
+                //   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                //     color: Colors.grey[600],
+                //   ),
+                // ),
               ],
             ),
             subtitle: Text(getTimeAgo(DateTime.parse(createdAt))),

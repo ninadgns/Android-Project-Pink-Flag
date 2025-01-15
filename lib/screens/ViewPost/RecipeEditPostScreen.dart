@@ -63,68 +63,128 @@ class _EditRecipePostScreenState extends State<EditRecipePostScreen> {
         _error = null;
       });
 
-      // Fetch recipe with related data
+      // First debug point
+      debugPrint('Fetching data for recipe ID: ${widget.recipeId}');
+
       final response = await supabase
           .from('recipes')
           .select('''
-          *,
-          nutrition!left(protein, carbs, fat),
-          ingredients!left(name, quantity, unit),
-          steps!left(description, time, step_order)
+          id,
+          title,
+          description,
+          difficulty,
+          total_duration,
+          serving_count,
+          title_photo,
+          nutrition!inner(protein, carbs, fat),
+          ingredients!inner(name, quantity, unit),
+          steps!inner(description, time, step_order)
         ''')
           .eq('id', widget.recipeId)
           .single();
 
-      debugPrint('Fetched recipe data: $response');
+      // Debug raw response
+      debugPrint('Raw response: ${jsonEncode(response)}');
 
-      if (response == null) {
-        throw Exception('Recipe not found');
-      }
-
-      // Set basic recipe data
-      setState(() {
-        try {
-          _titleController.text = response['title']?.toString() ?? '';
-          _descriptionController.text = response['description']?.toString() ?? '';
-          _servingCountController.text = (response['serving_count']?.toString() ?? '1');
-          _difficulty = response['difficulty']?.toString();
-          _existingImageUrl = response['title_photo']?.toString();
-
-          // Safely cast and handle ingredients
-          _ingredients = ((response['ingredients'] ?? []) as List).map((ing) => {
-            'name': ing['name']?.toString() ?? '',
-            'quantity': ing['quantity']?.toString() ?? '',
-            'unit': ing['unit']?.toString() ?? '',
-          }).toList();
-
-          // Safely cast and handle steps
-          _steps = ((response['steps'] ?? []) as List).map((step) => {
-            'description': step['description']?.toString() ?? '',
-            'time': int.tryParse(step['time']?.toString() ?? '0') ?? 0,
-          }).toList();
-
-          // Safely cast and handle nutrition data
-          final nutrition = response['nutrition'] ?? {};
-          _nutritionData = {
-            'Protein': int.tryParse(nutrition['protein']?.toString() ?? '0') ?? 0,
-            'Carbs': int.tryParse(nutrition['carbs']?.toString() ?? '0') ?? 0,
-            'Fat': int.tryParse(nutrition['fat']?.toString() ?? '0') ?? 0,
-          };
-
-          _isLoading = false;
-        } catch (e) {
-          throw Exception('Error processing recipe data: ${e.toString()}');
-        }
-      });
-
-    } catch (e) {
       if (mounted) {
+        // Debug each section before processing
+        debugPrint('Processing basic data...');
+        try {
+          _titleController.text = response['title'] ?? '';
+          _descriptionController.text = response['description'] ?? '';
+          _servingCountController.text = (response['serving_count'] ?? 1).toString();
+          _difficulty = response['difficulty'];
+          _existingImageUrl = response['title_photo'];
+        } catch (e) {
+          debugPrint('Error in basic data processing: $e');
+          throw e;
+        }
+
+        // Debug nutrition data
+        debugPrint('Processing nutrition data...');
+        try {
+          if (response['nutrition'] != null && response['nutrition'].isNotEmpty) {
+            final nutritionData = response['nutrition'][0];
+            debugPrint('Nutrition raw data: $nutritionData');
+            _nutritionData = {
+              'Protein': nutritionData['protein'] ?? 0,
+              'Carbs': nutritionData['carbs'] ?? 0,
+              'Fat': nutritionData['fat'] ?? 0,
+            };
+          }
+        } catch (e) {
+          debugPrint('Error in nutrition processing: $e');
+          throw e;
+        }
+
+        // Debug ingredients
+        debugPrint('Processing ingredients...');
+        try {
+          if (response['ingredients'] != null) {
+            debugPrint('Ingredients raw data: ${response['ingredients']}');
+            _ingredients = List<Map<String, dynamic>>.from(
+                response['ingredients'].map((ing) {
+                  debugPrint('Processing ingredient: $ing');
+                  return {
+                    'name': ing['name'] as String,
+                    'quantity': (ing['quantity'] is int)
+                        ? (ing['quantity'] as int).toDouble()
+                        : (ing['quantity'] as num).toDouble(),
+                    'unit': ing['unit'] as String,
+                  };
+                })
+            );
+          }
+        } catch (e) {
+          debugPrint('Error in ingredients processing: $e');
+          throw e;
+        }
+
+        // Debug steps
+        debugPrint('Processing steps...');
+        try {
+          if (response['steps'] != null) {
+            debugPrint('Steps raw data: ${response['steps']}');
+            var stepsData = List<Map<String, dynamic>>.from(
+                response['steps'].map((step) {
+                  debugPrint('Processing step: $step');
+                  return {
+                    'description': step['description'] as String,
+                    'time': step['time'] is String
+                        ? int.parse(step['time'])
+                        : (step['time'] as num).toInt(),
+                    'step_order': step['step_order'] is String
+                        ? int.parse(step['step_order'])
+                        : (step['step_order'] as num).toInt(),
+                  };
+                })
+            );
+
+            stepsData.sort((a, b) =>
+                (a['step_order'] as int).compareTo(b['step_order'] as int)
+            );
+            _steps = stepsData;
+          }
+        } catch (e) {
+          debugPrint('Error in steps processing: $e');
+          throw e;
+        }
+
         setState(() {
-          _error = 'Failed to load recipe: ${e.toString()}';
           _isLoading = false;
         });
       }
+
+    } catch (e, stackTrace) {
       debugPrint('Error loading recipe: $e');
+      debugPrint('Stack trace:');
+      debugPrint(stackTrace.toString());
+      if (mounted) {
+        setState(() {
+          _error = 'Error: ${e.toString()}\nLocation: ${stackTrace.toString().split('\n')[0]}';
+          _isLoading = false;
+        });
+      }
     }
   }
 

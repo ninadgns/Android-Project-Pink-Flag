@@ -104,7 +104,7 @@ class _OnboardingState extends State<Onboarding> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "Welcome",
+                    "Discover",
                     style: GoogleFonts.satisfy(
                       fontSize: screenHeight / 15, // Responsive font size
                       fontWeight: FontWeight.bold,
@@ -112,7 +112,7 @@ class _OnboardingState extends State<Onboarding> {
                     ),
                   ),
                   Text(
-                    "to",
+                    "Recipes",
                     style: GoogleFonts.satisfy(
                       fontSize: screenHeight / 15,
                       fontWeight: FontWeight.bold,
@@ -120,7 +120,7 @@ class _OnboardingState extends State<Onboarding> {
                     ),
                   ),
                   Text(
-                    "Cooking Diary",
+                    "Instantly!",
                     style: GoogleFonts.satisfy(
                       fontSize: screenHeight / 15,
                       fontWeight: FontWeight.bold,
@@ -128,7 +128,7 @@ class _OnboardingState extends State<Onboarding> {
                     ),
                   ),
                   Text(
-                    "Show your cooking skills",
+                    "Scan ingredients, find recipes!",
                     style: GoogleFonts.shadowsIntoLight(
                       fontSize: screenHeight / 40,
                       fontWeight: FontWeight.bold,
@@ -162,7 +162,7 @@ class _OnboardingState extends State<Onboarding> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "Welcome",
+                    "Connect",
                     style: GoogleFonts.satisfy(
                       fontSize: screenHeight / 15, // Responsive font size
                       fontWeight: FontWeight.bold,
@@ -170,7 +170,7 @@ class _OnboardingState extends State<Onboarding> {
                     ),
                   ),
                   Text(
-                    "to",
+                    "with",
                     style: GoogleFonts.satisfy(
                       fontSize: screenHeight / 15,
                       fontWeight: FontWeight.bold,
@@ -178,7 +178,7 @@ class _OnboardingState extends State<Onboarding> {
                     ),
                   ),
                   Text(
-                    "Cooking Diary",
+                    "Food Lovers!",
                     style: GoogleFonts.satisfy(
                       fontSize: screenHeight / 15,
                       fontWeight: FontWeight.bold,
@@ -186,7 +186,7 @@ class _OnboardingState extends State<Onboarding> {
                     ),
                   ),
                   Text(
-                    "Show your cooking skills",
+                    "Share recipes, connect, inspire!",
                     style: GoogleFonts.shadowsIntoLight(
                       fontSize: screenHeight / 40,
                       fontWeight: FontWeight.bold,
@@ -218,7 +218,7 @@ class _OnboardingState extends State<Onboarding> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "Welcome",
+                    "Organize",
                     style: GoogleFonts.satisfy(
                       fontSize: screenHeight / 15, // Responsive font size
                       fontWeight: FontWeight.bold,
@@ -226,7 +226,7 @@ class _OnboardingState extends State<Onboarding> {
                     ),
                   ),
                   Text(
-                    "to",
+                    "Meals,",
                     style: GoogleFonts.satisfy(
                       fontSize: screenHeight / 15,
                       fontWeight: FontWeight.bold,
@@ -234,7 +234,7 @@ class _OnboardingState extends State<Onboarding> {
                     ),
                   ),
                   Text(
-                    "Cooking Diary",
+                    "Buy Fresh!",
                     style: GoogleFonts.satisfy(
                       fontSize: screenHeight / 15,
                       fontWeight: FontWeight.bold,
@@ -242,7 +242,7 @@ class _OnboardingState extends State<Onboarding> {
                     ),
                   ),
                   Text(
-                    "Show your cooking skills",
+                    "Plan your meals, shop easily!",
                     style: GoogleFonts.shadowsIntoLight(
                       fontSize: screenHeight / 40,
                       fontWeight: FontWeight.bold,
@@ -273,7 +273,7 @@ class _OnboardingState extends State<Onboarding> {
                   padding:
                   const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
                   backgroundColor:
-                  const Color(0xFF000000), // Button color
+                  const Color(0xFFC15F6B), // Button color
                   textStyle: const TextStyle(fontSize: 18),
                   iconColor: const Color(0xFFFFFFFF),
                   shape: RoundedRectangleBorder(
