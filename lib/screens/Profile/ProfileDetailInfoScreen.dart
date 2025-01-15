@@ -407,19 +407,19 @@ class _ProfileDetailInfoScreenState extends State<ProfileDetailInfoScreen>
         ),
       );
     }
-
     ImageProvider backgroundImage;
-    if (profileinfo?.profileImageBytes != null) {
-      backgroundImage = MemoryImage(profileinfo!.profileImageBytes!);
-    } else if (profileinfo!.profileImagePath.startsWith('assets/')) {
-      backgroundImage = AssetImage(profileinfo!.profileImagePath);
-    } else {
-      if (kIsWeb) {
-        backgroundImage = AssetImage(widget.imagePath);
-      } else {
-        backgroundImage = FileImage(File(profileinfo!.profileImagePath));
-      }
-    }
+    backgroundImage = NetworkImage(widget.imagePath);
+    // if (profileinfo?.profileImageBytes != null) {
+    //   backgroundImage = MemoryImage(profileinfo!.profileImageBytes!);
+    // } else if (profileinfo!.profileImagePath.startsWith('assets/')) {
+    //   backgroundImage = AssetImage(profileinfo!.profileImagePath);
+    // } else {
+    //   if (kIsWeb) {
+    //     backgroundImage = NetworkImage(widget.imagePath);
+    //   } else {
+    //     backgroundImage = FileImage(File(profileinfo!.profileImagePath));
+    //   }
+    // }
 
     return Scaffold(
       // Adding a stack so we can put a custom painted background behind the main content
