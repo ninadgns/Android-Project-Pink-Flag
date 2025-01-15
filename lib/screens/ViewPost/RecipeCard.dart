@@ -54,15 +54,20 @@ class RecipeCard extends StatelessWidget {
               children: [
                 Text(
                   title,
-                  style: Theme.of(context).textTheme.titleMedium,
+                  style: TextStyle(
+                    fontSize: 18.0,
+                    fontWeight: FontWeight.bold, // Optional: make text bold
+                    color: Colors.black, // Optional: set text color
+                  ),
+
                 ),
                 const SizedBox(width: 8),
-                Text(
-                  'by ${user['name']}',
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Colors.grey[600],
-                  ),
-                ),
+                // Text(
+                //   'by ${user['name']}',
+                //   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                //     color: Colors.grey[600],
+                //   ),
+                // ),
               ],
             ),
             subtitle: Text(getTimeAgo(DateTime.parse(createdAt))),
@@ -146,12 +151,55 @@ class RecipeCard extends StatelessWidget {
                   ),
                 ),
                 Expanded(
-                  flex: 1,
-                  child: Padding(
-                    padding: const EdgeInsets.all(1.0),
-                    child: CircleAvatar(
-                      radius: 80,
-                      backgroundImage: AssetImage(imageUrl),
+                  flex: 2,
+                  child: Container(
+                    padding: const EdgeInsets.all(8.0),
+                    constraints: const BoxConstraints(
+                      minWidth: 150,
+                      minHeight: 150,
+                      maxWidth: 150,
+                      maxHeight: 150,
+                    ),
+
+                    child: Container(
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
+
+                      ),
+                      child: AspectRatio(
+                        aspectRatio: 1, // This ensures a perfect circle
+                        child: ClipOval(
+                          child: Image.network(
+                            imageUrl,
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) {
+                              debugPrint('Error loading image: $error');
+                              return Container(
+                                color: Colors.grey[200],
+                                child: const Icon(
+                                  Icons.restaurant,
+                                  size: 60,
+                                  color: Colors.grey,
+                                ),
+                              );
+                            },
+                            loadingBuilder: (context, child, loadingProgress) {
+                              if (loadingProgress == null) return child;
+                              return Container(
+                                color: Colors.grey[200],
+                                child: Center(
+                                  child: CircularProgressIndicator(
+                                    value: loadingProgress.expectedTotalBytes != null
+                                        ? loadingProgress.cumulativeBytesLoaded /
+                                        loadingProgress.expectedTotalBytes!
+                                        : null,
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                      ),
                     ),
                   ),
                 ),

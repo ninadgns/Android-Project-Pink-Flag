@@ -101,11 +101,12 @@ class _OnboardingState extends State<Getstarted> {
                           padding: EdgeInsets.symmetric(
                             vertical: 15, // Taller button
                           ),
-                          backgroundColor: const Color(0xFF000000),
+                          backgroundColor: const Color(0xFF39786D),
+                          foregroundColor: Colors.white,
                           textStyle: GoogleFonts.roboto(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
-                            color: const Color(0xFF000000),
+                            color: const Color(0xFF39786D),
                           ),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(15.0),
@@ -133,7 +134,8 @@ class _OnboardingState extends State<Getstarted> {
                           padding: EdgeInsets.symmetric(
                             vertical: 15, // Taller button
                           ),
-                          backgroundColor: const Color(0xFF050505),
+                          backgroundColor: const Color(0xFF39786D),
+                          foregroundColor: Colors.white,
                           textStyle: GoogleFonts.roboto(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
@@ -175,7 +177,8 @@ class _OnboardingState extends State<Getstarted> {
                           padding: EdgeInsets.symmetric(
                             vertical: 15, // Taller button
                           ),
-                          backgroundColor: const Color(0xFF000000),
+                          backgroundColor: const Color(0xFF39786D),
+                          foregroundColor: Colors.white,
                           textStyle: GoogleFonts.roboto(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
