@@ -68,7 +68,9 @@ class _SearchScreenState extends State<SearchScreen> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => ProfileScreen(imagePath: _profileImageUrl,),
+              builder: (context) => ProfileScreen(
+                imagePath: _profileImageUrl,
+              ),
             ),
           );
         },
@@ -150,7 +152,7 @@ class _SearchScreenState extends State<SearchScreen> {
             SizedBox(width: width * 0.02),
           ],
         ),
-        const CatFoodList(),
+        CatFoodList(category: _selectedCategory),
         Row(
           children: [
             SizedBox(width: width * 0.03),

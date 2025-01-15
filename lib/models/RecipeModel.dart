@@ -125,8 +125,9 @@ class Recipe {
       name: map['title'] ?? '',
       description: map['description'] ?? '',
       totalDuration: map['totalDuration'] ?? 0,
-      nutrition: Nutrition.fromMap((map['nutrition'] as List).first ?? {}),      ingredients: List<Ingredient>.from(
-        (map['ingredients'] ?? []).map((x) => Ingredient.fromMap(x))),
+      nutrition: Nutrition.fromMap((map['nutrition'] as List).first ?? {}),
+      ingredients: List<Ingredient>.from(
+          (map['ingredients'] ?? []).map((x) => Ingredient.fromMap(x))),
       steps: List<Step>.from((map['steps'] ?? []).map((x) => Step.fromMap(x))),
       servings: map['serving_count'] ?? 0,
       difficulty: map['difficulty'] ?? '',
