@@ -149,6 +149,8 @@ class HorizontalScrollingFood extends StatelessWidget {
                     child: Image.network(
                       recipe.titlePhoto,
                       fit: BoxFit.cover,
+                      height: width / 2,
+                      width: width / 2,
                       errorBuilder: (context, error, stackTrace) => Icon(
                         Icons.image_not_supported,
                         color: Colors.grey,
