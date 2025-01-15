@@ -6,26 +6,46 @@ class UpperBar extends StatelessWidget {
     required this.height,
     required this.time,
     required this.name,
+    required this.finished,
   });
 
   final double height;
   final int time;
   final String name;
-
+  final bool finished;
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const SizedBox(height: 16),
-        IconButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          icon: const Icon(
-            Icons.arrow_back_ios,
-            color: Colors.black,
-          ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            IconButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              icon: const Icon(
+                Icons.arrow_back_ios,
+                color: Colors.black,
+              ),
+            ),
+            if (finished)
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text(
+                  'Finished',
+                  style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                        fontSize: MediaQuery.of(context).size.width / 25,
+                        color: Colors.white,
+                      ),
+                ),
+                style: TextButton.styleFrom(backgroundColor: Colors.black),
+              ),
+          ],
         ),
         SizedBox(height: height * 0.005),
         Text(
