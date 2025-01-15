@@ -7,10 +7,12 @@ import '../../screens/RecipeIntroScreen.dart';
 
 class HorizontalScrollingFood extends StatelessWidget {
   final Recipe recipe;
+  final Color boxColor;
 
   HorizontalScrollingFood({
     super.key,
     required this.recipe,
+    required this.boxColor,
   });
 
   @override
@@ -41,7 +43,7 @@ class HorizontalScrollingFood extends StatelessWidget {
                 height: width / 2,
                 width: width / 2,
                 decoration: BoxDecoration(
-                  color: Colors.orange, // Default color for the container
+                  color: boxColor, // Custom color for the container
                   borderRadius: BorderRadius.circular(40),
                 ),
                 child: Stack(children: [

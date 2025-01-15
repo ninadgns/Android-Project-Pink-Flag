@@ -15,7 +15,6 @@ class CatFoodList extends StatefulWidget {
 }
 
 class _CatFoodListState extends State<CatFoodList> {
-  List<Color> colorShades = [];
   List<dynamic> recipes = [];
 
   @override
@@ -70,7 +69,10 @@ class _CatFoodListState extends State<CatFoodList> {
                 final color = colorShades.isNotEmpty
                     ? colorShades[recipes.indexOf(recipe) % colorShades.length]
                     : Colors.grey;
-                return HorizontalScrollingFood(recipe: recipe);
+                return HorizontalScrollingFood(
+                  recipe: recipe,
+                  boxColor: color,
+                );
               }).toList(),
       ),
     );
