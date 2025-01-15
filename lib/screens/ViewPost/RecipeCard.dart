@@ -146,12 +146,55 @@ class RecipeCard extends StatelessWidget {
                   ),
                 ),
                 Expanded(
-                  flex: 1,
-                  child: Padding(
-                    padding: const EdgeInsets.all(1.0),
-                    child: CircleAvatar(
-                      radius: 80,
-                      backgroundImage: AssetImage(imageUrl),
+                  flex: 2,
+                  child: Container(
+                    padding: const EdgeInsets.all(8.0),
+                    constraints: const BoxConstraints(
+                      minWidth: 150,
+                      minHeight: 150,
+                      maxWidth: 150,
+                      maxHeight: 150,
+                    ),
+
+                    child: Container(
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
+
+                      ),
+                      child: AspectRatio(
+                        aspectRatio: 1, // This ensures a perfect circle
+                        child: ClipOval(
+                          child: Image.network(
+                            imageUrl,
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) {
+                              debugPrint('Error loading image: $error');
+                              return Container(
+                                color: Colors.grey[200],
+                                child: const Icon(
+                                  Icons.restaurant,
+                                  size: 60,
+                                  color: Colors.grey,
+                                ),
+                              );
+                            },
+                            loadingBuilder: (context, child, loadingProgress) {
+                              if (loadingProgress == null) return child;
+                              return Container(
+                                color: Colors.grey[200],
+                                child: Center(
+                                  child: CircularProgressIndicator(
+                                    value: loadingProgress.expectedTotalBytes != null
+                                        ? loadingProgress.cumulativeBytesLoaded /
+                                        loadingProgress.expectedTotalBytes!
+                                        : null,
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                      ),
                     ),
                   ),
                 ),
