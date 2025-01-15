@@ -162,10 +162,10 @@ class ScannerScreen extends StatelessWidget {
 
     return StatefulBuilder(builder: (context, updateState) {
       return Scaffold(
-        appBar: AppBar(
-          backgroundColor: const Color(0xfff0af93),
-          title: const Text('Food Item Recognition'),
-        ),
+        // appBar: AppBar(
+        //   backgroundColor: Colors.transparent,
+        //   title: const Text('Food Item Recognition'),
+        // ),
         body: SingleChildScrollView(
           child: Container(
             decoration: const BoxDecoration(
@@ -181,6 +181,9 @@ class ScannerScreen extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
+                const SizedBox(height: 10),
+                Text('Food Item Recognition',
+                    style: Theme.of(context).textTheme.displayMedium),
                 const SizedBox(height: 20),
                 DragTarget<Uint8List>(
                   onAcceptWithDetails: (data) {

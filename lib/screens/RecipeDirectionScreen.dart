@@ -213,6 +213,7 @@ class _RecipeDirectionScreenState extends State<RecipeDirectionScreen> {
     return '${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
   }
 
+  bool isFinished = false;
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
@@ -229,7 +230,12 @@ class _RecipeDirectionScreenState extends State<RecipeDirectionScreen> {
             padding: EdgeInsets.symmetric(horizontal: width * 0.04),
             child: Column(
               children: [
-                UpperBar(height: height, time: time, name: widget.recipe.name),
+                UpperBar(
+                  height: height,
+                  time: time,
+                  name: widget.recipe.name,
+                  finished: isFinished,
+                ),
                 SizedBox(height: height * 0.03),
                 Stack(
                   alignment: Alignment.center,
@@ -374,7 +380,7 @@ class _RecipeDirectionScreenState extends State<RecipeDirectionScreen> {
                               setState(() {
                                 pageIndex = (_pageController.page!.round() - 1)
                                     .clamp(0, _pages.length - 1);
-
+                                isFinished = pageIndex == (_pages.length - 1);
                                 _pageController.previousPage(
                                     duration: const Duration(milliseconds: 500),
                                     curve: Curves.easeInOut);
@@ -411,12 +417,14 @@ class _RecipeDirectionScreenState extends State<RecipeDirectionScreen> {
                             },
                           ),
                           IconButton(
-                            icon: const Icon(Icons.skip_next_rounded,
-                                color: Colors.black, size: 30),
+                            icon: Icon(Icons.skip_next_rounded,
+                                color: !isFinished ? Colors.black : Colors.grey[400],
+                                size: 30),
                             onPressed: () {
                               setState(() {
                                 pageIndex = (_pageController.page!.round() + 1)
                                     .clamp(0, _pages.length - 1);
+                                isFinished = pageIndex == (_pages.length - 1);
 
                                 _pageController.nextPage(
                                     duration: const Duration(milliseconds: 500),
