@@ -1,17 +1,50 @@
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:dim/models/RecipeModel.dart';
+import 'package:dim/screens/AddPost/fetchRecipes.dart';
 import 'package:flutter/material.dart';
 import '/data/constants.dart';
 
 import 'HorizontalScrollingFoodItem.dart';
 
 class CatFoodList extends StatefulWidget {
-  const CatFoodList({super.key});
+  final String category;
 
+  const CatFoodList({super.key, required this.category});
   @override
   State<CatFoodList> createState() => _CatFoodListState();
 }
 
 class _CatFoodListState extends State<CatFoodList> {
+  List<Color> colorShades = [];
+  List<dynamic> recipes = [];
+
+  @override
+  void initState() {
+    super.initState();
+    fetchAndSetRecipes();
+  }
+
+  @override
+  void didUpdateWidget(CatFoodList oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.category != oldWidget.category) {
+      fetchAndSetRecipes();
+    }
+    // print(recipes);
+  }
+
+  Future<void> fetchAndSetRecipes() async {
+    try {
+      final response = await fetchRecipesByTag(widget.category);
+      final parsedRecipes = parseRecipes(response);
+      setState(() {
+        recipes = parsedRecipes;
+      });
+    } catch (e) {
+      debugPrint('Error fetching recipes: $e');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -31,11 +64,14 @@ class _CatFoodListState extends State<CatFoodList> {
           scrollDirection: Axis.horizontal,
           autoPlayInterval: const Duration(seconds: 3),
         ),
-        items: [
-          ...colorShades.map(
-            (color) => HorizontalScrollingFood(color: color),
-          ),
-        ],
+        items: recipes.isEmpty
+            ? [Text('Loading...', style: TextStyle(color: Colors.black))]
+            : recipes.map((recipe) {
+                final color = colorShades.isNotEmpty
+                    ? colorShades[recipes.indexOf(recipe) % colorShades.length]
+                    : Colors.grey;
+                return HorizontalScrollingFood(recipe: recipe);
+              }).toList(),
       ),
     );
   }

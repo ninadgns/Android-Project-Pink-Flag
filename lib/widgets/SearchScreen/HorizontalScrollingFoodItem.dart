@@ -1,20 +1,23 @@
-import 'package:dim/data/constants.dart';
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
+
 import 'package:flutter/material.dart';
 
+import '../../models/RecipeModel.dart';
 import '../../screens/RecipeIntroScreen.dart';
 
 class HorizontalScrollingFood extends StatelessWidget {
+  final Recipe recipe;
+
   HorizontalScrollingFood({
     super.key,
-    required this.color,
+    required this.recipe,
   });
-  Color color;
 
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
-
+    recipe.calculateTotalDuration();
     return SizedBox(
       width: width / 1.3,
       child: Stack(
@@ -28,7 +31,9 @@ class HorizontalScrollingFood extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => RecipeIntro(recipe: dummyRecipe,),
+                    builder: (context) => RecipeIntro(
+                      recipe: recipe,
+                    ),
                   ),
                 );
               },
@@ -36,7 +41,7 @@ class HorizontalScrollingFood extends StatelessWidget {
                 height: width / 2,
                 width: width / 2,
                 decoration: BoxDecoration(
-                  color: color,
+                  color: Colors.orange, // Default color for the container
                   borderRadius: BorderRadius.circular(40),
                 ),
                 child: Stack(children: [
@@ -45,7 +50,7 @@ class HorizontalScrollingFood extends StatelessWidget {
                     right: width / 30,
                     child: IconButton(
                       onPressed: () {
-                        print(33333);
+                        print('Bookmark pressed');
                       },
                       icon: const Icon(
                         Icons.bookmark_border_rounded,
@@ -59,70 +64,58 @@ class HorizontalScrollingFood extends StatelessWidget {
                         minHeight: 36,
                         minWidth: 36,
                       ),
-                      style: ButtonStyle(
-                        backgroundColor: WidgetStateProperty.all(
-                          Colors.black.withOpacity(0.15),
-                        ),
-                        shape: WidgetStateProperty.all(const CircleBorder()),
-                      ),
                     ),
                   ),
-                  Stack(
-                    children: [
-                      Positioned(
-                        bottom: width / 15,
-                        left: width / 20,
-                        right: width / 20, // Allow Row to expand to full width
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Pumpkin Soup',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .labelLarge!
-                                  .copyWith(
+                  Positioned(
+                    bottom: width / 15,
+                    left: width / 20,
+                    right: width / 20, // Allow Row to expand to full width
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          recipe.name,
+                          style:
+                              Theme.of(context).textTheme.labelLarge!.copyWith(
                                     color: Colors.black,
                                   ),
-                            ),
-                            const Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
                               children: [
-                                Row(
-                                  children: [
-                                    Icon(
-                                      Icons.star_border_rounded,
-                                      color: Colors.black,
-                                      size: 20,
-                                    ),
-                                    Text(
-                                      ' 4.8',
-                                      style: TextStyle(fontSize: 14),
-                                    ),
-                                  ],
+                                Icon(
+                                  Icons.star_border_rounded,
+                                  color: Colors.black,
+                                  size: 20,
                                 ),
-                                Row(
-                                  children: [
-                                    Text(
-                                      '56 min ',
-                                      style: TextStyle(
-                                        color: Colors.black26,
-                                        fontSize: 14,
-                                      ),
-                                    ),
-                                    Icon(
-                                      Icons.watch_later_outlined,
-                                      size: 16,
-                                      color: Colors.black38,
-                                    ),
-                                  ],
+                                Text(
+                                  '4.5',
+                                  style: const TextStyle(fontSize: 14),
+                                ),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                Text(
+                                  '${recipe.totalDuration} min ',
+                                  style: const TextStyle(
+                                    color: Colors.black26,
+                                    fontSize: 14,
+                                  ),
+                                ),
+                                const Icon(
+                                  Icons.watch_later_outlined,
+                                  size: 16,
+                                  color: Colors.black38,
                                 ),
                               ],
                             ),
                           ],
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ]),
               ),
@@ -137,7 +130,9 @@ class HorizontalScrollingFood extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => RecipeIntro(recipe: dummyRecipe,),
+                    builder: (context) => RecipeIntro(
+                      recipe: recipe,
+                    ),
                   ),
                 );
               },
@@ -145,13 +140,18 @@ class HorizontalScrollingFood extends StatelessWidget {
                 backgroundColor: Colors.white,
                 radius: width / 4,
                 child: CircleAvatar(
-                  backgroundColor: color,
+                  backgroundColor: Colors.grey.shade200,
                   radius: width / 4.5,
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(100),
-                    child: Image.asset(
-                      'assets/pumpkin_soup.jpg',
+                    child: Image.network(
+                      recipe.titlePhoto,
                       fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) => Icon(
+                        Icons.image_not_supported,
+                        color: Colors.grey,
+                        size: width / 8,
+                      ),
                     ),
                   ),
                 ),

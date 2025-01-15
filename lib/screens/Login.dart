@@ -1,15 +1,14 @@
 // ignore_for_file: prefer_const_constructors, avoid_print
 
-import 'package:dim/screens/AddPost/fetchRecipes.dart';
+import 'package:dim/data/constants.dart';
 import 'package:dim/screens/GetStarted.dart';
-import 'package:dim/screens/SignUp.dart';
 import 'package:dim/screens/GoogleAuth.dart';
+import 'package:dim/screens/SignUp.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:dim/data/constants.dart';
+
 import 'HomeScreen.dart';
 import 'PasswordField.dart';
 import 'curve.dart';
@@ -221,7 +220,7 @@ class _LogInState extends State<LogIn> {
       // Supabase login
       print(userCredential);
       // Navigate to the home screen on successful login
-      login1=true;
+      login1 = true;
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => Homescreen()),
