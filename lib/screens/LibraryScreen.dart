@@ -124,11 +124,9 @@ class _LibraryScreenState extends State<LibraryScreen> {
           ),
           const SizedBox(height: 20),
           Expanded(
-            child: Center(
-              child: isCollectionsSelected
-                  ? const LibraryCollections()
-                  : const LibrarySaved(),
-            ),
+            child: isCollectionsSelected
+                ? const LibraryCollections()
+                : const LibrarySaved(),
           ),
         ],
       ),

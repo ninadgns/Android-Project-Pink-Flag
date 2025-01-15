@@ -75,6 +75,8 @@ class _LibrarySavedState extends State<LibrarySaved> {
 
     return SingleChildScrollView(
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        mainAxisSize: MainAxisSize.max,
         children: [
           ..._recipeList.map((recipe) {
             return MealItem(
