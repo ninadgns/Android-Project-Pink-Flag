@@ -61,6 +61,9 @@ dependencies:
   google_sign_in: ^6.2.2
   marquee: ^2.3.0
   firebase_storage: ^12.4.0
+  crypto: ^3.0.6
+  flutter_dotenv: ^5.2.1
+  flutter_secure_storage: ^9.2.4
 
 dev_dependencies:
   flutter_test:
@@ -68,7 +71,6 @@ dev_dependencies:
   smooth_page_indicator: ^1.0.0+2
   liquid_swipe: ^3.0.0
   image_picker_for_web: ^2.0.0
-  flutter_dotenv: ^5.0.2
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
@@ -102,7 +104,7 @@ flutter:
     - assets/images/mix.jpg
     - assets/images/tealwhite.jpeg
     - assets/images/teal.png
-
+    - .env.development
 
 
   # An image asset can refer to one or more resolution-specific "variants", see

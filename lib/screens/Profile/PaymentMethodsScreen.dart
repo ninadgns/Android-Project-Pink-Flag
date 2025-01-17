@@ -116,7 +116,7 @@ class _PaymentMethodsScreenState extends State<PaymentMethodsScreen> {
     if (selectedMethod != null) {
       selectedCardType = selectedMethod!.cardType;
     }
-
+    bool isSave = false;
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -324,8 +324,12 @@ class _PaymentMethodsScreenState extends State<PaymentMethodsScreen> {
                   Row(
                     children: [
                       Checkbox(
-                        value: false,
-                        onChanged: (value) {},
+                        value: isSave,  // Use the state variable here instead of hardcoded false
+                        onChanged: (value) {
+                          setModalState(() {  // Wrap state updates in setState
+                            isSave = value!;  // Update the state variable
+                          });
+                        },
                         activeColor: Colors.blue.shade300,
                       ),
                       Expanded(
@@ -344,7 +348,31 @@ class _PaymentMethodsScreenState extends State<PaymentMethodsScreen> {
                     height: 50,
                     child: ElevatedButton(
                       onPressed: () {
-                        // Handle payment
+                        String last4 = _cardNumberController.text.replaceAll(' ', '').substring(_cardNumberController.text.length - 4);
+                        PaymentMethod paymentMethod = PaymentMethod(
+                          id: 'card_${DateTime.now().millisecondsSinceEpoch}',
+                          cardHolderName: _nameController.text,
+                          cardType: selectedCardType ?? 'VISA',
+                          last4: last4,
+                          cardNumber: _cardNumberController.text,
+                          expiryDate: _expiryController.text,
+                          cvc: _cvcController.text,
+                          zipCode: _zipController.text,
+                        );
+
+                        if (isSave) {
+                          _paymentService.addPaymentMethod(paymentMethod);
+                        }
+                        _cardNumberController.clear();
+                        _expiryController.clear();
+                        _cvcController.clear();
+                        _zipController.clear();
+                        _nameController.clear();
+                        selectedCardType = null;
+
+                        // Close bottom sheet after saving
+                        Navigator.pop(context);
+                        _loadPaymentMethods();
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.blue.shade300,

@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 
@@ -41,7 +42,7 @@ class ScannerScreen extends StatelessWidget {
       return;
     }
 
-    const String clarifaiPAT = '8d791a58ddeb4ed0a1b57df02fa4fadc';
+    String clarifaiPAT = dotenv.env['CLARIFY_PAT'] as String;
     const String userId = 'clarifai';
     const String appId = 'main';
     const String modelId = 'food-item-recognition';
@@ -132,6 +133,7 @@ class ScannerScreen extends StatelessWidget {
         ],
       ),
     );
+    print(cartItems);
   }
 
   void _showErrorDialog(BuildContext context, String message) {

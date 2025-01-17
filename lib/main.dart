@@ -6,6 +6,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -14,14 +15,14 @@ import '/screens/Onboarding.dart';
 import 'firebase_options.dart';
 
 void main() async {
+  await dotenv.load(fileName: ".env.development");
+
   WidgetsFlutterBinding.ensureInitialized();
   await _initializeFirebase();
   await Supabase.initialize(
-    url: 'https://ftxynincmxoriezkggdi.supabase.co',
-    anonKey:
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ0eHluaW5jbXhvcmllemtnZ2RpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzYxMzk2MTgsImV4cCI6MjA1MTcxNTYxOH0.78nIJvy_EjK0N_qL2lQQYNXDxIIJ2GuOuT30aTXp8jc',
-  );
-
+    url: dotenv.env['SUPABASE_URL'] as String,
+    anonKey:dotenv.env['SUPABASE_ANON_KEY'] as String,
+    );
   runApp(
     ChangeNotifierProvider(
         create: (context) => UserProvider()..fetchCurrentUser(),

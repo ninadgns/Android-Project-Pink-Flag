@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'package:dim/services/EncryptionService.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../models/PaymentModels.dart';
@@ -136,13 +137,18 @@ class PaymentService {
           .eq('user_id', uid);
 
       return response.map<PaymentMethod>((method) {
+
+        final decrytedCHN=EncryptionUtils.decryptText(method['card_holder_name'] as String);
+        final decrytedCN=EncryptionUtils.decryptText(method['card_number'] as String);
+        final decrytedED=EncryptionUtils.decryptText(method['expiry_date'] as String);
+
         return PaymentMethod(
           id: method['id'],
-          cardHolderName: method['card_holder_name'],
+          cardHolderName: decrytedCHN,
           cardType: method['card_type'],
           last4: method['last4'],
-          cardNumber: method['card_number'],
-          expiryDate: method['expiry_date'],
+          cardNumber: decrytedCN,
+          expiryDate: decrytedED,
           cvc: '',  // We don't store CVC
           zipCode: method['zip_code'],
         );
@@ -158,14 +164,19 @@ class PaymentService {
       final String? uid = _firebaseAuth.currentUser?.uid;
       if (uid == null) throw Exception('No authenticated user found');
 
+      final hashCHN=EncryptionUtils.encryptText(paymentMethod.cardHolderName);
+      final hashCN=EncryptionUtils.encryptText(paymentMethod.cardNumber);
+      final hashED=EncryptionUtils.encryptText(paymentMethod.expiryDate);
+      //final d=EncryptionUtils.encryptText(text);
+
       await _supabase.from('payment_methods').insert({
         'id': paymentMethod.id,
         'user_id': uid,
-        'card_holder_name': paymentMethod.cardHolderName,
+        'card_holder_name': hashCHN,
         'card_type': paymentMethod.cardType,
         'last4': paymentMethod.last4,
-        'card_number': paymentMethod.cardNumber,
-        'expiry_date': paymentMethod.expiryDate,
+        'card_number': hashCN,
+        'expiry_date': hashED,
         'zip_code': paymentMethod.zipCode,
       });
     } catch (e) {
@@ -226,4 +237,5 @@ class PaymentService {
       throw Exception('Failed to fetch subscription history: $e');
     }
   }
+
 }
