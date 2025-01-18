@@ -1,12 +1,11 @@
-import 'package:dim/models/SubscriptionModels.dart';
 import 'package:flutter/material.dart';
-import 'package:dim/widgets/SubscriptionScreen/PaymentWidgets.dart';
 import 'package:dim/services/PaymentServices.dart';
-import 'package:dim/models/PaymentModels.dart';
-import 'package:flutter/services.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:intl/intl.dart';
+import '../../models/PaymentModels.dart';
+import '../../models/SubscriptionModels.dart';
+import '../../widgets/Payment/PaymentAmountCard.dart';
+import '../../widgets/Payment/PaymentBottomSheet.dart';
+import '../../widgets/Payment/PaymentMethodList.dart';
 
 class PaymentMethodsScreen extends StatefulWidget {
   final SubscriptionPlan? newPlan;
@@ -30,15 +29,6 @@ class _PaymentMethodsScreenState extends State<PaymentMethodsScreen> {
   String? _error;
   late List<PaymentMethod> _paymentMethods;
   PaymentMethod? selectedMethod;
-  String? selectedCardType;
-
-
-  final TextEditingController _cardNumberController = TextEditingController();
-  final TextEditingController _expiryController = TextEditingController();
-  final TextEditingController _cvcController = TextEditingController();
-  final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _zipController = TextEditingController();
-
 
   @override
   void initState() {
@@ -63,611 +53,191 @@ class _PaymentMethodsScreenState extends State<PaymentMethodsScreen> {
     }
   }
 
+  PaymentDetails _calculatePaymentDetails() {
+    double amountToPay = 0.0;
+    String planId = 'No Selected Plan';
+    DateTime? renewDate;
+
+    if (widget.way == 1 && widget.currentPlan?.price != 0.0 && widget.newPlan == null) {
+      amountToPay = widget.currentPlan?.price ?? 0.0;
+      planId = widget.currentPlan?.planId ?? planId;
+      if (widget.currentPlan?.renewalDate.isAfter(DateTime.now()) ?? false) {
+        renewDate = widget.currentPlan?.renewalDate;
+      }
+    } else if (widget.way == 2 && widget.newPlan != null) {
+      if (widget.currentPlan?.planId != widget.newPlan?.id) {
+        amountToPay = widget.newPlan?.price ?? 0.0;
+        planId = widget.newPlan?.id ?? planId;
+      } else {
+        amountToPay = widget.currentPlan?.price ?? 0.0;
+        planId = widget.currentPlan?.planId ?? planId;
+        if (widget.currentPlan?.renewalDate.isAfter(DateTime.now()) ?? false) {
+          renewDate = widget.currentPlan?.renewalDate;
+        }
+      }
+    }
+
+    return PaymentDetails(
+      amount: amountToPay,
+      planId: planId,
+      renewalDate: renewDate,
+    );
+  }
+
   void _handleMethodSelection(PaymentMethod method) {
     setState(() {
-      // Toggle selection - if same card is selected, deselect it
-      selectedMethod = selectedMethod?.id == method.id ? null : method;
-
-       if (selectedMethod == null) {
-        _cardNumberController.clear();
-        _expiryController.clear();
-        _cvcController.clear();
-        _zipController.clear();
-        _nameController.clear();
-        selectedCardType = null;
+      if (selectedMethod?.id == method.id) {
+        selectedMethod = null;  // Deselect if already selected
       } else {
-        _cardNumberController.text = selectedMethod!.cardNumber;
-        _expiryController.text = selectedMethod!.expiryDate;
-        _cvcController.text = selectedMethod!.cvc;
-        _zipController.text = selectedMethod!.zipCode;
-        _nameController.text = selectedMethod!.cardHolderName;
-        selectedCardType = selectedMethod!.cardType;
+        selectedMethod = method;  // Select new method
       }
     });
   }
 
-  Widget _buildCardTypeOptionWithState(
-      IconData icon,
-      String type,
-      Color color,
-      StateSetter setModalState
-      ) {
-    return Row(
-      children: [
-        Radio<String>(
-          value: type,
-          groupValue: selectedCardType,
-          onChanged: (String? value) {
-            setModalState(() {
-              selectedCardType = value;
-            });
-            setState(() {
-              selectedCardType = value;
-            });
-          },
-          activeColor: Colors.blue,
-        ),
-        Icon(icon, color: color),
-      ],
-    );
-  }
-
-  void showPaymentBottomSheet(BuildContext context, double amount) {
-    if (selectedMethod != null) {
-      selectedCardType = selectedMethod!.cardType;
-    }
-    bool isSave = false;
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      builder: (context) => StatefulBuilder(
-        builder: (context, StateSetter setModalState) {
-          return Padding(
-            padding: EdgeInsets.only(
-              bottom: MediaQuery
-                  .of(context)
-                  .viewInsets
-                  .bottom,
-            ),
-            child: Container(
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'Pay \$${amount.toStringAsFixed(2)} using',
-                        style: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      IconButton(
-                        icon: const Icon(Icons.close),
-                        onPressed: () => Navigator.pop(context),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 20),
-                  Text(
-                    'Card information',
-                    style: TextStyle(
-                      color: Colors.grey[600],
-                      fontSize: 14,
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  Padding(
-                    padding: const EdgeInsets.all(8),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        _buildCardTypeOptionWithState(
-                            FontAwesomeIcons.ccVisa,
-                            'VISA',
-                            Colors.indigoAccent.shade400,
-                            setModalState
-                        ),
-                        _buildCardTypeOptionWithState(
-                            FontAwesomeIcons.ccMastercard,
-                            'MASTERCARD',
-                            Colors.indigo.shade900,
-                            setModalState
-                        ),
-                        _buildCardTypeOptionWithState(
-                            FontAwesomeIcons.ccJcb,
-                            'JCB',
-                            Colors.black,
-                            setModalState
-                        ),
-                        _buildCardTypeOptionWithState(
-                            FontAwesomeIcons.ccAmex,
-                            'AMEX',
-                            Colors.indigoAccent,
-                            setModalState
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  TextFormField(
-                    controller: _cardNumberController,
-                    cursorColor: Colors.black26,
-                    decoration: InputDecoration(
-                      labelText: 'Card number (16 digits)',
-                      labelStyle: const TextStyle(color: Colors.black),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: const BorderSide(color: Colors.black12,
-                            width: 1),
-                      ),
-                      hintText: 'XXXX XXXX XXXX XXXX',
-                    ),
-                    keyboardType: TextInputType.number,
-                    inputFormatters: [
-                      FilteringTextInputFormatter.allow(RegExp(r'^\d{0,16}$')),
-                    ],
-                  ),
-                  const SizedBox(height: 15),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: TextFormField(
-                          controller: _expiryController,
-                          cursorColor: Colors.black26,
-                          decoration: InputDecoration(
-                            labelText: 'Expiry',
-                            labelStyle: const TextStyle(color: Colors.black),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                              borderSide: const BorderSide(
-                                  color: Colors.black12, width: 1),
-                            ),
-                            hintText: 'MM / YY',
-                          ),
-                          keyboardType: TextInputType.datetime,
-                          inputFormatters: [
-                            FilteringTextInputFormatter.allow(
-                                RegExp(r'^\d{0,2}(\/\d{0,2})?$')),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(width: 15),
-                      Expanded(
-                        child: TextFormField(
-                          controller: _cvcController,
-                          cursorColor: Colors.black26,
-                          decoration: InputDecoration(
-                            labelText: 'CVC/CVC',
-                            labelStyle: const TextStyle(color: Colors.black),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                              borderSide: const BorderSide(
-                                  color: Colors.black12, width: 1),
-                            ),
-                          ),
-                          keyboardType: TextInputType.number,
-                          inputFormatters: [
-                            FilteringTextInputFormatter.allow(RegExp(r'^\d{0,4}$')),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 15),
-                  TextFormField(
-                    controller: _nameController,
-                    cursorColor: Colors.black26,
-                    decoration: InputDecoration(
-                      labelText: 'Card Holder\'s Full Name',
-                      labelStyle: const TextStyle(color: Colors.black),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: const BorderSide(color: Colors.black12,
-                            width: 1),
-                      ),
-                    ),
-                    keyboardType: TextInputType.name,
-                    inputFormatters: [
-                      FilteringTextInputFormatter.allow(RegExp(r"[a-zA-Z\s\.\']")),
-                    ],
-                  ),
-                  const SizedBox(height: 15),
-                  TextFormField(
-                    controller: _zipController,
-                    cursorColor: Colors.black26,
-                    decoration: InputDecoration(
-                      labelText: 'ZIP or Postal Code',
-                      labelStyle: const TextStyle(color: Colors.black),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: const BorderSide(color: Colors.black12,
-                            width: 1),
-                      ),
-                    ),
-                    keyboardType: TextInputType.number,
-                    inputFormatters: [
-                      FilteringTextInputFormatter.allow(RegExp(r'^\d{0,5}$')),
-                    ],
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter the ZIP/Postal Code';
-                      } else if (value.length != 5 || !RegExp(r'^\d{5}$').hasMatch(
-                          value)) {
-                        return 'ZIP/Postal Code must be 5 digits';
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: 15),
-                  Row(
-                    children: [
-                      Checkbox(
-                        value: isSave,  // Use the state variable here instead of hardcoded false
-                        onChanged: (value) {
-                          setModalState(() {  // Wrap state updates in setState
-                            isSave = value!;  // Update the state variable
-                          });
-                        },
-                        activeColor: Colors.blue.shade300,
-                      ),
-                      Expanded(
-                        child: Text(
-                          'Save card for future payments',
-                          style: TextStyle(
-                            color: Colors.grey[600],
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 20),
-                  SizedBox(
-                    width: double.infinity,
-                    height: 50,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        String last4 = _cardNumberController.text.replaceAll(' ', '').substring(_cardNumberController.text.length - 4);
-                        PaymentMethod paymentMethod = PaymentMethod(
-                          id: 'card_${DateTime.now().millisecondsSinceEpoch}',
-                          cardHolderName: _nameController.text,
-                          cardType: selectedCardType ?? 'VISA',
-                          last4: last4,
-                          cardNumber: _cardNumberController.text,
-                          expiryDate: _expiryController.text,
-                          cvc: _cvcController.text,
-                          zipCode: _zipController.text,
-                        );
-
-                        if (isSave) {
-                          _paymentService.addPaymentMethod(paymentMethod);
-                        }
-                        _cardNumberController.clear();
-                        _expiryController.clear();
-                        _cvcController.clear();
-                        _zipController.clear();
-                        _nameController.clear();
-                        selectedCardType = null;
-
-                        // Close bottom sheet after saving
-                        Navigator.pop(context);
-                        _loadPaymentMethods();
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blue.shade300,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
-                      child: Text(
-                        'Pay \$${amount.toStringAsFixed(2)}',
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          );
-        },
-      ),
-    );
-  }
-
-
-
-
   @override
   Widget build(BuildContext context) {
     if (_isLoading) {
-      return const Scaffold(
-        body: Center(child: CircularProgressIndicator()),
-      );
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
     if (_error != null) {
-      return Scaffold(
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text('Error: $_error'),
-              ElevatedButton(
-                onPressed: _loadPaymentMethods,
-                style: TextButton.styleFrom(
-                  foregroundColor: Colors.blue.shade300,
-                ),
-                child: const Text('Retry'),
-              ),
-            ],
-          ),
-        ),
-      );
+      return _buildErrorScreen();
     }
 
-    double? amountToPay=0.0;
-    String? planId= 'No Selected Plan';
-    DateTime? renewDate=null;
-
-    if(widget.way==1
-        && widget.currentPlan?.price!=0.0 && widget.newPlan==null){
-      amountToPay=widget.currentPlan?.price;
-      planId= widget.currentPlan?.planId;
-      if (widget.currentPlan!.renewalDate.isAfter(DateTime.now())) {
-        renewDate= widget.currentPlan!.renewalDate;
-      }
-    }
-    if(widget.way==2
-        && widget.newPlan!=null
-        && (widget.currentPlan?.planId!=widget.newPlan?.id || widget.currentPlan==null)){
-      amountToPay=widget.newPlan?.price;
-      planId= widget.newPlan?.id;
-    }
-
-    if(widget.way==2
-        && widget.newPlan!=null
-        && widget.currentPlan?.planId==widget.newPlan?.id){
-      amountToPay=widget.currentPlan?.price;
-      planId= widget.currentPlan?.planId;
-      if (widget.currentPlan!.renewalDate.isAfter(DateTime.now())) {
-        renewDate= widget.currentPlan!.renewalDate;
-      }
-    }
+    final paymentDetails = _calculatePaymentDetails();
+    final size = MediaQuery.of(context).size;
 
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        toolbarHeight: 50.0,
-        title: const Text(
-          'Payment Methods',
-          style: TextStyle(
-            color: Colors.black,
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        centerTitle: true,
-        elevation: 8,
-        backgroundColor: Colors.lightBlue.shade100,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-      ),
+      appBar: _buildAppBar(),
       body: Column(
         children: [
-          // Payment Amount Card
-          Container(
-            margin: const EdgeInsets.all(16),
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: Colors.lightBlue.shade50,
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text(
-                      'Amount to Pay:',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-
-                    Text(
-                      '\$${amountToPay!.toStringAsFixed(2)}',
-                      style: const TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.blue,
-                      ),
-                    ),
-                  ],
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text(
-                      'Subscription Plan:',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-
-                    Text(
-                      '${planId!.toString()}',
-                      style: const TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.blue,
-                      ),
-                    ),
-                  ],
-                ),
-                if(renewDate!=null)
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text(
-                        'Renewal Date:',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-
-                      Text(
-                        DateFormat('yyyy-MM-dd').format(renewDate).toString(),
-                        style: const TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.blue,
-                        ),
-                      ),
-                    ],
-                  ),
-              ],
-            ),
+          PaymentAmountCard(
+            paymentDetails: paymentDetails,
+            padding: EdgeInsets.all(size.width * 0.04),
           ),
-
-
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Payment Methods',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black38,
-                  ),
-                ),
-              ],
-            ),
+          PaymentMethodList(
+            paymentMethods: _paymentMethods,
+            selectedMethod: selectedMethod,
+            onMethodSelected: (method) {
+              _handleMethodSelection(method);
+              //setState(() => selectedMethod = method);
+            },
           ),
-
-          // Payment Methods List
-          Expanded(
-            child: ListView.builder(
-              padding: const EdgeInsets.all(16),
-              itemCount: _paymentMethods.length,
-              itemBuilder: (context, index) {
-                final method = _paymentMethods[index];
-                return PaymentMethodCard(
-                      paymentMethod: method,
-                      isSelected: selectedMethod?.id == method.id,
-                      onSelect: () => _handleMethodSelection(method),
-                      onDelete: () {/* Handle delete */},
-                 );
-              },
-            ),
-          ),
-
-          // Make Payment Button
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: ElevatedButton(
-              onPressed: () {
-                if(renewDate!=null || amountToPay==0.0){
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return AlertDialog(
-                        title: const Text('Notice'),
-                        content: const Text('Your payment amount is \$0.0 or renewal date for current plan is not over'),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        backgroundColor: Colors.white,
-                        titleTextStyle: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
-                        ),
-                        contentTextStyle: const TextStyle(
-                          fontSize: 16,
-                          color: Colors.black87,
-                        ),
-                        actions: [
-                          TextButton(
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                            child: const Text('OK'),
-                          ),
-                        ],
-                      );
-                    },
-                  );
-                }else {
-                  showPaymentBottomSheet(context, amountToPay!);
-                }
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor:  Colors.blue.shade300,
-                minimumSize: const Size.fromHeight(50),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
-              child: const Text(
-                'Make Payment',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
-              ),
-            ),
-          ),
+          _buildPaymentButton(context, paymentDetails, size),
         ],
       ),
     );
   }
+
+  PreferredSizeWidget _buildAppBar() {
+    return AppBar(
+      toolbarHeight: kToolbarHeight,
+      title: const Text(
+        'Payment Methods',
+        style: TextStyle(
+          color: Colors.black,
+          fontSize: 18,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+      centerTitle: true,
+      elevation: 8,
+      backgroundColor: Colors.lightBlue.shade100,
+      leading: IconButton(
+        icon: const Icon(Icons.arrow_back),
+        onPressed: () => Navigator.of(context).pop(),
+      ),
+    );
+  }
+
+  Widget _buildPaymentButton(BuildContext context, PaymentDetails details, Size size) {
+    return Padding(
+      padding: EdgeInsets.all(size.width * 0.04),
+      child: ElevatedButton(
+        onPressed: () => _handlePaymentButtonPress(context, details),
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.blue.shade300,
+          minimumSize: Size(size.width * 0.9, size.height * 0.06),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(size.width * 0.03),
+          ),
+        ),
+        child: const Text(
+          'Make Payment',
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _handlePaymentButtonPress(BuildContext context, PaymentDetails details) {
+    if (details.renewalDate != null || details.amount == 0.0) {
+      _showPaymentAlert(context);
+    } else {
+      showPaymentBottomSheet(
+        context: context,
+        amount: details.amount,
+        onPaymentComplete: _loadPaymentMethods,
+        selectedMethod: selectedMethod,
+      );
+    }
+  }
+
+  void _showPaymentAlert(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Notice'),
+          content: const Text('Your payment amount is \$0.0 or renewal date for current plan is not over'),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(size.width * 0.025),
+          ),
+          backgroundColor: Colors.white,
+          titleTextStyle: TextStyle(
+            fontSize: size.width * 0.045,
+            fontWeight: FontWeight.bold,
+            color: Colors.black,
+          ),
+          contentTextStyle: TextStyle(
+            fontSize: size.width * 0.04,
+            color: Colors.black87,
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _buildErrorScreen() {
+    return Scaffold(
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text('Error: $_error'),
+            ElevatedButton(
+              onPressed: _loadPaymentMethods,
+              style: TextButton.styleFrom(
+                foregroundColor: Colors.blue.shade300,
+              ),
+              child: const Text('Retry'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

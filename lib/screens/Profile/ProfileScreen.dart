@@ -291,7 +291,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      Row(
+                      Wrap(
                         children: [
                           // RotationTransition(
                           //   turns: _bellAnimation,

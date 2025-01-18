@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:dim/widgets/Preferences/PreferenceSection.dart';
 import 'package:dim/models/PreferenceModel.dart';
-import 'package:dim/data/constants.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../services/PreferencesService.dart';
@@ -99,10 +98,10 @@ class _PreferencesScreenState extends State<PreferencesScreen> with SingleTicker
     );
 
     _fadeAnimations = {
-      'diet': _createFadeAnimation(0.0, 0.33),
-      'allergies': _createFadeAnimation(0.33, 0.66),
-      'materials': _createFadeAnimation(0.33, 0.66),
-      'dishes': _createFadeAnimation(0.66, 1.0),
+      'allergies': _createFadeAnimation(0.0, 0.33),
+      'diet': _createFadeAnimation(0.33, 0.66),
+      'dishes': _createFadeAnimation(0.33, 0.66),
+      'materials': _createFadeAnimation(0.66, 1.0),
     };
 
     if (!_hasAnimated) {
@@ -228,10 +227,10 @@ class _PreferencesScreenState extends State<PreferencesScreen> with SingleTicker
 
   Widget _buildPreferenceSections() {
     final sections = [
-      ('Choose your diet', 'diet'),
       ('Do you have allergies?', 'allergies'),
-      ('What\'s your favourite materials?', 'materials'),
+      ('Choose your diet', 'diet'),
       ('Favorite dishes', 'dishes'),
+      ('What\'s your favourite materials?', 'materials'),
     ];
 
     return Column(

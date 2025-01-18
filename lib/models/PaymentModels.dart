@@ -1,4 +1,34 @@
+class PaymentDetails {
+  final double amount;
+  final String planId;
+  final DateTime? renewalDate;
 
+  PaymentDetails({
+    required this.amount,
+    required this.planId,
+    this.renewalDate,
+  });
+}
+
+class PaymentData {
+  final String cardNumber;
+  final String cardHolderName;
+  final String cardType;
+  final String expiryDate;
+  final String cvc;
+  final String zipCode;
+  final bool isSave;
+
+  PaymentData({
+    required this.cardNumber,
+    required this.cardHolderName,
+    required this.cardType,
+    required this.expiryDate,
+    required this.cvc,
+    required this.zipCode,
+    required this.isSave,
+  });
+}
 
 class PaymentMethod {
   final String id;
@@ -51,40 +81,40 @@ class PaymentResult {
 }
 
 
-final List<PaymentMethod> _paymentMethods = [
-  PaymentMethod(
-    id: 'card_1',
-    cardHolderName: 'John Doe',
-    cardType: 'VISA',
-    last4: '4242',
-    cardNumber: '7234 7949 3474 4242',
-    expiryDate: '12/25',
-    cvc: '',
-    zipCode: '01274',
-    //region: '',
-  ),
-  PaymentMethod(
-    id: 'card_2',
-    cardHolderName: 'John Doe',
-    cardType: 'MASTER',
-    last4: '0101',
-    cardNumber: '7234 0000 3474 0101',
-    expiryDate: '12/26',
-    cvc: '',
-    zipCode: '29292',
-    // region: '',
-  ),
-  PaymentMethod(
-    id: 'card_3',
-    cardHolderName: 'John Doe',
-    cardType: 'JCB',
-    last4: '0000',
-    cardNumber: '7234 1020 3474 0000',
-    expiryDate: '08/26',
-    cvc: '',
-    zipCode: '83371',
-    //region: '',
-  ),
+// final List<PaymentMethod> _paymentMethods = [
+//   PaymentMethod(
+//     id: 'card_1',
+//     cardHolderName: 'John Doe',
+//     cardType: 'VISA',
+//     last4: '4242',
+//     cardNumber: '7234 7949 3474 4242',
+//     expiryDate: '12/25',
+//     cvc: '',
+//     zipCode: '01274',
+//     //region: '',
+//   ),
+//   PaymentMethod(
+//     id: 'card_2',
+//     cardHolderName: 'John Doe',
+//     cardType: 'MASTER',
+//     last4: '0101',
+//     cardNumber: '7234 0000 3474 0101',
+//     expiryDate: '12/26',
+//     cvc: '',
+//     zipCode: '29292',
+//     // region: '',
+//   ),
+//   PaymentMethod(
+//     id: 'card_3',
+//     cardHolderName: 'John Doe',
+//     cardType: 'JCB',
+//     last4: '0000',
+//     cardNumber: '7234 1020 3474 0000',
+//     expiryDate: '08/26',
+//     cvc: '',
+//     zipCode: '83371',
+//     //region: '',
+//   ),
   // PaymentMethod(
   //   id: 'card_4',
   //   cardHolderName: 'John Doe',
@@ -96,6 +126,6 @@ final List<PaymentMethod> _paymentMethods = [
   //   zipCode: '',
   //   region: '',
   // ),
-];
+//];
 
 
