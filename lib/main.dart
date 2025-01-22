@@ -1,3 +1,4 @@
+import 'package:dim/models/FirebaseApi.dart';
 import 'package:dim/screens/HomeScreen.dart';
 import 'package:dim/screens/Login.dart';
 import 'package:dim/services/user_provider.dart';
@@ -19,6 +20,7 @@ void main() async {
 
   WidgetsFlutterBinding.ensureInitialized();
   await _initializeFirebase();
+  await FirebaseApi().initNotifications();
   await Supabase.initialize(
     url: dotenv.env['SUPABASE_URL'] as String,
     anonKey:dotenv.env['SUPABASE_ANON_KEY'] as String,
