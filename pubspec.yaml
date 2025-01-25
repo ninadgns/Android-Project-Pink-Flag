@@ -65,6 +65,7 @@ dependencies:
   flutter_dotenv: ^5.2.1
   flutter_secure_storage: ^9.2.4
   firebase_messaging: ^15.2.1
+  shared_preferences: ^2.4.0
 
 dev_dependencies:
   flutter_test:

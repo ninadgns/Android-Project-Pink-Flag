@@ -5,6 +5,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../models/RecipeModel.dart';
 import '../../screens/AddPost/fetchRecipes.dart';
 import '../Recipe/MealItem.dart';
+import '../SearchScreen/ReicipeListView.dart';
 
 class LibrarySaved extends StatefulWidget {
   const LibrarySaved({super.key});
@@ -16,10 +17,12 @@ class LibrarySaved extends StatefulWidget {
 class _LibrarySavedState extends State<LibrarySaved> {
   late List<Recipe> _recipeList = [];
   bool _isLoading = false;
+   List<Map<String, dynamic>> collections=[];
   @override
-  void initState() {
+  void initState() async{
     super.initState();
     _fetchAndSetRecipes();
+    collections = await fetchCollections();
   }
 
   void _fetchAndSetRecipes() async {
@@ -77,6 +80,7 @@ class _LibrarySavedState extends State<LibrarySaved> {
           ..._recipeList.map((recipe) {
             return MealItem(
               recipe: recipe,
+              collections: collectionsList,
             );
           }),
           SizedBox(height: height * 0.15)

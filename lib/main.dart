@@ -5,6 +5,7 @@ import 'package:dim/services/user_provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -14,21 +15,44 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '/data/themeData.dart';
 import '/screens/Onboarding.dart';
 import 'firebase_options.dart';
+import 'models/NotificationManagement/NotificationSettings.dart' as noti;
+
+@pragma('vm:entry-point')
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  // Prevent background messages when notifications are disabled
+  return Future.value();
+}
 
 void main() async {
   await dotenv.load(fileName: ".env.development");
 
   WidgetsFlutterBinding.ensureInitialized();
   await _initializeFirebase();
-  await FirebaseApi().initNotifications();
+  final notificationSettings = noti.NotificationSettings();
+
+  // Ensure settings are loaded before proceeding
+  await notificationSettings.loadSettings();
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+
+  // Initialize Firebase API with current settings
+  await FirebaseApi().initNotifications(
+    enableNotifications: notificationSettings.isNotificationsEnabled,
+  );
+
+  // Initialize Supabase
   await Supabase.initialize(
     url: dotenv.env['SUPABASE_URL'] as String,
-    anonKey:dotenv.env['SUPABASE_ANON_KEY'] as String,
-    );
+    anonKey: dotenv.env['SUPABASE_ANON_KEY'] as String,
+  );
+
   runApp(
-    ChangeNotifierProvider(
-        create: (context) => UserProvider()..fetchCurrentUser(),
-        child: const MyApp()),
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => notificationSettings),
+        ChangeNotifierProvider(create: (_) => UserProvider()..fetchCurrentUser()),
+      ],
+      child: const MyApp(),
+    ),
   );
 }
 

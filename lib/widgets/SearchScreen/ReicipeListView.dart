@@ -2,7 +2,9 @@ import 'package:dim/data/constants.dart';
 // import 'package:dim/models/GroceryModel.dart';
 import 'package:dim/screens/AddPost/fetchRecipes.dart';
 import 'package:dim/widgets/Recipe/MealItem.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../models/RecipeModel.dart';
 
@@ -13,15 +15,53 @@ class RecipeListView extends StatefulWidget {
   @override
   State<RecipeListView> createState() => _RecipeListViewState();
 }
+Future<List<Map<String, dynamic>>> fetchCollections() async {
+  final supabase = Supabase.instance.client;
+  final user = FirebaseAuth.instance.currentUser;
 
+  if (user == null) {
+    throw Exception('User not logged in');
+  }
+
+  try {
+    final response = await supabase
+        .from('collections')
+        .select('id, collection_name')
+        .eq('user_id', user.uid);
+
+    if (response.isEmpty) {
+      debugPrint('No collections found for user: ${user.uid}');
+      return [];
+    }
+
+    final collections = response
+        .map((collection) => {
+      'id': collection['id'],
+      'collection_name': collection['collection_name']
+    })
+        .toList();
+    debugPrint('Collections fetched successfully for user: ${user.uid}');
+    // print(collections);
+    return collections;
+  } catch (e) {
+    debugPrint('Failed to fetch collections for user ${user.uid}: $e');
+    throw Exception('Failed to fetch collections for the user.');
+  }
+}
+
+  List<Map<String, dynamic>> collectionsList = [];
 class _RecipeListViewState extends State<RecipeListView> {
   late List<Recipe> _recipeList = [];
   bool _isLoading = false;
-
   @override
-  void initState() {
+  void initState()  {
     super.initState();
     _fetchAndSetRecipes(widget.searchQuery);
+    _initialize();
+  }
+  Future<void> _initialize() async {
+    // await fetchCollections();
+    collectionsList = await fetchCollections();
   }
 
   @override
@@ -78,6 +118,7 @@ class _RecipeListViewState extends State<RecipeListView> {
       children: _recipeList.map((recipe) {
         return MealItem(
           recipe: recipe,
+          collections: collectionsList,
         );
       }).toList(),
     );
