@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:dim/widgets/Preferences/PreferenceSection.dart';
 import 'package:dim/models/PreferenceModel.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-
 import '../../services/PreferencesService.dart';
+import '../../widgets/Preferences/AllergySection.dart';
+import '../../widgets/Preferences/DietSection.dart';
 
 class PreferencesScreen extends StatefulWidget {
   const PreferencesScreen({super.key});
@@ -29,67 +30,58 @@ class _PreferencesScreenState extends State<PreferencesScreen> with SingleTicker
     _initializeAnimations();
   }
 
-
   Future<void> _loadUserPreferences() async {
     try {
       setState(() => _isLoading = true);
 
       final preferences = await _preferencesService.fetchUserPreferences();
-      if (preferences == null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Failed to load preferences')),
-        );
-        return;
-      }
 
       setState(() {
         preferenceData.selectedItems['diet'] = preferences['diets'] ?? [];
         preferenceData.selectedItems['allergies'] = preferences['allergies'] ?? [];
-        preferenceData.selectedItems['materials'] = preferences['ingredients'] ?? [];
-        preferenceData.selectedItems['dishes'] = preferences['dishes'] ?? [];
-        preferenceData.customInputs['diet'] = preferences['custom_diets'] ?? [];
         preferenceData.customInputs['allergies'] = preferences['custom_allergies'] ?? [];
-        preferenceData.customInputs['materials'] = preferences['custom_ingredients'] ?? [];
-        preferenceData.customInputs['dishes'] = preferences['custom_dishes'] ?? [];
       });
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error loading preferences: ${e.toString()}')),
-      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error loading preferences: ${e.toString()}')),
+        );
+      }
     } finally {
-      setState(() => _isLoading = false);
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
     }
   }
 
-
   Future<void> _savePreferences() async {
     try {
-      setState(() => _isLoading = true); // Add loading state
+      setState(() => _isLoading = true);
 
       await _preferencesService.saveUserPreferences(
         diets: preferenceData.selectedItems['diet'] ?? [],
         allergies: preferenceData.selectedItems['allergies'] ?? [],
-        ingredients: preferenceData.selectedItems['materials'] ?? [],
-        dishes: preferenceData.selectedItems['dishes'] ?? [],
-        custom_diets: preferenceData.customInputs['diet'] ?? [],
-        custom_allergies: preferenceData.customInputs['allergies'] ?? [],
-        custom_ingredients: preferenceData.customInputs['materials'] ?? [],
-        custom_dishes: preferenceData.customInputs['dishes'] ?? [],
+        customAllergies: preferenceData.customInputs['allergies'] ?? [],
       );
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Preferences saved successfully')),
-      );
-      Navigator.pop(context);
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Preferences saved successfully')),
+        );
+        Navigator.pop(context);
+      }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to save preferences: ${e.toString()}')),
-      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to save preferences: ${e.toString()}')),
+        );
+      }
     } finally {
-      setState(() => _isLoading = false);
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
     }
   }
-
 
   void _initializeAnimations() {
     _controller = AnimationController(
@@ -100,8 +92,6 @@ class _PreferencesScreenState extends State<PreferencesScreen> with SingleTicker
     _fadeAnimations = {
       'allergies': _createFadeAnimation(0.0, 0.33),
       'diet': _createFadeAnimation(0.33, 0.66),
-      'dishes': _createFadeAnimation(0.33, 0.66),
-      'materials': _createFadeAnimation(0.66, 1.0),
     };
 
     if (!_hasAnimated) {
@@ -147,34 +137,70 @@ class _PreferencesScreenState extends State<PreferencesScreen> with SingleTicker
   }
 
   Widget _buildBackgroundPattern() {
-    return Stack(
-      children: [
-        Positioned(
-          top: -30,
-          left: -30,
-          child: _buildCookingIconPattern(Icons.restaurant_menu, const Color(0xFF26A69A), 200, opacity: 0.05),
-        ),
-        Positioned(
-          top: 150,
-          right: -40,
-          child: _buildCookingIconPattern(Icons.icecream, const Color(0xFFEF9A9A), 150, opacity: 0.05, rotation: 0.5),
-        ),
-        Positioned(
-          bottom: 200,
-          left: -60,
-          child: _buildCookingIconPattern(Icons.lunch_dining, const Color(0xFF81C784), 220, opacity: 0.05, rotation: -0.3),
-        ),
-        Positioned(
-          bottom: 60,
-          right: -30,
-          child: _buildCookingIconPattern(Icons.emoji_food_beverage, const Color(0xFFFFB74D), 180, opacity: 0.05, rotation: 0.7),
-        ),
-        Positioned(
-          top: 300,
-          right: 120,
-          child: _buildCookingIconPattern(Icons.fastfood, Colors.indigo[300]!, 100, opacity: 0.05, rotation: -0.5),
-        ),
-      ],
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        double screenWidth = constraints.maxWidth;
+        double screenHeight = constraints.maxHeight;
+
+        return Stack(
+          children: [
+            Positioned(
+              top: -screenHeight * 0.05,
+              left: -screenWidth * 0.08,
+              child: _buildCookingIconPattern(
+                Icons.restaurant_menu,
+                const Color(0xFF26A69A),
+                screenWidth * 0.5,
+                opacity: 0.05,
+              ),
+            ),
+            Positioned(
+              top: screenHeight * 0.25,
+              right: -screenWidth * 0.1,
+              child: _buildCookingIconPattern(
+                Icons.icecream,
+                const Color(0xFFEF9A9A),
+                screenWidth * 0.375,
+                opacity: 0.05,
+                rotation: 0.5,
+              ),
+            ),
+            Positioned(
+              bottom: screenHeight * 0.33,
+              left: -screenWidth * 0.15,
+              child: _buildCookingIconPattern(
+                Icons.lunch_dining,
+                const Color(0xFF81C784),
+                screenWidth * 0.55,
+                opacity: 0.05,
+                rotation: -0.3,
+              ),
+            ),
+            Positioned(
+              bottom: screenHeight * 0.1,
+              right: -screenWidth * 0.075,
+              child: _buildCookingIconPattern(
+                Icons.emoji_food_beverage,
+                const Color(0xFFFFB74D),
+                screenWidth * 0.45,
+                opacity: 0.05,
+                rotation: 0.7,
+              ),
+            ),
+            Positioned(
+              top: screenHeight * 0.5,
+              right: screenWidth * 0.3,
+              child: _buildCookingIconPattern(
+                Icons.fastfood,
+                Colors.indigo[300]!,
+                screenWidth * 0.25,
+                opacity: 0.05,
+                rotation: -0.5,
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 
@@ -199,52 +225,27 @@ class _PreferencesScreenState extends State<PreferencesScreen> with SingleTicker
     );
   }
 
-  Widget _buildSavePreferencesButton() {
-    return SafeArea(
-      child: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: ElevatedButton(
-          onPressed: _savePreferences,
-          style: ElevatedButton.styleFrom(
-            backgroundColor: const Color(0xFFE0F2F1),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(30),
-            ),
-            padding: const EdgeInsets.symmetric(vertical: 16),
-          ),
-          child: const Text(
-            'Save Preferences',
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: Color(0xFF26A69A),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
   Widget _buildPreferenceSections() {
-    final sections = [
-      ('Do you have allergies?', 'allergies'),
-      ('Choose your diet', 'diet'),
-      ('Favorite dishes', 'dishes'),
-      ('What\'s your favourite materials?', 'materials'),
-    ];
-
     return Column(
-      children: sections.map((section) {
-        return FadeTransition(
-          opacity: _fadeAnimations[section.$2]!,
-          child: PreferenceSection(
-            title: section.$1,
-            sectionKey: section.$2,
+      children: [
+        FadeTransition(
+          opacity: _fadeAnimations['allergies']!,
+          child: AllergySection(
+            title: 'Do you have allergies?',
             preferenceData: preferenceData,
             onStateChanged: () => setState(() {}),
           ),
-        );
-      }).toList(),
+        ),
+        SizedBox(height: MediaQuery.of(context).size.height * 0.03),
+        FadeTransition(
+          opacity: _fadeAnimations['diet']!,
+          child: DietSection(
+            title: 'Choose your diet',
+            preferenceData: preferenceData,
+            onStateChanged: () => setState(() {}),
+          ),
+        ),
+      ],
     );
   }
 
@@ -267,7 +268,10 @@ class _PreferencesScreenState extends State<PreferencesScreen> with SingleTicker
               children: [
                 _buildBackgroundPattern(),
                 SingleChildScrollView(
-                  padding: const EdgeInsets.all(20),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: MediaQuery.of(context).size.width * 0.05,
+                    vertical: MediaQuery.of(context).size.height * 0.02,
+                  ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -279,7 +283,7 @@ class _PreferencesScreenState extends State<PreferencesScreen> with SingleTicker
                           color: Colors.black,
                         ),
                       ),
-                      const SizedBox(height: 8),
+                      SizedBox(height: MediaQuery.of(context).size.height * 0.01),
                       Text(
                         'Tell us about your preferences and we can choose the best recipes for you',
                         style: TextStyle(
@@ -287,14 +291,41 @@ class _PreferencesScreenState extends State<PreferencesScreen> with SingleTicker
                           fontSize: 16,
                         ),
                       ),
-                      const SizedBox(height: 32),
+                      SizedBox(height: MediaQuery.of(context).size.height * 0.04),
                       _buildPreferenceSections(),
                     ],
                   ),
                 ),
               ],
             ),
-            bottomNavigationBar: _buildSavePreferencesButton(),
+            bottomNavigationBar: SafeArea(
+              child: Padding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: MediaQuery.of(context).size.width * 0.05,
+                  vertical: MediaQuery.of(context).size.height * 0.02,
+                ),
+                child: ElevatedButton(
+                  onPressed: _savePreferences,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFFE0F2F1),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                    padding: EdgeInsets.symmetric(
+                      vertical: MediaQuery.of(context).size.height * 0.02,
+                    ),
+                  ),
+                  child: const Text(
+                    'Save Preferences',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFF26A69A),
+                    ),
+                  ),
+                ),
+              ),
+            ),
           ),
           if (_isLoading)
             const Positioned.fill(

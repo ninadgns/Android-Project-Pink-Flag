@@ -17,12 +17,13 @@ class SelectionChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(right: 8.0, bottom: 8.0),
+      padding: const EdgeInsets.only(right: 8.0, bottom: 4.0),
       child: FilterChip(
         label: Text(
           label,
           style: TextStyle(
             color: isSelected ? Colors.white : const Color(0xFF004D40),
+            fontSize: 14,
           ),
         ),
         selected: isSelected,
@@ -34,9 +35,11 @@ class SelectionChip extends StatelessWidget {
           borderRadius: BorderRadius.circular(20),
           side: BorderSide(
             color: Colors.grey.shade300,
+            width: 0.5,
           ),
         ),
-        labelPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 2),
+        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+        visualDensity: VisualDensity.compact,
       ),
     );
   }

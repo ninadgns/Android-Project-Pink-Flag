@@ -192,14 +192,14 @@ class _ProfileScreenState extends State<ProfileScreen>
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
     final menuItems = [
-      MenuItemTile(
-        icon: Icons.article_outlined,
-        iconColor: const Color(0xFFEF9A9A),
-        title: 'Useful Features',
-        titleColor: Colors.pinkAccent,
-        isPro: true,
-        onTap: () => _navigateToScreen(context, 'Useful Features'),
-      ),
+      // MenuItemTile(
+      //   icon: Icons.article_outlined,
+      //   iconColor: const Color(0xFFEF9A9A),
+      //   title: 'Useful Features',
+      //   titleColor: Colors.pinkAccent,
+      //   isPro: true,
+      //   onTap: () => _navigateToScreen(context, 'Useful Features'),
+      // ),
       MenuItemTile(
         icon: Icons.post_add,
         iconColor: const Color(0xFF81C784),
@@ -219,14 +219,14 @@ class _ProfileScreenState extends State<ProfileScreen>
         iconColor: const Color(0xFF26A69A),
         title: 'Preferences',
         titleColor: Colors.teal[700]!,
-        isPro: true,
+        isPro: false,
         onTap: () => _navigateToScreen(context, 'Preferences'),
       ),
       MenuItemTile(
         icon: Icons.settings,
-        iconColor: Colors.indigo[300]!,
+        iconColor: const Color(0xFFEF9A9A),
         title: 'Settings',
-        titleColor: Colors.indigo[600]!,
+        titleColor: Colors.pinkAccent,
         onTap: () => _navigateToScreen(context, 'Settings'),
       ),
     ];
@@ -349,7 +349,8 @@ class _ProfileScreenState extends State<ProfileScreen>
                           children: [
                             CircleAvatar(
                               radius: height * 0.07,
-                              backgroundImage: NetworkImage(widget.imagePath),
+                              //backgroundImage: NetworkImage(widget.imagePath),
+                              backgroundImage: AssetImage('assets/images/profile.png') as ImageProvider,
                             ),
                             SizedBox(height: height * 0.01),
                             Text(

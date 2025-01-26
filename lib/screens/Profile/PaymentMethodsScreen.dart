@@ -182,6 +182,7 @@ class _PaymentMethodsScreenState extends State<PaymentMethodsScreen> {
       showPaymentBottomSheet(
         context: context,
         amount: details.amount,
+        planId: details.planId,
         onPaymentComplete: _loadPaymentMethods,
         selectedMethod: selectedMethod,
       );

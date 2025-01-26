@@ -6,8 +6,6 @@ import 'package:dim/services/PaymentServices.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'PaymentMethodsScreen.dart';
 
-
-
 class SubscriptionScreen extends StatefulWidget {
   const SubscriptionScreen({super.key});
 
@@ -15,31 +13,54 @@ class SubscriptionScreen extends StatefulWidget {
   State<SubscriptionScreen> createState() => _SubscriptionScreenState();
 }
 
-class _SubscriptionScreenState extends State<SubscriptionScreen> {
-  final PageController _pageController = PageController(viewportFraction: 0.93);
+class _SubscriptionScreenState extends State<SubscriptionScreen> with RouteAware {
+  static final RouteObserver<ModalRoute<void>> routeObserver = RouteObserver<ModalRoute<void>>();
+  late final PageController _pageController;
   late final PaymentService _paymentService;
   int _currentPage = 0;
   bool _isLoading = true;
   String? _error;
 
-  // State management
   late CurrentSubscription? _currentSubscription;
   late List<SubscriptionPlan> _plans;
 
   @override
   void initState() {
     super.initState();
+    _pageController = PageController(viewportFraction: 0.93);
     _paymentService = PaymentService(supabase: Supabase.instance.client);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _loadInitialData();
+    });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    routeObserver.subscribe(this, ModalRoute.of(context)!);
+  }
+
+  @override
+  void didPopNext() {
+    super.didPopNext();
     _loadInitialData();
   }
 
+  @override
+  void didPushNext() {
+    super.didPushNext();
+  }
+
   Future<void> _loadInitialData() async {
+    if (!mounted) return;
+
     try {
       setState(() => _isLoading = true);
 
-      // Load all necessary data
       final currentPlan = await _paymentService.getCurrentSubscription();
       final availablePlans = await _paymentService.getSubscriptionPlans();
+
+      if (!mounted) return;
 
       setState(() {
         _currentSubscription = currentPlan as CurrentSubscription;
@@ -47,6 +68,8 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
         _isLoading = false;
       });
     } catch (e) {
+      if (!mounted) return;
+
       setState(() {
         _error = e.toString();
         _isLoading = false;
@@ -54,23 +77,22 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
     }
   }
 
-  void _navigateToPayments(int id, SubscriptionPlan? newPlan, CurrentSubscription? currentPlan) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => PaymentMethodsScreen(
-            way: id,
-            newPlan: newPlan,
-            currentPlan: currentPlan,
-          ),
+  void _navigateToPayments(int id, SubscriptionPlan? newPlan, CurrentSubscription? currentPlan) async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => PaymentMethodsScreen(
+          way: id,
+          newPlan: newPlan,
+          currentPlan: currentPlan,
         ),
-      ).then((result) {
-        if (result == true) {
-          _loadInitialData(); // Refresh data after successful payment
-        }
-      });
-  }
+      ),
+    );
 
+    if (result == true && mounted) {
+      await _loadInitialData();
+    }
+  }
 
   Widget _buildPageIndicator() {
     return Row(
@@ -93,6 +115,10 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final horizontalPadding = screenWidth > 600 ? 40.0 : 20.0;
+    final buttonWidth = screenWidth > 600 ? screenWidth * 0.6 : screenWidth - (horizontalPadding * 2);
+
     if (_isLoading) {
       return const Scaffold(
         body: Center(child: CircularProgressIndicator()),
@@ -148,43 +174,43 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
         child: Column(
           children: [
             Padding(
-              padding: const EdgeInsets.all(20.0),
+              padding: EdgeInsets.all(horizontalPadding),
               child: CurrentPlanCard(
                 subscription: _currentSubscription,
               ),
             ),
-
-
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20.0),
-              child: ElevatedButton(
-                onPressed: () => _navigateToPayments(1,null,_currentSubscription),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF80CBC4),
-                  minimumSize: const Size.fromHeight(50),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
-                child: const Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.payment, color: Colors.white,),
-                    SizedBox(width: 8),
-                    Text(
-                      'Payment Methods',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
+              padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+              child: SizedBox(
+                width: buttonWidth,
+                child: ElevatedButton(
+                  onPressed: () => _navigateToPayments(1, null, _currentSubscription),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF80CBC4),
+                    minimumSize: const Size.fromHeight(50),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
                     ),
-                  ],
+                  ),
+                  child: const Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.payment, color: Colors.white),
+                      SizedBox(width: 8),
+                      Text(
+                        'Payment Methods',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
             const SizedBox(height: 16),
-
             Expanded(
               child: PageView.builder(
                 controller: _pageController,
@@ -215,6 +241,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
 
   @override
   void dispose() {
+    routeObserver.unsubscribe(this);
     _pageController.dispose();
     super.dispose();
   }

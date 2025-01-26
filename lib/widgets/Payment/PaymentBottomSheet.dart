@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -6,10 +9,16 @@ import '../../models/PaymentModels.dart';
 import '../../services/PaymentServices.dart';
 import 'CardTypeOption.dart';
 import 'CustomFormField.dart';
+import 'package:intl/intl.dart';
+
+
+double Amount= 0.0;
+String planID='';
 
 void showPaymentBottomSheet({
   required BuildContext context,
   required double amount,
+  required String planId,
   required VoidCallback onPaymentComplete,
   required PaymentMethod? selectedMethod,
 }) {
@@ -22,6 +31,8 @@ void showPaymentBottomSheet({
   bool isSave = false;
   final formKey = GlobalKey<FormState>();
 
+  Amount= amount;
+  planID=planId;
 
   if(selectedMethod!=null){
     isSave=true;
@@ -346,28 +357,195 @@ Widget _buildPayButton(
   );
 }
 
-void _handlePayment(
+Future<void> _handlePayment(
     BuildContext context,
     PaymentData paymentData,
-    ) {
+    ) async {
+  final supabase = Supabase.instance.client;
 
-  final last4 = paymentData.cardNumber.replaceAll(' ', '')
-      .substring(paymentData.cardNumber.length - 4);
+  try {
+    final backendURL= 'http://localhost:8000';
+    final apiKey = 'ekta_stripe_backend';
+    final String? userId = FirebaseAuth.instance.currentUser?.uid;
+    if (userId == null) throw Exception('User not authenticated');
 
-  final paymentMethod = PaymentMethod(
-    id: 'card_${DateTime.now().millisecondsSinceEpoch}',
-    cardHolderName: paymentData.cardHolderName,
-    cardType: paymentData.cardType,
-    last4: last4,
-    cardNumber: paymentData.cardNumber,
-    expiryDate: paymentData.expiryDate,
-    cvc: paymentData.cvc,
-    zipCode: paymentData.zipCode,
-  );
+    // Check if customer exists
+    final customerResponse = await supabase
+        .from('users')
+        .select('is_customer')
+        .eq('id', userId)
+        .maybeSingle();
 
-  if (paymentData.isSave) {
-    PaymentService(supabase: Supabase.instance.client)
-        .addPaymentMethod(paymentMethod);
+    bool isCustomer = customerResponse?['is_customer'] ?? false;
+
+    // Create customer if doesn't exist
+    if (!isCustomer) {
+      final userEmail = (await supabase
+          .from('users')
+          .select('email')
+          .eq('id', userId)
+          .single())['email'] as String;
+
+      final customerResult = await http.post(
+        Uri.parse('$backendURL/create-customer'),
+        headers: {'Authorization': 'Bearer $apiKey'},
+        body: jsonEncode({'email': userEmail, 'custom_id': userId}),
+      );
+
+      if (customerResult.statusCode != 200) {
+        throw Exception('Failed to create customer: ${customerResult.body}');
+      }
+
+      final customerData = jsonDecode(customerResult.body);
+
+      await supabase.from('users').update({
+        'is_customer': true
+      }).eq('id', userId);
+    }
+
+    // Create payment method
+    final paymentMethodResult = await http.post(
+      Uri.parse('$backendURL/create-payment-method'),
+      headers: {
+        'Authorization': 'Bearer $apiKey',
+        'Content-Type': 'application/json'
+      },
+      body: jsonEncode({
+        'token': 'tok_visa', // Use test tokens like tok_visa, tok_mastercard, etc.
+        'customer_id': userId,
+      }),
+    );
+
+    if (paymentMethodResult.statusCode != 200) {
+      final errorBody = jsonDecode(paymentMethodResult.body);
+      throw Exception('Failed to create payment method: ${errorBody['detail']}');
+    }
+
+    final paymentMethodData = jsonDecode(paymentMethodResult.body);
+    final paymentMethodId = paymentMethodData['payment_method_id'];
+
+    // Create payment intent
+    final amountInCents = (Amount * 100).round();
+
+    // Create payment intent first
+    final paymentIntentResult = await http.post(
+      Uri.parse('$backendURL/create-payment-intent'),
+      headers: {
+        'Authorization': 'Bearer $apiKey',
+        'Content-Type': 'application/json'
+      },
+      body: jsonEncode({
+        'amount': amountInCents,
+        'currency': 'usd',
+        'payment_method_types': ['card'],
+        'customer': userId,
+        'payment_method': paymentMethodId,
+      }),
+    );
+
+    if (paymentIntentResult.statusCode != 200) {
+      throw Exception('Failed to create payment intent: ${paymentIntentResult.body}');
+    }
+
+    final paymentIntentData = jsonDecode(paymentIntentResult.body);
+
+    // Confirm payment
+    final confirmResult = await http.post(
+      Uri.parse('$backendURL/confirm-payment'),
+      headers: {
+        'Authorization': 'Bearer $apiKey',
+        'Content-Type': 'application/json'
+      },
+      body: jsonEncode({
+        'payment_intent_id': paymentIntentData['id'],
+        'payment_method_id': paymentMethodId,
+      }),
+    );
+
+    if (confirmResult.statusCode != 200) {
+      throw Exception('Failed to confirm payment: ${confirmResult.body}');
+    }
+
+    final confirmData = jsonDecode(confirmResult.body);
+
+    if (confirmData['status'] == 'succeeded') {
+      final DateTime now = DateTime.now();
+      final DateTime expiresAt = now.add(Duration(days: 30)); // Add one month
+      final String formattedExpiresAt = expiresAt.toIso8601String(); // Format as ISO 8601 string
+
+      await supabase.from('user_subscriptions').insert({
+        'user_id': userId,
+        'subscription_plan_id': planID,
+        'expires_at': formattedExpiresAt,
+        'is_active': true,
+      });
+
+      // Fetch the newly inserted subscription's `id`
+      final response = await supabase
+          .from('user_subscriptions')
+          .select('id')
+          .eq('user_id', userId)
+          .single(); // Use `.single()` to fetch a single row instead of a list
+
+      final userSubId = response['id'];
+
+      // Update the user subscription history
+      final a = await supabase
+          .from('user_subscription_history')
+          .select('id')
+          .eq('user_id', userId)
+          .maybeSingle();
+
+      bool isHISTORY= a?['id'] ?? false;
+
+      if(!isHISTORY){
+        await supabase.from('user_subscription_history').insert({
+          'user_id': userId,
+          'subscription_plan_id': planID,
+          'user_subscription_id': userSubId,
+        });
+      }else{
+        await supabase.from('user_subscription_history').update({
+          'subscription_plan_id': planID,
+          'user_subscription_id': userSubId,
+        }).eq('user_id', userId);
+      }
+
+      if (paymentData.isSave) {
+        await PaymentService(supabase: supabase).addPaymentMethod(
+          PaymentMethod(
+            id: paymentMethodId,
+            cardHolderName: paymentData.cardHolderName,
+            cardType: paymentData.cardType,
+            last4: paymentData.cardNumber.substring(paymentData.cardNumber.length - 4),
+            cardNumber: paymentData.cardNumber,
+            expiryDate: paymentData.expiryDate,
+            cvc: paymentData.cvc,
+            zipCode: paymentData.zipCode,
+          ),
+        );
+      }
+
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Payment successful'),
+            backgroundColor: Colors.green,
+          ),
+        );
+      }
+    } else {
+      throw Exception('Payment failed: ${confirmData['status']}');
+    }
+  } catch (e) {
+    print('Payment error: $e');
+    if (context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Payment error: ${e.toString()}'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
   }
-
 }

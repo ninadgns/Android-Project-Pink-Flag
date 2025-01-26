@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../data/constants.dart';
 import 'package:dim/models/PreferenceModel.dart';
+import 'AllergySection.dart';
 import 'SelectionChip.dart';
 
 class CustomInputSection extends StatelessWidget {
