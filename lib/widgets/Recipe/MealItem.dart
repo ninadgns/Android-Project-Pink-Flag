@@ -1,3 +1,4 @@
+import 'package:dim/models/CollectionModel.dart';
 import 'package:dim/models/RecipeModel.dart';
 import 'package:dim/screens/RecipeIntroScreen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -5,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:transparent_image/transparent_image.dart';
 
+import '../../screens/LibraryScreen.dart';
 import 'MealItemTrait.dart';
 
 class MealItem extends StatefulWidget {
@@ -15,7 +17,7 @@ class MealItem extends StatefulWidget {
   });
 
   Recipe recipe;
-  List<Map<String, dynamic>> collections;
+  List<CollectionModelItem> collections;
 
   @override
   State<MealItem> createState() => _MealItemState();
@@ -44,6 +46,57 @@ class _MealItemState extends State<MealItem> {
     // TODO: implement initState
     super.initState();
     widget.recipe.calculateTotalDuration();
+  }
+
+  void addCollection(BuildContext context, TextEditingController controller) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            dialogBackgroundColor: Colors.white,
+          ),
+          child: AlertDialog(
+            title: Text('Add to Collections'),
+            content: TextFormField(
+              controller: controller,
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  controller.clear();
+                },
+                child: Text('Cancel'),
+                style: TextButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  foregroundColor: Colors.black,
+                  // backgroundColor: Colors.black,
+                ),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  final userId = FirebaseAuth.instance.currentUser?.uid;
+                  saveCollection(userId!, controller.text, context);
+                  controller.clear();
+                },
+                child: Text('Save'),
+                style: TextButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  foregroundColor: Colors.white,
+                  backgroundColor: Colors.black,
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 
   Future<void> _toggleSaveRecipe(
@@ -103,6 +156,35 @@ class _MealItemState extends State<MealItem> {
     }
   }
 
+  Future<void> insertCollectionItem(String collectionId) async {
+    final supabase = Supabase.instance.client;
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) {
+      throw Exception('User not logged in');
+    }
+    try {
+      // Check if the item already exists in the collection
+      final response = await supabase
+          .from('collection_items')
+          .select()
+          .eq('collection_id', collectionId)
+          .eq('recipe_id', widget.recipe.id)
+          .maybeSingle();
+
+      if (response != null) {
+        print('Item already exists in the collection');
+      } else {
+        // Insert the item into the collection
+        await supabase.from('collection_items').insert({
+          'collection_id': collectionId,
+          'recipe_id': widget.recipe.id,
+        }).single();
+        print('Collection saved successfully');
+      }
+    } catch (e) {
+      print('Error saving collection: $e');
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -190,22 +272,16 @@ class _MealItemState extends State<MealItem> {
                                     //   },
                                     // ),
                                     ...widget.collections.map((collection) {
-                                      print(collection['collection_name']);
+                                      // print(collection['collection_name']);
                                       return ListTile(
-                                        title:
-                                            Text(collection['collection_name']),
-                                        onTap: () {
-                                          // Handle adding to Collection
+                                        title: Text(collection.name),
+                                        onTap: () async {
+                                          await insertCollectionItem(
+                                              collection.id);
+                                          Navigator.of(context).pop();
                                         },
                                       );
                                     }).toList(),
-
-                                    ListTile(
-                                      title: Text('Add New Collection'),
-                                      onTap: () {
-                                        // Handle adding a new collection
-                                      },
-                                    ),
                                   ],
                                 ),
                                 actions: [
@@ -293,5 +369,3 @@ class _MealItemState extends State<MealItem> {
     );
   }
 }
-
-

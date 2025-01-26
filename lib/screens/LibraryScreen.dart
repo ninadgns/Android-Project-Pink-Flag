@@ -1,7 +1,9 @@
+import 'package:dim/widgets/SearchScreen/ReicipeListView.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import '../models/CollectionModel.dart';
 import '/widgets/LibraryScreen/LibraryCollections.dart';
 import '/widgets/LibraryScreen/LibrarySaved.dart';
 
@@ -44,7 +46,11 @@ void addCollection(BuildContext context, TextEditingController controller) {
               onPressed: () {
                 Navigator.of(context).pop();
                 final userId = FirebaseAuth.instance.currentUser?.uid;
-                _saveCollection(userId!, controller.text, context);
+                saveCollection(userId!, controller.text, context);
+                // addCollectionItem(CollectionModelItem(
+                //   id: '1',
+                //   name: controller.text,
+                // ));
                 controller.clear();
               },
               child: Text('Save'),
@@ -63,7 +69,7 @@ void addCollection(BuildContext context, TextEditingController controller) {
   );
 }
 
-Future<void> _saveCollection(
+Future<void> saveCollection(
     String userId, String collectionName, BuildContext context) async {
   try {
     final supabase = Supabase.instance.client;
@@ -77,7 +83,7 @@ Future<void> _saveCollection(
         .maybeSingle();
     print(response);
     if (response != null) {
-      // Record exists, so delete it
+      // Record exists, so show a message
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
           content: Text('Collection with the same name already exists')));
     } else {
@@ -91,9 +97,15 @@ Future<void> _saveCollection(
           .select('id')
           .single();
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Collection saved successfully')),
-      );
+      // ScaffoldMessenger.of(context).showSnackBar(
+      //   const SnackBar(content: Text('Collection saved successfully')),
+      // );
+      print('****************************************');
+      addCollectionItem(CollectionModelItem(
+        id: insertResponse['id'],
+        name: collectionName,
+      ));
+      print(collectionsList.value.length);
       print('Collection saved successfully');
     }
   } on Exception catch (e) {
@@ -106,8 +118,26 @@ class _LibraryScreenState extends State<LibraryScreen> {
   bool isCollectionsSelected = false; // Default to Collections
   TextEditingController controller = TextEditingController();
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    collectionsList.addListener(_onCollectionsListChanged);
+  }
+
+  void _onCollectionsListChanged() {
+    setState(() {});
+  }
+
+  @override
+  void dispose() {
+    collectionsList.removeListener(_onCollectionsListChanged);
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
+
     return Container(
       // padding: const EdgeInsets.symmetric(horizontal: 15),
       child: Column(
@@ -120,17 +150,18 @@ class _LibraryScreenState extends State<LibraryScreen> {
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       'Your Library',
                       style: Theme.of(context).textTheme.displayMedium,
                     ),
                     if (isCollectionsSelected)
-                      IconButton(
-                        onPressed: () {
+                      InkWell(
+                        child: Icon(Icons.add_circle_rounded),
+                        onTap: () {
                           addCollection(context, controller);
                         },
-                        icon: Icon(Icons.add_circle),
                       ),
                   ],
                 ),
@@ -215,6 +246,7 @@ class _LibraryScreenState extends State<LibraryScreen> {
             ),
           ),
           const SizedBox(height: 20),
+          // if (isCollectionsSelected)
           Expanded(
             child: isCollectionsSelected
                 ? const LibraryCollections()

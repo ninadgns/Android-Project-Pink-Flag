@@ -1,3 +1,4 @@
+import 'package:dim/models/CollectionModel.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -17,18 +18,18 @@ class LibrarySaved extends StatefulWidget {
 class _LibrarySavedState extends State<LibrarySaved> {
   late List<Recipe> _recipeList = [];
   bool _isLoading = false;
-   List<Map<String, dynamic>> collections=[];
+   List<CollectionModelItem> collections=[];
   @override
-  void initState() async{
+  void initState() {
     super.initState();
     _fetchAndSetRecipes();
-    collections = await fetchCollections();
   }
 
   void _fetchAndSetRecipes() async {
     setState(() {
       _isLoading = true; // Show loading indicator
     });
+    collections = await fetchCollections();
     List<dynamic> savedRecipesResponse = await Supabase.instance.client
         .from('saved_recipes')
         .select('recipe_id')
@@ -80,7 +81,7 @@ class _LibrarySavedState extends State<LibrarySaved> {
           ..._recipeList.map((recipe) {
             return MealItem(
               recipe: recipe,
-              collections: collectionsList,
+              collections: collectionsList.value,
             );
           }),
           SizedBox(height: height * 0.15)
