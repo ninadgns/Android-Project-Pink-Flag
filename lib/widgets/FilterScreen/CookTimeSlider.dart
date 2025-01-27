@@ -1,33 +1,31 @@
 import 'package:flutter/material.dart';
 
 class CookTimeSlider extends StatefulWidget {
-  const CookTimeSlider({super.key});
+  final ValueChanged<double> onValueChanged;
+  const CookTimeSlider({super.key, required this.onValueChanged});
 
   @override
   State<CookTimeSlider> createState() => _CookTimeSliderState();
 }
 
 class _CookTimeSliderState extends State<CookTimeSlider> {
-  double _sliderValue = 0;
+  double _sliderValue = 45;
+
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-            _sliderValue < 60
-                ? 'Up to ${_sliderValue.toInt()} minutes'
-                : _sliderValue % 60 == 0
-                    ? 'Up to ${(_sliderValue / 60).toInt()} hour'
-                    : 'Up to ${(_sliderValue / 60).toInt()} hours ${(_sliderValue % 60).toInt()} minutes',
-            style: Theme.of(context)
-                .textTheme
-                .labelMedium!
-                .copyWith(color: Colors.grey, fontWeight: FontWeight.normal)),
+          _formatSliderText(_sliderValue),
+          style: Theme.of(context)
+              .textTheme
+              .labelMedium!
+              .copyWith(color: Colors.grey, fontWeight: FontWeight.normal),
+        ),
         Container(
-          // color: Colors.red,
-          padding: EdgeInsets.zero, // Remove padding
-          width: double.maxFinite, // Set the desired width here
+          padding: EdgeInsets.zero,
+          width: double.maxFinite,
           child: SliderTheme(
             data: SliderThemeData(
               thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 8),
@@ -36,13 +34,14 @@ class _CookTimeSliderState extends State<CookTimeSlider> {
             ),
             child: Slider(
               divisions: 300,
-              min: 0.0,
-              max: 300.0,
+              min: 5.0,
+              max: 180.0,
               value: _sliderValue,
               activeColor: Theme.of(context).colorScheme.error,
-              onChanged: (dynamic value) {
+              onChanged: (double value) {
                 setState(() {
                   _sliderValue = value;
+                  widget.onValueChanged(value); // Notify parent of value change
                 });
               },
             ),
@@ -50,6 +49,16 @@ class _CookTimeSliderState extends State<CookTimeSlider> {
         ),
       ],
     );
+  }
+
+  String _formatSliderText(double value) {
+    if (value < 60) {
+      return 'Up to ${value.toInt()} minutes';
+    } else if (value % 60 == 0) {
+      return 'Up to ${(value / 60).toInt()} hour';
+    } else {
+      return 'Up to ${(value / 60).toInt()} hours ${(value % 60).toInt()} minutes';
+    }
   }
 }
 

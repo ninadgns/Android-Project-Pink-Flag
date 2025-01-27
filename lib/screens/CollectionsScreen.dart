@@ -32,7 +32,7 @@ class CollectionsScreen extends StatelessWidget {
                   // SizedBox(width: 10),
                   Text(
                     item.name,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
                     ),
@@ -48,7 +48,7 @@ class CollectionsScreen extends StatelessWidget {
                         );
                       }).toList(),
                     )
-                  : Center(
+                  : const Center(
                       child: Text('No collections found'),
                     ),
             ],

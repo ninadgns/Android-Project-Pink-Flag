@@ -171,10 +171,17 @@ final supabase = Supabase.instance.client;
 
 Future<List<Map<String, dynamic>>> fetchRecipesByTag(String tag) async {
   try {
-    // Step 1: Fetch recipe IDs associated with the given tag
-
-    final tagResponse =
-        await supabase.from('tags').select('recipe_id').eq('tag', tag);
+    // Step 1: Fetch recipe IDs associated with the given tag\
+    PostgrestList tagResponse;
+    if (tag == 'Popular') {
+      tagResponse = await supabase
+          .from('tags')
+          .select('recipe_id')
+          .eq('is_popular', true);
+    } else {
+      tagResponse =
+          await supabase.from('tags').select('recipe_id').eq('tag', tag);
+    }
     if (tagResponse.isEmpty) {
       debugPrint('No recipes found for the tag: $tag.');
       return [];
