@@ -70,9 +70,9 @@ final categoryIcons = [
 ];
 
 final colorShades = [
-  const Color(0xffadd6ef),
+  const Color(0xff9bcdec),
   const Color(0xff9fb693),
-  const Color(0xfff8e8c4),
+  const Color(0xffbda87a),
   const Color(0xfff0af93),
   const Color(0xffe48364),
 ];

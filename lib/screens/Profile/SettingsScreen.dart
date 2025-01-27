@@ -1,9 +1,12 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'package:dim/models/FirebaseApi.dart';
+import 'package:dim/models/NotificationManagement/NotificationSettings.dart';
 import 'package:dim/screens/GetStarted.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:provider/provider.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -15,7 +18,6 @@ class SettingsScreen extends StatefulWidget {
 class _SettingsScreenState extends State<SettingsScreen> {
   bool accountPrivacy = false;
   bool notifications = true;
-
   Widget _buildSettingItem({
     required IconData icon,
     required String title,
@@ -351,6 +353,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isNotificationEnabled = Provider.of<NotificationSettings>(context);
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
@@ -409,9 +412,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         title: 'Notifications',
                         subtitle: 'Control app notifications and alerts.',
                         trailing: Switch(
-                          value: notifications,
-                          onChanged: (value) =>
-                              setState(() => notifications = value),
+                          value: isNotificationEnabled.isNotificationsEnabled,
+                          onChanged: (value) async {
+                            // setState(()  {
+                            //
+                            //   // await FirebaseApi.initNotifications(enableNotifications: value);
+                            // });
+                              await isNotificationEnabled.toggleNotifications(value);
+                              await FirebaseApi().initNotifications(enableNotifications: value);
+                          },
                           activeColor: const Color(0xFFFF9999),
                         ),
                         iconColor: Colors.orange),

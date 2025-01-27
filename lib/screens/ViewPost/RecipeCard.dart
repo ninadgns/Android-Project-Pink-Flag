@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class RecipeCard extends StatelessWidget {
   final bool isMyPost;
@@ -59,7 +60,6 @@ class RecipeCard extends StatelessWidget {
                     fontWeight: FontWeight.bold, // Optional: make text bold
                     color: Colors.black, // Optional: set text color
                   ),
-
                 ),
                 const SizedBox(width: 8),
                 // Text(
@@ -160,11 +160,9 @@ class RecipeCard extends StatelessWidget {
                       maxWidth: 150,
                       maxHeight: 150,
                     ),
-
                     child: Container(
                       decoration: const BoxDecoration(
                         shape: BoxShape.circle,
-
                       ),
                       child: AspectRatio(
                         aspectRatio: 1, // This ensures a perfect circle
@@ -189,9 +187,11 @@ class RecipeCard extends StatelessWidget {
                                 color: Colors.grey[200],
                                 child: Center(
                                   child: CircularProgressIndicator(
-                                    value: loadingProgress.expectedTotalBytes != null
-                                        ? loadingProgress.cumulativeBytesLoaded /
-                                        loadingProgress.expectedTotalBytes!
+                                    value: loadingProgress.expectedTotalBytes !=
+                                            null
+                                        ? loadingProgress
+                                                .cumulativeBytesLoaded /
+                                            loadingProgress.expectedTotalBytes!
                                         : null,
                                   ),
                                 ),

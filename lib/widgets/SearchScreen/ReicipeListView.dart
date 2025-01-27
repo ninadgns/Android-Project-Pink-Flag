@@ -1,8 +1,12 @@
 import 'package:dim/data/constants.dart';
+import 'package:dim/models/CollectionModel.dart';
 // import 'package:dim/models/GroceryModel.dart';
 import 'package:dim/screens/AddPost/fetchRecipes.dart';
 import 'package:dim/widgets/Recipe/MealItem.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../models/RecipeModel.dart';
 
@@ -13,15 +17,62 @@ class RecipeListView extends StatefulWidget {
   @override
   State<RecipeListView> createState() => _RecipeListViewState();
 }
+Future<List<CollectionModelItem>> fetchCollections() async {
+  final supabase = Supabase.instance.client;
+  final user = FirebaseAuth.instance.currentUser;
 
+  if (user == null) {
+    throw Exception('User not logged in');
+  }
+
+  try {
+    final response = await supabase
+        .from('collections')
+        .select('id, collection_name')
+        .eq('user_id', user.uid);
+
+    if (response.isEmpty) {
+      debugPrint('No collections found for user: ${user.uid}');
+      return [];
+    }
+
+    final collections = response
+        .map((collection) => {
+      'id': collection['id'],
+      'collection_name': collection['collection_name']
+    })
+        .toList();
+    debugPrint('Collections fetched successfully for user: ${user.uid}');
+    List<CollectionModelItem> collectionList = collections
+        .map((collection) => CollectionModelItem(
+        id: collection['id'],
+        name: collection['collection_name']))
+        .toList();
+    // print(collections);
+    return collectionList;
+  } catch (e) {
+    debugPrint('Failed to fetch collections for user ${user.uid}: $e');
+    throw Exception('Failed to fetch collections for the user.');
+  }
+}
+
+ValueNotifier<List<CollectionModelItem>> collectionsList = ValueNotifier([]);
+void addCollectionItem(CollectionModelItem collection) {
+  collectionsList.value.add(collection);
+  // collectionsList.notifyListeners();
+}
+List<Recipe> recipeList = [];
 class _RecipeListViewState extends State<RecipeListView> {
-  late List<Recipe> _recipeList = [];
   bool _isLoading = false;
-
   @override
-  void initState() {
+  void initState()  {
     super.initState();
     _fetchAndSetRecipes(widget.searchQuery);
+    _initialize();
+  }
+  Future<void> _initialize() async {
+    // await fetchCollections();
+    collectionsList.value = await fetchCollections();
   }
 
   @override
@@ -47,7 +98,7 @@ class _RecipeListViewState extends State<RecipeListView> {
     final converted = parseRecipes(response);
 
     setState(() {
-      _recipeList = converted;
+      recipeList = converted;
       _isLoading = false; // Hide loading indicator
     });
   }
@@ -64,7 +115,7 @@ class _RecipeListViewState extends State<RecipeListView> {
       ));
     }
 
-    if (_recipeList.isEmpty) {
+    if (recipeList.isEmpty) {
       return Center(
           child: Column(
         children: [
@@ -75,9 +126,10 @@ class _RecipeListViewState extends State<RecipeListView> {
     }
 
     return Column(
-      children: _recipeList.map((recipe) {
+      children: recipeList.map((recipe) {
         return MealItem(
           recipe: recipe,
+          collections: collectionsList.value,
         );
       }).toList(),
     );
