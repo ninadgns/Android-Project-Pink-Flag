@@ -63,6 +63,7 @@ class _MealPlanScreenState extends State<MealPlanScreen> {
         appBar: AppBar(
           title: const Text('Meal Plan'),
           backgroundColor: const Color(0xFF9FC9C8),
+          automaticallyImplyLeading: false,
           actions: [
             IconButton(
               icon: const Icon(Icons.refresh),
