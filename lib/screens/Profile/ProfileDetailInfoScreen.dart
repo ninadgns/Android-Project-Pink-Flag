@@ -632,7 +632,7 @@ class _ProfileDetailInfoScreenState extends State<ProfileDetailInfoScreen>
                                 );
                               },
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: const Color(0xFF00ACC1),
+                                backgroundColor: Color(0xFF0E98A7),
                                 minimumSize: const Size(double.infinity, 50),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10),
