@@ -95,13 +95,14 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> with RouteAware
   }
 
   Widget _buildPageIndicator() {
+    final screenSize = MediaQuery.of(context).size;
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: List.generate(_plans.length, (index) {
         return Container(
-          width: 8,
-          height: 8,
-          margin: const EdgeInsets.symmetric(horizontal: 4),
+          width: screenSize.width * 0.02,
+          height: screenSize.width * 0.02,
+          margin: EdgeInsets.symmetric(horizontal: screenSize.width * 0.01),
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             color: _currentPage == index
@@ -115,9 +116,9 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> with RouteAware
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final horizontalPadding = screenWidth > 600 ? 40.0 : 20.0;
-    final buttonWidth = screenWidth > 600 ? screenWidth * 0.6 : screenWidth - (horizontalPadding * 2);
+    final screenSize = MediaQuery.of(context).size;
+    final horizontalPadding = screenSize.width * 0.05;
+    final buttonWidth = screenSize.width - (horizontalPadding * 2);
 
     if (_isLoading) {
       return const Scaffold(
@@ -144,22 +145,28 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> with RouteAware
 
     return Scaffold(
       backgroundColor: const Color(0xFFBBDEFB),
-      appBar: AppBar(
-        toolbarHeight: 50.0,
-        title: const Text(
-          'Choose Your Plan',
-          style: TextStyle(
-            color: Colors.black87,
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(screenSize.height * 0.07),
+        child: AppBar(
+          toolbarHeight: screenSize.height * 0.07,
+          title: Text(
+            'Choose Your Plan',
+            style: TextStyle(
+              color: Colors.black87,
+              fontSize: screenSize.width * 0.045,
+              fontWeight: FontWeight.bold,
+            ),
           ),
-        ),
-        centerTitle: true,
-        elevation: 8,
-        backgroundColor: Colors.transparent,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => Navigator.of(context).pop(),
+          centerTitle: true,
+          elevation: 8,
+          backgroundColor: Colors.transparent,
+          leading: IconButton(
+            icon: Icon(
+              Icons.arrow_back,
+              size: screenSize.width * 0.06,
+            ),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
         ),
       ),
       body: Container(
@@ -187,20 +194,24 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> with RouteAware
                   onPressed: () => _navigateToPayments(1, null, _currentSubscription),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF80CBC4),
-                    minimumSize: const Size.fromHeight(50),
+                    minimumSize: Size.fromHeight(screenSize.height * 0.06),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(screenSize.width * 0.03),
                     ),
                   ),
-                  child: const Row(
+                  child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(Icons.payment, color: Colors.white),
-                      SizedBox(width: 8),
+                      Icon(
+                        Icons.payment,
+                        color: Colors.white,
+                        size: screenSize.width * 0.05,
+                      ),
+                      SizedBox(width: screenSize.width * 0.02),
                       Text(
                         'Payment Methods',
                         style: TextStyle(
-                          fontSize: 16,
+                          fontSize: screenSize.width * 0.04,
                           fontWeight: FontWeight.bold,
                           color: Colors.white,
                         ),
@@ -210,7 +221,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> with RouteAware
                 ),
               ),
             ),
-            const SizedBox(height: 16),
+            SizedBox(height: screenSize.height * 0.02),
             Expanded(
               child: PageView.builder(
                 controller: _pageController,
@@ -230,7 +241,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> with RouteAware
               ),
             ),
             Padding(
-              padding: const EdgeInsets.only(bottom: 32),
+              padding: EdgeInsets.only(bottom: screenSize.height * 0.04),
               child: _buildPageIndicator(),
             ),
           ],

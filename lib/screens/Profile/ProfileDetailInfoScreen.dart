@@ -7,10 +7,7 @@ import 'dart:typed_data';
 import 'package:dim/models/ProfileInfoModel.dart';
 import 'package:intl/intl.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-
 import '../../services/ProfileService.dart';
-
-
 
 class ProfileDetailInfoScreen extends StatefulWidget {
   final String imagePath;
@@ -23,7 +20,6 @@ class ProfileDetailInfoScreen extends StatefulWidget {
 
 class _ProfileDetailInfoScreenState extends State<ProfileDetailInfoScreen>
     with SingleTickerProviderStateMixin {
-
   bool isEditMode = false;
   bool isLoading = true;
   ProfileInfoModel? profileinfo;
@@ -40,10 +36,8 @@ class _ProfileDetailInfoScreenState extends State<ProfileDetailInfoScreen>
     try {
       setState(() => isLoading = true);
       final profile = await _profileService.getCurrentUserProfile();
-      print(profile);
       setState(() {
         profileinfo = profile;
-        print(profileinfo);
         isLoading = false;
       });
     } catch (e) {
@@ -57,10 +51,8 @@ class _ProfileDetailInfoScreenState extends State<ProfileDetailInfoScreen>
   Future<void> _saveChanges() async {
     try {
       if (profileinfo == null) return;
-
       await _profileService.updateProfile(profileinfo!);
       setState(() => isEditMode = false);
-
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Changes saved successfully')),
       );
@@ -70,7 +62,6 @@ class _ProfileDetailInfoScreenState extends State<ProfileDetailInfoScreen>
       );
     }
   }
-
 
   Future<void> _pickImage() async {
     final picker = ImagePicker();
@@ -86,27 +77,31 @@ class _ProfileDetailInfoScreenState extends State<ProfileDetailInfoScreen>
 
   void _editSocialMediaHandle(SocialMediaHandle media) {
     final controller = TextEditingController(text: media.handle);
+    final screenSize = MediaQuery.of(context).size;
+
     showDialog(
       context: context,
       builder: (_) {
         return AlertDialog(
           backgroundColor: const Color(0xFFB2EBF2),
-          title: Text('Edit ${media.platform} Handle'),
+          title: Text(
+            'Edit ${media.platform} Handle',
+            style: TextStyle(fontSize: screenSize.width * 0.045),
+          ),
           content: TextField(
             controller: controller,
-            decoration: const InputDecoration(
+            decoration: InputDecoration(
               labelText: 'Handle',
+              labelStyle: TextStyle(fontSize: screenSize.width * 0.04),
             ),
           ),
           actions: [
             TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
+              onPressed: () => Navigator.pop(context),
               style: TextButton.styleFrom(
                 foregroundColor: const Color(0xFF00ACC1),
               ),
-              child: const Text('Cancel'),
+              child: Text('Cancel', style: TextStyle(fontSize: screenSize.width * 0.035)),
             ),
             TextButton(
               onPressed: () {
@@ -114,7 +109,7 @@ class _ProfileDetailInfoScreenState extends State<ProfileDetailInfoScreen>
                   String newHandle = controller.text;
                   var socialMediaIds = profileinfo!.socialMediaHandles.map((item) {
                     if (item.platform == media.platform) {
-                       return SocialMediaHandle(platform: item.platform, handle: newHandle);
+                      return SocialMediaHandle(platform: item.platform, handle: newHandle);
                     }
                     return item;
                   }).toList();
@@ -124,7 +119,7 @@ class _ProfileDetailInfoScreenState extends State<ProfileDetailInfoScreen>
               style: TextButton.styleFrom(
                 foregroundColor: const Color(0xFF00ACC1),
               ),
-              child: const Text('Done'),
+              child: Text('Done', style: TextStyle(fontSize: screenSize.width * 0.035)),
             ),
           ],
         );
@@ -135,37 +130,48 @@ class _ProfileDetailInfoScreenState extends State<ProfileDetailInfoScreen>
   void _addSocialMediaHandle() {
     final platformController = TextEditingController();
     final handleController = TextEditingController();
+    final screenSize = MediaQuery.of(context).size;
+
     showDialog(
       context: context,
       builder: (_) {
         return AlertDialog(
           backgroundColor: const Color(0xFFB2EBF2),
-          title: const Text('Add Social Media'),
+          title: Text(
+            'Add Social Media',
+            style: TextStyle(fontSize: screenSize.width * 0.045),
+          ),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               TextField(
                 cursorColor: Colors.black,
                 controller: platformController,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   labelText: 'Platform (e.g. Instagram)',
-                  labelStyle: TextStyle(color: Colors.black),
-                  border: OutlineInputBorder(),
-                  focusedBorder: OutlineInputBorder(
+                  labelStyle: TextStyle(
+                    color: Colors.black,
+                    fontSize: screenSize.width * 0.04,
+                  ),
+                  border: const OutlineInputBorder(),
+                  focusedBorder: const OutlineInputBorder(
                     borderSide: BorderSide(color: Colors.black, width: 1),
                   ),
                 ),
               ),
-              const SizedBox(height: 8),
+              SizedBox(height: screenSize.height * 0.01),
               TextField(
                 cursorColor: Colors.black,
                 controller: handleController,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   labelText: 'Handle (e.g. @username)',
-                  labelStyle: TextStyle(color: Colors.black),
-                  border: OutlineInputBorder(),
-                  focusedBorder: OutlineInputBorder(
-                     borderSide: BorderSide(color: Colors.black, width: 1),
+                  labelStyle: TextStyle(
+                    color: Colors.black,
+                    fontSize: screenSize.width * 0.04,
+                  ),
+                  border: const OutlineInputBorder(),
+                  focusedBorder: const OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.black, width: 1),
                   ),
                 ),
               ),
@@ -177,15 +183,19 @@ class _ProfileDetailInfoScreenState extends State<ProfileDetailInfoScreen>
               style: TextButton.styleFrom(
                 foregroundColor: const Color(0xFF00ACC1),
               ),
-              child: const Text('Cancel'),
+              child: Text('Cancel', style: TextStyle(fontSize: screenSize.width * 0.035)),
             ),
             TextButton(
               onPressed: () {
                 if (platformController.text.isNotEmpty &&
                     handleController.text.isNotEmpty) {
                   setState(() {
-                    SocialMediaHandle fb= SocialMediaHandle(platform: platformController.text,handle: handleController.text);
-                    profileinfo!.socialMediaHandles.add(fb);
+                    profileinfo!.socialMediaHandles.add(
+                      SocialMediaHandle(
+                        platform: platformController.text,
+                        handle: handleController.text,
+                      ),
+                    );
                   });
                   Navigator.pop(context);
                 }
@@ -193,7 +203,7 @@ class _ProfileDetailInfoScreenState extends State<ProfileDetailInfoScreen>
               style: TextButton.styleFrom(
                 foregroundColor: const Color(0xFF00ACC1),
               ),
-              child: const Text('Add'),
+              child: Text('Add', style: TextStyle(fontSize: screenSize.width * 0.035)),
             ),
           ],
         );
@@ -203,12 +213,17 @@ class _ProfileDetailInfoScreenState extends State<ProfileDetailInfoScreen>
 
   void _editField(String fieldName, String initialValue, bool multiline, Function(String) onSave) {
     final controller = TextEditingController(text: initialValue);
+    final screenSize = MediaQuery.of(context).size;
+
     showDialog(
       context: context,
       builder: (_) {
         return AlertDialog(
           backgroundColor: const Color(0xFFB2EBF2),
-          title: Text('Edit $fieldName'),
+          title: Text(
+            'Edit $fieldName',
+            style: TextStyle(fontSize: screenSize.width * 0.045),
+          ),
           content: TextField(
             cursorColor: Colors.black,
             controller: controller,
@@ -216,7 +231,10 @@ class _ProfileDetailInfoScreenState extends State<ProfileDetailInfoScreen>
             maxLines: multiline ? 4 : 1,
             decoration: InputDecoration(
               hintText: 'Enter new $fieldName',
-              hintStyle: const TextStyle(color: Colors.black),
+              hintStyle: TextStyle(
+                color: Colors.black,
+                fontSize: screenSize.width * 0.04,
+              ),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
               ),
@@ -232,7 +250,7 @@ class _ProfileDetailInfoScreenState extends State<ProfileDetailInfoScreen>
               style: TextButton.styleFrom(
                 foregroundColor: const Color(0xFF00ACC1),
               ),
-              child: const Text('Cancel'),
+              child: Text('Cancel', style: TextStyle(fontSize: screenSize.width * 0.035)),
             ),
             TextButton(
               onPressed: () {
@@ -242,7 +260,7 @@ class _ProfileDetailInfoScreenState extends State<ProfileDetailInfoScreen>
               style: TextButton.styleFrom(
                 foregroundColor: const Color(0xFF00ACC1),
               ),
-              child: const Text('Save'),
+              child: Text('Save', style: TextStyle(fontSize: screenSize.width * 0.035)),
             ),
           ],
         );
@@ -251,7 +269,6 @@ class _ProfileDetailInfoScreenState extends State<ProfileDetailInfoScreen>
   }
 
   void _shareProfile() {
-    // A unique link could be generated from user's name
     final profileLink = 'https://example.com/users/${profileinfo?.fullName.replaceAll(' ', '_')}';
     Share.share('Check out my profile: $profileLink');
   }
@@ -263,9 +280,11 @@ class _ProfileDetailInfoScreenState extends State<ProfileDetailInfoScreen>
     bool isMultiline = false,
     IconData icon = Icons.edit,
   }) {
+    final screenSize = MediaQuery.of(context).size;
+
     return Container(
-      margin: const EdgeInsets.only(bottom: 16.0),
-      padding: const EdgeInsets.symmetric(horizontal: 20.0),
+      margin: EdgeInsets.only(bottom: screenSize.height * 0.02),
+      padding: EdgeInsets.symmetric(horizontal: screenSize.width * 0.05),
       decoration: BoxDecoration(
         color: const Color(0xFFE0F7FA).withOpacity(0.8),
         borderRadius: BorderRadius.circular(12.0),
@@ -275,17 +294,22 @@ class _ProfileDetailInfoScreenState extends State<ProfileDetailInfoScreen>
         children: [
           Expanded(
             child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 12.0),
+              padding: EdgeInsets.symmetric(vertical: screenSize.height * 0.015),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(label,
-                      style: TextStyle(
-                          color: Colors.grey[700], fontWeight: FontWeight.bold)),
-                  const SizedBox(height: 4),
+                  Text(
+                    label,
+                    style: TextStyle(
+                      color: Colors.grey[700],
+                      fontWeight: FontWeight.bold,
+                      fontSize: screenSize.width * 0.04,
+                    ),
+                  ),
+                  SizedBox(height: screenSize.height * 0.005),
                   Text(
                     value,
-                    style: const TextStyle(fontSize: 16),
+                    style: TextStyle(fontSize: screenSize.width * 0.04),
                   ),
                 ],
               ),
@@ -294,7 +318,7 @@ class _ProfileDetailInfoScreenState extends State<ProfileDetailInfoScreen>
           if (isEditMode)
             IconButton(
               icon: Icon(icon, color: Colors.grey[600]),
-              iconSize: 20.0,
+              iconSize: screenSize.width * 0.05,
               onPressed: onEdit,
             ),
         ],
@@ -303,9 +327,14 @@ class _ProfileDetailInfoScreenState extends State<ProfileDetailInfoScreen>
   }
 
   Widget _buildSocialMediaSection() {
+    final screenSize = MediaQuery.of(context).size;
+
     return Container(
-      margin: const EdgeInsets.only(bottom: 16.0),
-      padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 12.0),
+      margin: EdgeInsets.only(bottom: screenSize.height * 0.02),
+      padding: EdgeInsets.symmetric(
+        horizontal: screenSize.width * 0.05,
+        vertical: screenSize.height * 0.015,
+      ),
       decoration: BoxDecoration(
         color: const Color(0xFFE0F7FA).withOpacity(0.8),
         borderRadius: BorderRadius.circular(12.0),
@@ -313,35 +342,43 @@ class _ProfileDetailInfoScreenState extends State<ProfileDetailInfoScreen>
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Social Media',
-              style: TextStyle(color: Colors.grey[700], fontWeight: FontWeight.bold)),
-          const SizedBox(height: 8),
+          Text(
+            'Social Media',
+            style: TextStyle(
+              color: Colors.grey[700],
+              fontWeight: FontWeight.bold,
+              fontSize: screenSize.width * 0.04,
+            ),
+          ),
+          SizedBox(height: screenSize.height * 0.01),
           ...profileinfo!.socialMediaHandles.map((item) {
             return Padding(
-              padding: const EdgeInsets.symmetric(vertical: 4),
+              padding: EdgeInsets.symmetric(vertical: screenSize.height * 0.005),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                      '${item.platform}: ${item.handle}',
-                      style: const TextStyle(fontSize: 16)
+                    '${item.platform}: ${item.handle}',
+                    style: TextStyle(fontSize: screenSize.width * 0.04),
                   ),
                   if (isEditMode)
                     IconButton(
-                      icon: Icon(Icons.edit, color: Colors.grey[600], size: 20),
+                      icon: Icon(Icons.edit, color: Colors.grey[600]),
                       onPressed: () => _editSocialMediaHandle(item),
-                      iconSize: 20.0,
+                      iconSize: screenSize.width * 0.05,
                       constraints: const BoxConstraints(),
                     ),
                 ],
               ),
             );
           }),
-          const SizedBox(height: 8),
           if (isEditMode)
             TextButton.icon(
-              icon: const Icon(Icons.add),
-              label: const Text('Add social media'),
+              icon: Icon(Icons.add, size: screenSize.width * 0.05),
+              label: Text(
+                'Add social media',
+                style: TextStyle(fontSize: screenSize.width * 0.04),
+              ),
               onPressed: _addSocialMediaHandle,
             )
         ],
@@ -349,10 +386,14 @@ class _ProfileDetailInfoScreenState extends State<ProfileDetailInfoScreen>
     );
   }
 
-
   Widget _buildStat(int number, String label) {
+    final screenSize = MediaQuery.of(context).size;
+
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
+      padding: EdgeInsets.symmetric(
+        horizontal: screenSize.width * 0.04,
+        vertical: screenSize.height * 0.015,
+      ),
       decoration: BoxDecoration(
         color: const Color(0xFFE0F7FA).withOpacity(0.8),
         borderRadius: BorderRadius.circular(14),
@@ -370,18 +411,18 @@ class _ProfileDetailInfoScreenState extends State<ProfileDetailInfoScreen>
         children: [
           Text(
             number.toString(),
-            style: const TextStyle(
-              fontSize: 20,
+            style: TextStyle(
+              fontSize: screenSize.width * 0.05,
               fontWeight: FontWeight.bold,
-              color: Color(0xFF00796B),
+              color: const Color(0xFF00796B),
             ),
           ),
-          const SizedBox(height: 4),
+          SizedBox(height: screenSize.height * 0.005),
           Text(
             label,
             style: TextStyle(
               color: Colors.grey[800],
-              fontSize: 14,
+              fontSize: screenSize.width * 0.035,
               fontWeight: FontWeight.w500,
             ),
           ),
@@ -392,6 +433,10 @@ class _ProfileDetailInfoScreenState extends State<ProfileDetailInfoScreen>
 
   @override
   Widget build(BuildContext context) {
+    final screenSize = MediaQuery.of(context).size;
+    final bodyPadding = screenSize.width * 0.03;
+    final avatarRadius = screenSize.width * 0.12;
+
     if (isLoading) {
       return const Scaffold(
         body: Center(
@@ -407,39 +452,30 @@ class _ProfileDetailInfoScreenState extends State<ProfileDetailInfoScreen>
         ),
       );
     }
-    ImageProvider backgroundImage;
-    //backgroundImage = NetworkImage(widget.imagePath);
 
-    // backgroundImage= (widget.imagePath.isNotEmpty &&
-    //     Uri.tryParse(widget.imagePath)?.hasAbsolutePath == true)
-    //     ? NetworkImage(widget.imagePath)
-    //     : AssetImage(widget.imagePath) as ImageProvider;
-    //
+    ImageProvider backgroundImage;
     if (profileinfo?.profileImageBytes != null) {
       backgroundImage = MemoryImage(profileinfo!.profileImageBytes!);
     } else if (profileinfo!.profileImagePath.startsWith('assets/')) {
-      backgroundImage = AssetImage(profileinfo!.profileImagePath) as ImageProvider;
+      backgroundImage = AssetImage(profileinfo!.profileImagePath);
     } else {
       if (kIsWeb) {
         backgroundImage = NetworkImage(widget.imagePath);
       } else {
-        backgroundImage = FileImage(File(profileinfo!.profileImagePath)) as ImageProvider;
+        backgroundImage = FileImage(File(profileinfo!.profileImagePath));
       }
     }
 
     return Scaffold(
-      // Adding a stack so we can put a custom painted background behind the main content
       body: Stack(
         children: [
-          // Custom Painted Background with soothing patterns
           SizedBox(
-            height: 200, // Adjust height as needed
-            width: double.infinity, // Adjust width as needed
+            height: screenSize.height * 0.25,
+            width: double.infinity,
             child: CustomPaint(
               painter: SoftPastelBackgroundPainter(),
             ),
           ),
-
           SafeArea(
             child: Column(
               children: [
@@ -447,21 +483,17 @@ class _ProfileDetailInfoScreenState extends State<ProfileDetailInfoScreen>
                   children: [
                     IconButton(
                       icon: const Icon(Icons.arrow_back, color: Colors.black),
-                      iconSize: 20.0,
+                      iconSize: screenSize.width * 0.05,
                       onPressed: () => Navigator.pop(context),
                     ),
                     const Spacer(),
-                    // Edit mode toggle button
                     IconButton(
                       icon: Icon(
                           isEditMode ? Icons.close : Icons.edit,
                           color: Colors.black
                       ),
-                      iconSize: 20.0,
+                      iconSize: screenSize.width * 0.05,
                       onPressed: () {
-                        if(isEditMode){
-                          // Bring previous profileinfo from bd
-                        }
                         setState(() {
                           isEditMode = !isEditMode;
                         });
@@ -469,32 +501,35 @@ class _ProfileDetailInfoScreenState extends State<ProfileDetailInfoScreen>
                     ),
                     IconButton(
                       icon: const Icon(Icons.share, color: Colors.black),
-                      iconSize: 20.0,
+                      iconSize: screenSize.width * 0.05,
                       onPressed: _shareProfile,
                     ),
                   ],
                 ),
                 Expanded(
                   child: SingleChildScrollView(
-                    padding: const EdgeInsets.all(10.0),
+                    padding: EdgeInsets.all(bodyPadding),
                     child: Column(
                       children: [
-                        const SizedBox(height: 10),
-                        const Text('My Profile',
-                            style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 22,
-                                fontWeight: FontWeight.bold)),
-                        const SizedBox(height: 30),
+                        SizedBox(height: screenSize.height * 0.01),
+                        Text(
+                          'My Profile',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: screenSize.width * 0.06,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        SizedBox(height: screenSize.height * 0.03),
                         Center(
                           child: Stack(
                             alignment: Alignment.bottomRight,
                             children: [
                               CircleAvatar(
-                                radius: 50,
+                                radius: avatarRadius,
                                 backgroundImage: backgroundImage,
                               ),
-                              if (isEditMode) // Only show camera icon in edit mode
+                              if (isEditMode)
                                 Positioned(
                                   bottom: 0,
                                   right: 0,
@@ -505,11 +540,16 @@ class _ProfileDetailInfoScreenState extends State<ProfileDetailInfoScreen>
                                         color: Colors.black54,
                                         shape: BoxShape.circle,
                                         border: Border.all(
-                                            color: Colors.white, width: 2),
+                                          color: Colors.white,
+                                          width: screenSize.width * 0.005,
+                                        ),
                                       ),
-                                      padding: const EdgeInsets.all(6),
-                                      child: const Icon(Icons.camera_alt,
-                                          color: Colors.white, size: 20),
+                                      padding: EdgeInsets.all(screenSize.width * 0.015),
+                                      child: Icon(
+                                        Icons.camera_alt,
+                                        color: Colors.white,
+                                        size: screenSize.width * 0.05,
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -517,25 +557,22 @@ class _ProfileDetailInfoScreenState extends State<ProfileDetailInfoScreen>
                           ),
                         ),
                         Container(
-                          margin: const EdgeInsets.symmetric(vertical: 18.0, horizontal: 12.0),
+                          margin: EdgeInsets.symmetric(
+                            vertical: screenSize.height * 0.02,
+                            horizontal: screenSize.width * 0.03,
+                          ),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
-                              Expanded(
-                                child: _buildStat(profileinfo!.recipesCount, 'Recipes'),
-                              ),
-                              const SizedBox(width: 10),
-                              Expanded(
-                                child: _buildStat(profileinfo!.followingCount, 'Following'),
-                              ),
-                              const SizedBox(width: 10),
-                              Expanded(
-                                child: _buildStat(profileinfo!.followerCount, 'Followers'),
-                              ),
+                              Expanded(child: _buildStat(profileinfo!.recipesCount, 'Recipes')),
+                              SizedBox(width: screenSize.width * 0.02),
+                              Expanded(child: _buildStat(profileinfo!.followingCount, 'Following')),
+                              SizedBox(width: screenSize.width * 0.02),
+                              Expanded(child: _buildStat(profileinfo!.followerCount, 'Followers')),
                             ],
                           ),
                         ),
-                        const SizedBox(height: 30),
+                        SizedBox(height: screenSize.height * 0.03),
                         _buildEditableField(
                           label: 'Full Name',
                           value: profileinfo!.fullName,
@@ -544,7 +581,6 @@ class _ProfileDetailInfoScreenState extends State<ProfileDetailInfoScreen>
                             if (nameRegExp.hasMatch(newVal)) {
                               setState(() => profileinfo!.fullName = newVal);
                             } else {
-                              // Handle invalid input
                               ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(content: Text('Invalid name. Use only letters, spaces, hyphens, or apostrophes.'))
                               );
@@ -589,13 +625,18 @@ class _ProfileDetailInfoScreenState extends State<ProfileDetailInfoScreen>
                         _buildEditableField(
                           label: 'Date of Birth',
                           value: profileinfo!.dateofBirth != null
-                              ? DateFormat('yyyy-MM-dd').format(profileinfo!.dateofBirth!) : '',
-                          onEdit: () => _editField('Date of Birth',
-                                 profileinfo!.dateofBirth != null
-                                  ? DateFormat('yyyy-MM-dd').format(profileinfo!.dateofBirth!) : '',
-                                 false, (newVal) {
-                            setState(() => profileinfo!.dateofBirth = DateTime.parse(newVal));
-                          }),
+                              ? DateFormat('yyyy-MM-dd').format(profileinfo!.dateofBirth!)
+                              : '',
+                          onEdit: () => _editField(
+                              'Date of Birth',
+                              profileinfo!.dateofBirth != null
+                                  ? DateFormat('yyyy-MM-dd').format(profileinfo!.dateofBirth!)
+                                  : '',
+                              false,
+                                  (newVal) {
+                                setState(() => profileinfo!.dateofBirth = DateTime.parse(newVal));
+                              }
+                          ),
                         ),
                         _buildEditableField(
                           label: 'Bio',
@@ -608,7 +649,6 @@ class _ProfileDetailInfoScreenState extends State<ProfileDetailInfoScreen>
                         _buildEditableField(
                           label: 'Workplace',
                           value: profileinfo!.workplace,
-                          isMultiline: true,
                           onEdit: () => _editField('Workplace', profileinfo!.workplace, false, (newVal) {
                             setState(() => profileinfo!.workplace = newVal);
                           }),
@@ -624,7 +664,7 @@ class _ProfileDetailInfoScreenState extends State<ProfileDetailInfoScreen>
 
                         if (isEditMode)
                           Padding(
-                            padding: const EdgeInsets.all(16.0),
+                            padding: EdgeInsets.all(screenSize.width * 0.04),
                             child: ElevatedButton(
                               onPressed: () {
                                 _profileService.updateProfile(profileinfo!);
@@ -636,16 +676,16 @@ class _ProfileDetailInfoScreenState extends State<ProfileDetailInfoScreen>
                                 );
                               },
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: Color(0xFF0E98A7),
-                                minimumSize: const Size(double.infinity, 50),
+                                backgroundColor: const Color(0xFF0E98A7),
+                                minimumSize: Size(double.infinity, screenSize.height * 0.06),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10),
                                 ),
                               ),
-                              child: const Text(
+                              child: Text(
                                 'Save Changes',
                                 style: TextStyle(
-                                  fontSize: 16,
+                                  fontSize: screenSize.width * 0.04,
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold,
                                 ),
@@ -664,7 +704,6 @@ class _ProfileDetailInfoScreenState extends State<ProfileDetailInfoScreen>
     );
   }
 }
-
 
 class SoftPastelBackgroundPainter extends CustomPainter {
   @override
@@ -700,4 +739,3 @@ class SoftPastelBackgroundPainter extends CustomPainter {
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
-

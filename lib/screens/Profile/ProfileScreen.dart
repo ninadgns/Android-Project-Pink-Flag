@@ -195,10 +195,10 @@ class _ProfileScreenState extends State<ProfileScreen>
         .of(context)
         .size;
     // Calculate dynamic sizes with maximum constraints
-    final double maxAvatarRadius = size.width * 0.13;
-    final double titleFontSize = size.width * 0.045;
-    final double nameFontSize = size.width * 0.045;
-    final double subTextFontSize = size.width * 0.035;
+    final double maxAvatarRadius = size.width * 0.15;
+    final double titleFontSize = size.width * 0.060;
+    final double nameFontSize = size.width * 0.048;
+    final double subTextFontSize = size.width * 0.04;
 
     final menuItems = [
       // MenuItemTile(
@@ -344,14 +344,14 @@ class _ProfileScreenState extends State<ProfileScreen>
                       ),
                     ],
                   ),
-                  SizedBox(height: size.height * 0.04),
+                  SizedBox(height: size.height * 0.05),
 
                   FadeTransition(
                     opacity: _profileFade,
                     child: Center(
                       child: ConstrainedBox(
                         constraints: BoxConstraints(
-                          maxHeight: size.height * 0.48,
+                          maxHeight: size.height * 0.5,
                         ),
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
@@ -364,7 +364,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                                   ? NetworkImage(widget.imagePath)
                                   : AssetImage('assets/images/profile.png') as ImageProvider,
                             ),
-                            SizedBox(height: size.height * 0.013),
+                            SizedBox(height: size.height * 0.015),
                             Text(
                               userName,
                               style: TextStyle(
@@ -372,7 +372,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
-                            SizedBox(height: size.height * 0.02),
+                            SizedBox(height: size.height * 0.023),
                             Material(
                               color: Colors.transparent,
                               child: InkWell(
@@ -393,7 +393,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                       ),
                     ),
                   ),
-                  SizedBox(height: size.height * 0.038),
+                  SizedBox(height: size.height * 0.04),
 
 
                   //const SizedBox(height: 20),
@@ -411,12 +411,12 @@ class _ProfileScreenState extends State<ProfileScreen>
                                   child: Column(
                                     children: [
                                       menuItems[index],
-                                      SizedBox(height: size.height * 0.02),
+                                      SizedBox(height: size.height * 0.023),
                                     ],
                                   ),
                                 ),
                           ),
-                          SizedBox(height: size.height * 0.13),
+                          SizedBox(height: size.height * 0.15),
                         ],
                       ),
                     ),

@@ -1,6 +1,8 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+import '../models/MealPlanModels.dart';
+
 class MealPlanService {
   final SupabaseClient _supabase;
   final FirebaseAuth _auth;
@@ -100,39 +102,110 @@ class MealPlanService {
     }
   }
 
-  Future<void> updateDayMeals({
-    required String mealPlanId,
-    required int dayNumber,
-    required List<Map<String, String>> meals,
-  }) async {
+  Future<List<DayMeals>> fetchCurrentMealPlan(String mealPlanId) async {
     try {
-      if (dayNumber > 3) {
-        throw Exception('Cannot update meals beyond day 3');
+      // Fetch the meal plan to get start date
+      final mealPlan = await _supabase
+          .from('meal_plans')
+          .select()
+          .eq('id', mealPlanId)
+          .single();
+
+      final DateTime startDate = DateTime.parse(mealPlan['start_date']);
+
+      // Fetch all meal details for this plan
+      final List<Map<String, dynamic>> mealDetails = await _supabase
+          .from('meal_plan_details')
+          .select()
+          .eq('meal_plan_id', mealPlanId)
+          .order('day_number');
+
+      // Create a map to store meals by day
+      final Map<int, List<MealPlan>> mealsByDay = {};
+
+      // Define meal type order for sorting
+      const mealTypeOrder = {
+        'Breakfast': 1,
+        'Lunch': 2,
+        'Dinner': 3,
+      };
+
+      // Process each meal
+      for (var meal in mealDetails) {
+        final int dayNumber = meal['day_number'];
+        mealsByDay.putIfAbsent(dayNumber, () => []);
+
+        // Calculate the actual date for this meal
+        final DateTime mealDate = startDate.add(Duration(days: dayNumber - 1));
+        final String formattedDate = '${mealDate.day}/${mealDate.month}';
+
+        mealsByDay[dayNumber]!.add(MealPlan(
+          dayOfWeek: formattedDate,
+          mealType: meal['meal_type'],
+          recipeName: meal['recipe_name'],
+          recipeId: '',
+        ));
       }
 
+      // Sort meals within each day by meal type order
+      for (var dayMeals in mealsByDay.values) {
+        dayMeals.sort((a, b) =>
+            (mealTypeOrder[a.mealType] ?? 0).compareTo(mealTypeOrder[b.mealType] ?? 0)
+        );
+      }
+
+      // Convert map entries to a sorted list by day number
+      final sortedEntries = mealsByDay.entries.toList()
+        ..sort((a, b) => a.key.compareTo(b.key));
+
+      // Create the final sorted list of DayMeals
+      return sortedEntries.map((entry) => DayMeals(
+        day: entry.value.first.dayOfWeek,
+        meals: entry.value,
+      )).toList();
+
+    } catch (e) {
+      print('Error fetching meal plan: $e');
+      throw Exception('Failed to fetch meal plan: $e');
+    }
+  }
+
+  // Check for active meal plan
+  Future<String?> getActiveMealPlanId() async {
+    try {
       final userId = _auth.currentUser?.uid;
       if (userId == null) throw Exception('User not authenticated');
 
-      // Delete existing meals for this day
-      await _supabase
-          .from('meal_plan_details')
-          .delete()
-          .eq('meal_plan_id', mealPlanId)
-          .eq('day_number', dayNumber);
+      final activeMealPlan = await _supabase
+          .from('meal_plans')
+          .select('id')
+          .eq('user_id', userId)
+          .eq('is_active', true)
+          .maybeSingle();  // Use maybeSingle() since user might not have an active plan
 
-      // Insert all new meals for this day in one batch
-      final mealDetails = meals.map((meal) => {
-        'meal_plan_id': mealPlanId,
-        'day_number': dayNumber,
-        'meal_type': meal['meal_type'],
-        'recipe_name': meal['recipe_name'],
-      }).toList();
-
-      await _supabase
-          .from('meal_plan_details')
-          .insert(mealDetails);
+      return activeMealPlan?['id'] as String?;
     } catch (e) {
-      throw Exception('Failed to update day meals: $e');
+      print('Error checking active meal plan: $e');
+      throw Exception('Failed to check active meal plan: $e');
     }
   }
+
+// Deactivate all active meal plans for the user
+  Future<void> deactivateCurrentMealPlans() async {
+    try {
+      final userId = _auth.currentUser?.uid;
+      if (userId == null) throw Exception('User not authenticated');
+
+      // Update all active meal plans to inactive
+      await _supabase
+          .from('meal_plans')
+          .update({'is_active': false})
+          .eq('user_id', userId)
+          .eq('is_active', true);
+    } catch (e) {
+      print('Error deactivating meal plans: $e');
+      throw Exception('Failed to deactivate meal plans: $e');
+    }
+  }
+
 }

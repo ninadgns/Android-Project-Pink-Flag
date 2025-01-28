@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-
 import '../../models/MealPlanModels.dart';
 import '../../services/MealPlanService.dart';
 import '../../widgets/MealPlan/RecipeItem.dart';
@@ -24,85 +24,25 @@ class _MealPlanScreenState extends State<MealPlanScreen> {
     _loadMealPlan();
   }
 
-  // Future<void> _loadMealPlan() async {
-  //   try {
-  //     setState(() => _isLoading = true);
-  //     final response = await _mealPlanService.generateAndSaveMealPlan();
-  //
-  //     _currentMealPlanId = response['id'];
-  //     final List<DayMeals> dayMealsList = [];
-  //
-  //     // Process each day's meals from day_1 to day_7
-  //     for (int i = 1; i <= 7; i++) {
-  //       final dayKey = 'day_$i';
-  //       if (response[dayKey] != null) {
-  //         final List<dynamic> dayMeals = response[dayKey];
-  //         final meals = dayMeals.map((meal) => MealPlan(
-  //           dayOfWeek: 'Day-$i',
-  //           mealType: meal['meal_type'],
-  //           recipeName: meal['recipe_name'],
-  //           recipeId: '', // Since we're not storing recipe_id in the new format
-  //         )).toList();
-  //
-  //         dayMealsList.add(DayMeals(
-  //           day: 'Day-$i',
-  //           meals: meals,
-  //         ));
-  //       }
-  //     }
-  //
-  //     setState(() {
-  //       _mealPlan = dayMealsList;
-  //     });
-  //   } catch (e) {
-  //     if (mounted) {
-  //       ScaffoldMessenger.of(context).showSnackBar(
-  //         SnackBar(content: Text('Error loading meal plan: $e')),
-  //       );
-  //     }
-  //   } finally {
-  //     setState(() => _isLoading = false);
-  //   }
-  // }
-
   Future<void> _loadMealPlan() async {
     try {
       setState(() => _isLoading = true);
-      final List<Map<String, dynamic>> response = await _mealPlanService.generateMealPlan();
 
-      //final storedPlan = await _mealPlanService.storeMealPlan(response);
+      String? mealPlanId = await _mealPlanService.getActiveMealPlanId();
 
-      // Group meals by day
-      final Map<String, List<MealPlan>> mealsByDay = {};
-
-      for (final meal in response) {
-        final dayOfWeek = meal['day_of_week'] as String;
-        mealsByDay.putIfAbsent(dayOfWeek, () => []);
-
-        mealsByDay[dayOfWeek]!.add(MealPlan(
-          dayOfWeek: dayOfWeek,
-          mealType: meal['meal_type'] as String,
-          recipeName: meal['recipe_name'] as String,
-          recipeId: '', // Since we're not storing recipe_id in the new format
-        ));
+      if(mealPlanId == null) {
+        final List<Map<String, dynamic>> response = await _mealPlanService
+            .generateMealPlan();
+        final storedPlan = await _mealPlanService.storeMealPlan(response);
+        mealPlanId = storedPlan['id'];
       }
 
-      final List<DayMeals> dayMealsList = mealsByDay.entries.map((entry) {
-        return DayMeals(
-          day: entry.key,
-          meals: entry.value,
-        );
-      }).toList();
-
-      // Sort days correctly (Day-1, Day-2, etc.)
-      dayMealsList.sort((a, b) {
-        final aNum = int.parse(a.day.split('-')[1]);
-        final bNum = int.parse(b.day.split('-')[1]);
-        return aNum.compareTo(bNum);
-      });
+      // Get the meal plan details with dates from Supabase
+      final List<DayMeals> dayMealsList = await _mealPlanService.fetchCurrentMealPlan(mealPlanId!);
 
       setState(() {
         _mealPlan = dayMealsList;
+        _currentMealPlanId = mealPlanId;
       });
     } catch (e) {
       if (mounted) {
@@ -115,57 +55,76 @@ class _MealPlanScreenState extends State<MealPlanScreen> {
     }
   }
 
-  Future<void> _updateDayMeal(String day, String mealType, String newRecipeName) async {
+  Future<void> _giveNewPlan() async {
     try {
-      if (_currentMealPlanId == null) return;
-
-      final dayNumber = int.parse(day.split('-')[1]);
-      final currentDayMeals = _mealPlan
-          .firstWhere((dm) => dm.day == day)
-          .meals
-          .map((m) => {
-        'meal_type': m.mealType,
-        'recipe_name': m.mealType == mealType ? newRecipeName : m.recipeName,
-      })
-          .toList();
-
-      await _mealPlanService.updateDayMeals(
-        mealPlanId: _currentMealPlanId!,
-        dayNumber: dayNumber,
-        meals: currentDayMeals,
-      );
-
-      // Refresh the meal plan after updating
-      _loadMealPlan();
-    } catch (e) {
+      await _mealPlanService.deactivateCurrentMealPlans();
+      return _loadMealPlan();
+    } catch(e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error updating meal: $e')),
+          SnackBar(content: Text('Error loading meal plan: $e')),
         );
       }
     }
   }
 
+  String _getCurrentDate() {
+    final now = DateTime.now();
+    final DateFormat formatter = DateFormat('d MMMM'); // Day and Month name
+    return formatter.format(now);
+  }
+
   Widget build(BuildContext context) {
+    final screenSize = MediaQuery.of(context).size;
+
     return Theme(
       data: Theme.of(context).copyWith(
         cardTheme: CardTheme(
           elevation: 2,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(screenSize.width * 0.032)
+          ),
+          margin: EdgeInsets.symmetric(
+              horizontal: screenSize.width * 0.043,
+              vertical: screenSize.height * 0.01
+          ),
         ),
       ),
       child: Scaffold(
-        appBar: AppBar(
-          title: const Text('Meal Plan'),
-          backgroundColor: const Color(0xFF9FC9C8),
-          automaticallyImplyLeading: false,
-          actions: [
-            IconButton(
-              icon: const Icon(Icons.refresh),
-              onPressed: _loadMealPlan,
+        appBar: PreferredSize(
+          preferredSize: Size.fromHeight(screenSize.height * 0.08),
+          child: AppBar(
+            title: Row(
+              children: [
+                Text(
+                  'Meal Plan',
+                  style: TextStyle(
+                      fontSize: screenSize.width * 0.065
+                  ),
+                ),
+                SizedBox(width: screenSize.width * 0.06), // Add some spacing
+                Text(
+                  _getCurrentDate(), // Custom method to get today's date
+                  style: TextStyle(
+                      fontSize: screenSize.width * 0.045,
+                      fontWeight: FontWeight.w300
+                  ),
+                ),
+              ],
             ),
-          ],
+            backgroundColor: const Color(0xFF9FC9C8),
+            automaticallyImplyLeading: false,
+            actions: [
+              IconButton(
+                icon: Icon(
+                    Icons.next_plan_outlined,
+                    size: screenSize.width * 0.07
+                ),
+                onPressed: _giveNewPlan,
+                padding: EdgeInsets.all(screenSize.width * 0.03),
+              ),
+            ],
+          ),
         ),
         body: _isLoading
             ? const Center(child: CircularProgressIndicator())
@@ -175,15 +134,17 @@ class _MealPlanScreenState extends State<MealPlanScreen> {
             children: [
               Expanded(
                 child: ListView.builder(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  padding: EdgeInsets.symmetric(
+                      vertical: screenSize.height * 0.02
+                  ),
                   itemCount: _mealPlan.length,
                   itemBuilder: (context, index) {
                     final dayMeals = _mealPlan[index];
-                    return _buildDayCard(dayMeals);
+                    return _buildDayCard(dayMeals, context);
                   },
                 ),
               ),
-              const SizedBox(height: 80),
+              SizedBox(height: screenSize.height * 0.1),
             ],
           ),
         ),
@@ -191,35 +152,41 @@ class _MealPlanScreenState extends State<MealPlanScreen> {
     );
   }
 
-  Widget _buildDayCard(DayMeals dayMeals) {
+  Widget _buildDayCard(DayMeals dayMeals, BuildContext context) {
+    final screenSize = MediaQuery.of(context).size;
+
     return Card(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: const EdgeInsets.all(16),
+            padding: EdgeInsets.all(screenSize.width * 0.043),
             child: Text(
               dayMeals.day,
-              style: const TextStyle(
-                fontSize: 20,
+              style: TextStyle(
+                fontSize: screenSize.width * 0.053,
                 fontWeight: FontWeight.bold,
-                color: Color(0xFF8CB5B5),
+                color: const Color(0xFF8CB5B5),
               ),
             ),
           ),
-          const Divider(height: 1),
-          ...dayMeals.meals.map((meal) => RecipeItem(
-            recipeName: meal.recipeName,
-            mealType: meal.mealType,
-            onEdit: () async {
-              // Here you would implement your recipe selection dialog
-              // For example:
-              // final newRecipe = await showRecipeSelectionDialog(context);
-              // if (newRecipe != null) {
-              //   await _updateDayMeal(dayMeals.day, meal.mealType, newRecipe);
-              // }
-            },
-          )),
+          Divider(
+            height: 1,
+            thickness: screenSize.height * 0.001,
+          ),
+          Column(
+            children: dayMeals.meals.map((meal) => Padding(
+              padding: EdgeInsets.symmetric(
+                vertical: screenSize.height * 0.004,
+              ),
+              child: RecipeItem(
+                recipeName: meal.recipeName,
+                mealType: meal.mealType,
+                onEdit: () async {
+                },
+              ),
+            )).toList(),
+          ),
         ],
       ),
     );

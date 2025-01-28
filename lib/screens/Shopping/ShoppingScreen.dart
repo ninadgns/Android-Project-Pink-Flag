@@ -79,53 +79,62 @@ class _ShoppingScreenState extends State<ShoppingScreen> with SingleTickerProvid
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        controller: _scrollController,
-        child: Container(
-          decoration: const BoxDecoration(
-            color: Colors.white,
-            image: DecorationImage(
-              image: AssetImage('assets/images/tealwhite.jpeg'),
-              repeat: ImageRepeat.repeat,
-              opacity: 0.15,
-            ),
-          ),
-         child: Column(
-           children: [
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: DateSelector(
-                      label: 'From',
-                      selectedDate: _startDate,
-                      onDateSelected: (date) => setState(() => _startDate = date),
-                    ),
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          return SingleChildScrollView(
+            controller: _scrollController,
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                minHeight: constraints.maxHeight,
+              ),
+              child: Container(
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                  image: DecorationImage(
+                    image: AssetImage('assets/images/tealwhite.jpeg'),
+                    repeat: ImageRepeat.repeat,
+                    opacity: 0.15,
                   ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: DateSelector(
-                      label: 'To',
-                      selectedDate: _endDate,
-                      onDateSelected: (date) => setState(() => _endDate = date),
+                ),
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.04),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: DateSelector(
+                              label: 'From',
+                              selectedDate: _startDate,
+                              onDateSelected: (date) => setState(() => _startDate = date),
+                            ),
+                          ),
+                          SizedBox(width: MediaQuery.of(context).size.width * 0.04),
+                          Expanded(
+                            child: DateSelector(
+                              label: 'To',
+                              selectedDate: _endDate,
+                              onDateSelected: (date) => setState(() => _endDate = date),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                    ...categoryColors.keys.map((category) => CategorySection(
+                      category: category,
+                      backgroundColor: categoryColors[category]!,
+                      groceryService: _groceryService,
+                      onAddItem: () => setState(() {}),
+                      onUpdate: () => setState(() {}),
+                    )),
+                    SizedBox(height: MediaQuery.of(context).size.height * 0.15),
+                  ],
+                ),
               ),
             ),
-            ...categoryColors.keys.map((category) => CategorySection(
-              category: category,
-              backgroundColor: categoryColors[category]!,
-              groceryService: _groceryService,
-              onAddItem: () => setState(() {}),
-              onUpdate: () => setState(() {}),
-            )),
-            const SizedBox(height: 120),
-          ],
-        ),
+          );
+        },
       ),
-    ),
    );
   }
 }
