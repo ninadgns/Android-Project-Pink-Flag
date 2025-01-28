@@ -9,6 +9,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../services/review_service.dart';
+import '../widgets/love_react_button.dart';
 import '/widgets/RecipeIntroScreen/DetailsInfo.dart';
 import '../models/RecipeModel.dart';
 import '../widgets/RecipeIntroScreen/IngredientsInfo.dart';
@@ -32,15 +34,23 @@ class _RecipeIntroState extends State<RecipeIntro> {
   //   RecipeDirectionScreen(widget.recipe: dummyRecipe),
   // ];
   late int count;
+  late int countt;
+  double? averageRating;
+  // Null when not rated
   final formatter =
       NumberFormat('#.##'); // Up to two decimal places, no trailing zeros.
   bool isSaved = false;
+  final ReviewService _reviewService = ReviewService();
+  int totalReviews = 0;
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     count = widget.recipe.servings;
     widget.recipe.calculateTotalDuration();
+    _fetchReviewCount();
+    _fetchAverageRating();
     final userId = FirebaseAuth.instance.currentUser!.uid;
     final recipeId = widget.recipe.id;
     _isRecipeSaved(userId, recipeId).then((value) {
@@ -49,6 +59,37 @@ class _RecipeIntroState extends State<RecipeIntro> {
       });
     });
   }
+
+  Future<void> _fetchAverageRating() async {
+    final rating = await _reviewService.fetchAverageRating(widget.recipe.id);
+    setState(() {
+      averageRating = rating;
+      print(averageRating);
+    });
+  }
+
+  Future<void> _fetchReviewCount() async {
+    try {
+      final reviewCount = await _reviewService.fetchReviewCount(widget.recipe.id);
+      if (mounted) {
+        setState(() {
+          totalReviews = reviewCount;
+        });
+      }
+    } catch (e) {
+      print('Error fetching review count: $e');
+      if (mounted) {
+        setState(() {
+          totalReviews = 0;
+        });
+      }
+    }
+  }
+
+
+
+
+
 
   Future<bool> _isRecipeSaved(String userId, String recipeId) async {
     final supabase = Supabase.instance.client;
@@ -344,42 +385,50 @@ class _RecipeIntroState extends State<RecipeIntro> {
                                             style: const TextStyle(
                                                 color: Colors.grey)),
                                         SizedBox(width: width * 0.04),
+                                        // Replace this part in your build method:
                                         InkWell(
                                           child: Row(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.center,
+                                            crossAxisAlignment: CrossAxisAlignment.center,
                                             children: [
                                               const Icon(Icons.star,
                                                   size: 16,
                                                   color: Colors.amber),
                                               const SizedBox(width: 4),
-                                              const Text('4.7 ',
-                                                  style: TextStyle(
-                                                      color: Colors.grey)),
-
-                                              Row(
-                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                children: [// Navigate to Review Screen
-                                                  TextButton(
-                                                    onPressed: () {
-                                                      Navigator.push(
-                                                        context,
-                                                        MaterialPageRoute(
-                                                          builder: (context) => ReviewScreen(
-                                                            recipeId: widget.recipe.id,
-                                                            userId: FirebaseAuth.instance.currentUser!.uid,
-                                                          ),
-                                                        ),
-                                                      );
-                                                    },
-                                                    child: const Text(
-                                                      'View Reviews',
-                                                      style: TextStyle(fontSize: 14, color: Colors.blue),
-                                                    ),
-                                                  ),
-                                                ],
+                                              Text(
+                                                  averageRating != null
+                                                      ? '${averageRating!.toStringAsFixed(1)}'
+                                                      : 'Not rated',
+                                                  style: const TextStyle(color: Colors.grey)
                                               ),
+                                              SizedBox(width: width * 0.04),
                                             ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 16),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                      children: [
+                                        // Love React Button
+                                        LoveReactButton(recipeId: widget.recipe.id),
+
+                                        // View Reviews Button
+                                        TextButton(
+                                          onPressed: () {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) => ReviewScreen(
+                                                  recipeId: widget.recipe.id,
+                                                  userId: FirebaseAuth.instance.currentUser!.uid,
+                                                ),
+                                              ),
+                                            );
+                                          },
+                                          child: Text( // Removed the 'const' keyword
+                                            '💬 Rate/Reviews ($totalReviews)',
+                                            style: const TextStyle(fontSize: 14, color: Colors.black),
                                           ),
                                         ),
                                       ],
