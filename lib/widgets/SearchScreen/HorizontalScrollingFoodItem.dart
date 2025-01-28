@@ -4,8 +4,9 @@ import 'package:flutter/material.dart';
 
 import '../../models/RecipeModel.dart';
 import '../../screens/RecipeIntroScreen.dart';
+import '../../services/review_service.dart';
 
-class HorizontalScrollingFood extends StatelessWidget {
+class HorizontalScrollingFood extends StatefulWidget {
   final Recipe recipe;
   final Color boxColor;
 
@@ -16,10 +17,29 @@ class HorizontalScrollingFood extends StatelessWidget {
   });
 
   @override
+  State<HorizontalScrollingFood> createState() => _HorizontalScrollingFoodState();
+}
+
+class _HorizontalScrollingFoodState extends State<HorizontalScrollingFood> {
+  double? averageRating = 0.0;
+  final ReviewService _reviewService = ReviewService();
+  Future<void> _fetchAverageRating() async {
+    final rating = await _reviewService.fetchAverageRating(widget.recipe.id);
+    setState(() {
+      averageRating = rating!;
+    });
+  }
+@override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _fetchAverageRating();
+  }
+  @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
-    recipe.calculateTotalDuration();
+    widget.recipe.calculateTotalDuration();
     return SizedBox(
       width: width / 1.3,
       child: Stack(
@@ -34,7 +54,7 @@ class HorizontalScrollingFood extends StatelessWidget {
                   context,
                   MaterialPageRoute(
                     builder: (context) => RecipeIntro(
-                      recipe: recipe,
+                      recipe: widget.recipe,
                     ),
                   ),
                 );
@@ -43,7 +63,7 @@ class HorizontalScrollingFood extends StatelessWidget {
                 height: width / 2,
                 width: width / 2,
                 decoration: BoxDecoration(
-                  color: boxColor, // Custom color for the container
+                  color: widget.boxColor, // Custom color for the container
                   borderRadius: BorderRadius.circular(40),
                 ),
                 child: Stack(children: [
@@ -76,7 +96,7 @@ class HorizontalScrollingFood extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          recipe.name,
+                          widget.recipe.name,
                           style:
                               Theme.of(context).textTheme.labelLarge!.copyWith(
                                     color: Colors.black,
@@ -93,7 +113,7 @@ class HorizontalScrollingFood extends StatelessWidget {
                                   size: 20,
                                 ),
                                 Text(
-                                  '4.5',
+                                  averageRating.toString(),
                                   style: const TextStyle(fontSize: 14),
                                 ),
                               ],
@@ -101,7 +121,7 @@ class HorizontalScrollingFood extends StatelessWidget {
                             Row(
                               children: [
                                 Text(
-                                  '${recipe.totalDuration} min ',
+                                  '${widget.recipe.totalDuration} min ',
                                   style: const TextStyle(
                                     color: Colors.black26,
                                     fontSize: 14,
@@ -133,7 +153,7 @@ class HorizontalScrollingFood extends StatelessWidget {
                   context,
                   MaterialPageRoute(
                     builder: (context) => RecipeIntro(
-                      recipe: recipe,
+                      recipe: widget.recipe,
                     ),
                   ),
                 );
@@ -147,7 +167,7 @@ class HorizontalScrollingFood extends StatelessWidget {
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(100),
                     child: Image.network(
-                      recipe.titlePhoto,
+                      widget.recipe.titlePhoto,
                       fit: BoxFit.cover,
                       height: width / 2,
                       width: width / 2,

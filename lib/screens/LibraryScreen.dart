@@ -14,61 +14,6 @@ class LibraryScreen extends StatefulWidget {
   State<LibraryScreen> createState() => _LibraryScreenState();
 }
 
-void addCollection(BuildContext context, TextEditingController controller) {
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return Theme(
-        data: Theme.of(context).copyWith(
-          dialogBackgroundColor: Colors.white,
-        ),
-        child: AlertDialog(
-          title: Text('Add to Collections'),
-          content: TextFormField(
-            controller: controller,
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-                controller.clear();
-              },
-              child: Text('Cancel'),
-              style: TextButton.styleFrom(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                foregroundColor: Colors.black,
-                // backgroundColor: Colors.black,
-              ),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-                final userId = FirebaseAuth.instance.currentUser?.uid;
-                saveCollection(userId!, controller.text, context);
-                // addCollectionItem(CollectionModelItem(
-                //   id: '1',
-                //   name: controller.text,
-                // ));
-                controller.clear();
-              },
-              child: Text('Save'),
-              style: TextButton.styleFrom(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                foregroundColor: Colors.white,
-                backgroundColor: Colors.black,
-              ),
-            ),
-          ],
-        ),
-      );
-    },
-  );
-}
-
 Future<void> saveCollection(
     String userId, String collectionName, BuildContext context) async {
   try {
@@ -117,6 +62,7 @@ class _LibraryScreenState extends State<LibraryScreen> {
   // State variable for the button
   bool isCollectionsSelected = false; // Default to Collections
   TextEditingController controller = TextEditingController();
+  bool flag = false;
   @override
   void initState() {
     // TODO: implement initState
@@ -125,13 +71,73 @@ class _LibraryScreenState extends State<LibraryScreen> {
   }
 
   void _onCollectionsListChanged() {
-    setState(() {});
+    setState(() {
+      flag = !flag;
+    });
   }
 
   @override
   void dispose() {
     collectionsList.removeListener(_onCollectionsListChanged);
     super.dispose();
+  }
+
+  void addCollection(BuildContext context, TextEditingController controller) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            dialogBackgroundColor: Colors.white,
+          ),
+          child: AlertDialog(
+            title: Text('Add to Collections'),
+            content: TextFormField(
+              controller: controller,
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  controller.clear();
+                },
+                child: Text('Cancel'),
+                style: TextButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  foregroundColor: Colors.black,
+                  // backgroundColor: Colors.black,
+                ),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  final userId = FirebaseAuth.instance.currentUser?.uid;
+                  saveCollection(userId!, controller.text, context);
+                  // addCollectionItem(CollectionModelItem(
+                  //   id: '1',
+                  //   name: controller.text,
+                  // ));
+                  controller.clear();
+                  setState(() {
+                    flag = !flag;
+                  });
+                },
+                child: Text('Save'),
+                style: TextButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  foregroundColor: Colors.white,
+                  backgroundColor: Colors.black,
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -249,7 +255,9 @@ class _LibraryScreenState extends State<LibraryScreen> {
           // if (isCollectionsSelected)
           Expanded(
             child: isCollectionsSelected
-                ? const LibraryCollections()
+                ?  LibraryCollections(
+                    flag: flag,
+                  )
                 : const LibrarySaved(),
           ),
         ],

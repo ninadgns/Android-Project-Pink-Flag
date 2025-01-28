@@ -7,8 +7,8 @@ import '../../screens/RecipeIntroScreen.dart';
 import 'CollectionItem.dart';
 
 class LibraryCollections extends StatefulWidget {
-  const LibraryCollections({super.key});
-
+   LibraryCollections({super.key, required this.flag});
+  bool flag ;
   @override
   State<LibraryCollections> createState() => _LibraryCollectionsState();
 }

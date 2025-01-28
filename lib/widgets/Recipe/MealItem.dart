@@ -1,6 +1,7 @@
 import 'package:dim/models/CollectionModel.dart';
 import 'package:dim/models/RecipeModel.dart';
 import 'package:dim/screens/RecipeIntroScreen.dart';
+import 'package:dim/services/review_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -28,6 +29,8 @@ class _MealItemState extends State<MealItem> {
     return s[0].toUpperCase() + s.substring(1);
   }
 
+  ReviewService _reviewService = ReviewService();
+  double? averageRating = 0.0;
   final List<String> _collections = [];
 
   void _onMealTap(BuildContext context) {
@@ -46,6 +49,7 @@ class _MealItemState extends State<MealItem> {
     // TODO: implement initState
     super.initState();
     widget.recipe.calculateTotalDuration();
+    _fetchAverageRating();
   }
 
   void addCollection(BuildContext context, TextEditingController controller) {
@@ -97,6 +101,13 @@ class _MealItemState extends State<MealItem> {
         );
       },
     );
+  }
+
+  Future<void> _fetchAverageRating() async {
+    final rating = await _reviewService.fetchAverageRating(widget.recipe.id);
+    setState(() {
+      averageRating = rating!;
+    });
   }
 
   Future<void> _toggleSaveRecipe(
@@ -185,6 +196,7 @@ class _MealItemState extends State<MealItem> {
       print('Error saving collection: $e');
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -355,7 +367,7 @@ class _MealItemState extends State<MealItem> {
                         const SizedBox(width: 10),
                         MealItemTrait(
                           icon: Icons.star_border_rounded,
-                          label: capitalize("4.5"),
+                          label: averageRating.toString(),
                         ),
                       ],
                     )
