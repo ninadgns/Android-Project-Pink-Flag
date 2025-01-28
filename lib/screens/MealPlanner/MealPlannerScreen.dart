@@ -24,32 +24,82 @@ class _MealPlanScreenState extends State<MealPlanScreen> {
     _loadMealPlan();
   }
 
+  // Future<void> _loadMealPlan() async {
+  //   try {
+  //     setState(() => _isLoading = true);
+  //     final response = await _mealPlanService.generateAndSaveMealPlan();
+  //
+  //     _currentMealPlanId = response['id'];
+  //     final List<DayMeals> dayMealsList = [];
+  //
+  //     // Process each day's meals from day_1 to day_7
+  //     for (int i = 1; i <= 7; i++) {
+  //       final dayKey = 'day_$i';
+  //       if (response[dayKey] != null) {
+  //         final List<dynamic> dayMeals = response[dayKey];
+  //         final meals = dayMeals.map((meal) => MealPlan(
+  //           dayOfWeek: 'Day-$i',
+  //           mealType: meal['meal_type'],
+  //           recipeName: meal['recipe_name'],
+  //           recipeId: '', // Since we're not storing recipe_id in the new format
+  //         )).toList();
+  //
+  //         dayMealsList.add(DayMeals(
+  //           day: 'Day-$i',
+  //           meals: meals,
+  //         ));
+  //       }
+  //     }
+  //
+  //     setState(() {
+  //       _mealPlan = dayMealsList;
+  //     });
+  //   } catch (e) {
+  //     if (mounted) {
+  //       ScaffoldMessenger.of(context).showSnackBar(
+  //         SnackBar(content: Text('Error loading meal plan: $e')),
+  //       );
+  //     }
+  //   } finally {
+  //     setState(() => _isLoading = false);
+  //   }
+  // }
+
   Future<void> _loadMealPlan() async {
     try {
       setState(() => _isLoading = true);
-      final response = await _mealPlanService.generateAndSaveMealPlan();
+      final List<Map<String, dynamic>> response = await _mealPlanService.generateMealPlan();
 
-      _currentMealPlanId = response['id'];
-      final List<DayMeals> dayMealsList = [];
+      //final storedPlan = await _mealPlanService.storeMealPlan(response);
 
-      // Process each day's meals from day_1 to day_7
-      for (int i = 1; i <= 7; i++) {
-        final dayKey = 'day_$i';
-        if (response[dayKey] != null) {
-          final List<dynamic> dayMeals = response[dayKey];
-          final meals = dayMeals.map((meal) => MealPlan(
-            dayOfWeek: 'Day-$i',
-            mealType: meal['meal_type'],
-            recipeName: meal['recipe_name'],
-            recipeId: '', // Since we're not storing recipe_id in the new format
-          )).toList();
+      // Group meals by day
+      final Map<String, List<MealPlan>> mealsByDay = {};
 
-          dayMealsList.add(DayMeals(
-            day: 'Day-$i',
-            meals: meals,
-          ));
-        }
+      for (final meal in response) {
+        final dayOfWeek = meal['day_of_week'] as String;
+        mealsByDay.putIfAbsent(dayOfWeek, () => []);
+
+        mealsByDay[dayOfWeek]!.add(MealPlan(
+          dayOfWeek: dayOfWeek,
+          mealType: meal['meal_type'] as String,
+          recipeName: meal['recipe_name'] as String,
+          recipeId: '', // Since we're not storing recipe_id in the new format
+        ));
       }
+
+      final List<DayMeals> dayMealsList = mealsByDay.entries.map((entry) {
+        return DayMeals(
+          day: entry.key,
+          meals: entry.value,
+        );
+      }).toList();
+
+      // Sort days correctly (Day-1, Day-2, etc.)
+      dayMealsList.sort((a, b) {
+        final aNum = int.parse(a.day.split('-')[1]);
+        final bNum = int.parse(b.day.split('-')[1]);
+        return aNum.compareTo(bNum);
+      });
 
       setState(() {
         _mealPlan = dayMealsList;
