@@ -100,6 +100,7 @@ class Recipe {
   final String difficulty;
   final String titlePhoto;
   final String? videoInstruction;
+  int loveCount;
 
   Recipe({
     String? id,
@@ -113,6 +114,7 @@ class Recipe {
     required this.servings,
     required this.difficulty,
     required this.titlePhoto,
+    this.loveCount = 0,
     this.videoInstruction,
   }) : id = id ?? const Uuid().v4() {
     steps.sort((a, b) => a.stepOrder.compareTo(b.stepOrder));
