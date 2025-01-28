@@ -1,9 +1,15 @@
 import 'dart:convert';
 import 'dart:typed_data';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+
+
+
+import 'available_list_screen.dart';
 
 class ScannerScreen extends StatelessWidget {
   final ImagePicker _picker = ImagePicker();
@@ -87,7 +93,7 @@ class ScannerScreen extends StatelessWidget {
           _ingredients.clear();
           _ingredients.addAll(predictions
               .where((prediction) =>
-                  prediction.containsKey('value') && prediction['value'] >= 0.2)
+          prediction.containsKey('value') && prediction['value'] >= 0.2)
               .map<Map<String, dynamic>>(
                   (prediction) => {'name': prediction['name']}));
         });
@@ -113,28 +119,79 @@ class ScannerScreen extends StatelessWidget {
     });
   }
 
-  void _addToCart(BuildContext context) {
-    final cartItems = _ingredients.map((e) => e['name']).join(", ");
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text("Items Added to Cart"),
-        content: Text(
-            cartItems.isEmpty ? "No items in the list." : "Items: $cartItems"),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            style: TextButton.styleFrom(
-              foregroundColor: const Color(0xffd2a85d),
-              backgroundColor: Colors.transparent,
-            ),
-            child: const Text("Close"),
-          )
-        ],
-      ),
-    );
-    print(cartItems);
+
+
+  Future<void> _addToAvailableList(BuildContext context) async {
+    final user = FirebaseAuth.instance.currentUser;
+
+    print("Firebase User: $user");
+
+    if (user == null) {
+      _showErrorDialog(context, "You must be logged in to add ingredients.");
+      return;
+    }
+
+    final userId = user.uid; // Get Firebase User ID
+    print("Firebase User ID: $userId");
+
+    try {
+      // Fetch elements table to match ingredient names
+      final elementsResponse = await Supabase.instance.client
+          .from('elements')
+          .select('ingredient_id, name');
+
+      List<Map<String, dynamic>> elements = List<Map<String, dynamic>>.from(elementsResponse);
+
+      for (var ingredient in _ingredients) {
+        final name = ingredient['name'].toString().toLowerCase();
+
+        // Match with elements table (case insensitive)
+        final matchedElement = elements.firstWhere(
+              (element) => element['name'].toString().toLowerCase() == name,
+          orElse: () => {},
+        );
+
+        final ingredientId = matchedElement.isNotEmpty ? matchedElement['ingredient_id'] : null;
+
+        // Insert into available_ingredients with Firebase User ID
+        await Supabase.instance.client.from('available_ingredients').insert({
+          'user_id': userId, // Store Firebase User ID
+          'ingredient_name': ingredient['name'],
+          'ingredient_id': ingredientId, // Foreign key (null if not found)
+          'created_at': DateTime.now().toIso8601String(),
+        });
+      }
+
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Ingredients added successfully!'),
+            backgroundColor: Colors.green,
+
+          ),
+        );
+
+        // Clear all items using updateState
+
+          _ingredients.clear();  // Clear ingredients list
+          _imageBytes = null;    // Clear image
+          _manualInputController.clear();  // Clear text input
+
+      }
+  } catch (e) {
+  _showErrorDialog(context, "Failed to add ingredients: $e");
   }
+
+      // _showSuccessDialog(context, "Ingredients added successfully!");
+      // setState(() {
+      //   _ingredients.clear();
+      // });
+
+  }
+
+
+
+
 
   void _showErrorDialog(BuildContext context, String message) {
     showDialog(
@@ -168,7 +225,9 @@ class ScannerScreen extends StatelessWidget {
         //   backgroundColor: Colors.transparent,
         //   title: const Text('Food Item Recognition'),
         // ),
-        body: SingleChildScrollView(
+        body: Stack(
+        children:[
+         SingleChildScrollView(
           child: Container(
             decoration: const BoxDecoration(
               color: Colors.white,
@@ -184,7 +243,10 @@ class ScannerScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 const SizedBox(height: 10),
-                Text('Food Item Recognition',
+                Text('Food Item ',
+                    style: Theme.of(context).textTheme.displayMedium),
+                const SizedBox(height: 10),
+                Text('Recognition',
                     style: Theme.of(context).textTheme.displayMedium),
                 const SizedBox(height: 20),
                 DragTarget<Uint8List>(
@@ -202,35 +264,35 @@ class ScannerScreen extends StatelessWidget {
                       ),
                       child: _imageBytes != null
                           ? Stack(
-                              alignment: Alignment.topRight,
-                              children: [
-                                Center(
-                                  child: Image.memory(
-                                    _imageBytes!,
-                                    fit: BoxFit.contain,
-                                    width: double.infinity,
-                                    height: 200,
-                                  ),
-                                ),
-                                IconButton(
-                                  icon: const Icon(
-                                    Icons.delete,
-                                    color: Colors.red,
-                                  ),
-                                  onPressed: () {
-                                    updateState(() {
-                                      _imageBytes = null;
-                                    });
-                                  },
-                                ),
-                              ],
-                            )
-                          : const Center(
-                              child: Text(
-                                'Your image will be shown here',
-                                style: TextStyle(color: Colors.grey),
-                              ),
+                        alignment: Alignment.topRight,
+                        children: [
+                          Center(
+                            child: Image.memory(
+                              _imageBytes!,
+                              fit: BoxFit.contain,
+                              width: double.infinity,
+                              height: 200,
                             ),
+                          ),
+                          IconButton(
+                            icon: const Icon(
+                              Icons.delete,
+                              color: Colors.red,
+                            ),
+                            onPressed: () {
+                              updateState(() {
+                                _imageBytes = null;
+                              });
+                            },
+                          ),
+                        ],
+                      )
+                          : const Center(
+                        child: Text(
+                          'Your image will be shown here',
+                          style: TextStyle(color: Colors.grey),
+                        ),
+                      ),
                     );
                   },
                 ),
@@ -261,7 +323,7 @@ class ScannerScreen extends StatelessWidget {
                       child: ElevatedButton.icon(
                         onPressed: () => _takePhoto(context, updateState),
                         icon:
-                            const Icon(Icons.camera_alt, color: Colors.black45),
+                        const Icon(Icons.camera_alt, color: Colors.black45),
                         label: const Text(
                           'Camera',
                           style: TextStyle(
@@ -317,7 +379,7 @@ class ScannerScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 20),
                 ElevatedButton(
-                  onPressed: () => _addToCart(context),
+                  onPressed: () => _addToAvailableList(context),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFFF8E8C4),
                     padding: const EdgeInsets.symmetric(vertical: 10),
@@ -347,7 +409,7 @@ class ScannerScreen extends StatelessWidget {
                           title: Text(ingredient['name']),
                           subtitle: ingredient['confidence'] != null
                               ? Text(
-                                  'Confidence: ${(ingredient['confidence'] * 100).toStringAsFixed(2)}%')
+                              'Confidence: ${(ingredient['confidence'] * 100).toStringAsFixed(2)}%')
                               : null,
                           trailing: IconButton(
                             icon: const Icon(Icons.delete, color: Colors.red),
@@ -364,6 +426,36 @@ class ScannerScreen extends StatelessWidget {
             ),
           ),
         ),
+          Align(
+            alignment: Alignment.topRight,
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => AvailableListScreen(),
+                    ),
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  backgroundColor: const Color(0xFFF8E8C4),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                ),
+                child: const Text(
+                  'Available List',
+                  style: TextStyle(color: Colors.black45, fontSize: 14),
+                ),
+              ),
+            ),
+          ),
+      ],
+        ),
+
       );
     });
   }

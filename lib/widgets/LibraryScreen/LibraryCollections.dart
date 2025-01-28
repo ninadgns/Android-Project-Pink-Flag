@@ -1,15 +1,41 @@
+import 'package:dim/screens/CollectionsScreen.dart';
+import 'package:dim/widgets/SearchScreen/ReicipeListView.dart';
 import 'package:flutter/material.dart';
 
 import '../../data/constants.dart';
 import '../../screens/RecipeIntroScreen.dart';
 import 'CollectionItem.dart';
 
-class LibraryCollections extends StatelessWidget {
+class LibraryCollections extends StatefulWidget {
   const LibraryCollections({super.key});
+
+  @override
+  State<LibraryCollections> createState() => _LibraryCollectionsState();
+}
+
+class _LibraryCollectionsState extends State<LibraryCollections> {
+  // late List<CollectionItem> _collectionList = [];
+  bool _isLoading = false;
+  // List<Map<String, dynamic>> collections=[];
+  @override
+  void initState() {
+    super.initState();
+    // _fetchAndSetRecipes();
+  }
 
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
+
+    if (collectionsList.value.isEmpty) {
+      return Center(
+          child: Column(
+        children: [
+          SizedBox(height: height * 0.3),
+          Text('No collections found'),
+        ],
+      ));
+    }
     return GridView.builder(
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2, // Number of columns
@@ -22,14 +48,19 @@ class LibraryCollections extends StatelessWidget {
         return InkWell(
           onTap: () {
             Navigator.push(
-                context, MaterialPageRoute(builder: (ctx) => RecipeIntro(recipe: dummyRecipe,)));
+                context,
+                MaterialPageRoute(
+                    builder: (ctx) => CollectionsScreen(
+                          item: collectionsList.value[index],
+                        )));
           },
           child: CollectionItem(
             index: index,
+            item: collectionsList.value[index],
           ),
         );
       },
-      itemCount: 20,
+      itemCount: collectionsList.value.length,
     );
   }
 }
