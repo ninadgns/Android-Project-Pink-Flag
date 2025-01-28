@@ -1,4 +1,4 @@
-import 'package:dim/screens/MealPlanner/FoodPlannerScreen.dart';
+import 'package:dim/screens/MealPlanner/MealPlannerScreen.dart';
 import 'package:dim/screens/Shopping/ShoppingScreen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -46,7 +46,7 @@ final homepageScreens = [
   ScannerScreen(),
   const ShoppingScreen(),
   // const ProfileScreen(),
-  const FoodPlannerScreen(),
+  const MealPlanScreen(),
 ];
 
 final List<String> categories = [
@@ -142,43 +142,28 @@ final dummyRecipe = recipe_model.Recipe(
 )..calculateTotalDuration();
 const List<String> Units = ['kg', 'g', 'L', 'ml', 'pieces', 'packs'];
 const Map<String, Color> categoryColors = {
-  'Meat, Poultry and Fish': Color(0xFFFFE4E1),
-  'Dairy': Color(0xFFBBDEFB),
-  'Fruits': Color(0xFFFFDAB9),
-  'Vegetables': Color(0xFFB2DFDB),
-  'Pantry': Color(0xFFE0E0E0),
-  'Spices & Seasonings': Color(0xFFE6E6FA),
-  'Baking Essentials': Color(0xFFFFECB3),
-  'Oils & Vinegars': Color(0xFFFFCFD0),
-  'Sauces & Condiments': Color(0xFFE6D3B4),
+  'Meats': Color(0xFFFFE4E1),
+  'Vegetables and Fruits': Color(0xFFBBDEFB),
+  'Oil and Nuts': Color(0xFFFFDAB9),
+  'Dairy': Color(0xFFB2DFDB),
+  'Grains': Color(0xFFE0E0E0),
+  'Fish': Color(0xFFE6E6FA),
+  'Seafood': Color(0xFFE6D3B4),
 };
 
 
 class PreferenceOptions {
   static const Map<String, List<String>> extendedOptions = {
     'diet': [
-      'Vegetarian', 'Vegan', 'Gluten Free', 'Sugar Free', 'Halal', 'Keto',
-      'Paleo', 'Lactose Free', 'Low Fat', 'Mediterranean', 'Pescatarian',
-      'Low Carb', 'Dairy Free', 'Kosher', 'Raw Food',
-      'High Protein', 'Low Sodium', 'Diabetic-Friendly'
+      'Low Fat', 'Keto', 'Gluten Free',
+      'Vegetarian', 'Lactose Free',
+      'Low Carb', 'Low Protein', 'Diabetic-Friendly'
     ],
     'allergies': [
-      'Peanut', 'Soy', 'Prawns', 'Walnuts', 'Cashews', 'Cows\' milk',
-      'Tree Nuts', 'Shellfish', 'Wheat', 'Eggs', 'Fish', 'Seafood',
-      'Sesame', 'Mustard', 'Celery', 'Lupin', 'Sulfites', 'Mushrooms',
-      'Garlic', 'Onions'
+      'Peanut', 'Soy',  'Egg', 'Prawns', 'Cashews', 'Sesame',
+      'Hilsa Fish', 'Seafood', 'Mustard',  'Eggplant', 'Milk',
+      'Mushrooms', 'Garlic', 'Onions'
     ],
-    'materials': [
-      'Meat', 'Cabbage', 'Carrot', 'Sweet Potato', 'Eggs', 'Prawns',
-      'Fish', 'Broccoli', 'Corn', 'Wheat', 'Tomatoes', 'Cheese', 'Tofu',
-      'Lentils', 'Chickpeas', 'Rice', 'Potatoes', 'Spinach', 'Mushrooms', 'Peppers'
-    ],
-    'dishes': [
-      'Pasta', 'Soup', 'Salad', 'Pizza', 'Bowl', 'Dessert', 'Stew',
-      'Sandwiches', 'Curry', 'Stir Fry', 'Roast', 'Grill', 'Casserole',
-      'Sushi', 'Tacos', 'Burgers', 'Rice Dishes', 'Noodles', 'Wraps',
-      'Fritters'
-    ]
   };
 }
 

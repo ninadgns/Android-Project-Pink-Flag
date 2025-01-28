@@ -408,7 +408,9 @@ class _ProfileDetailInfoScreenState extends State<ProfileDetailInfoScreen>
       );
     }
     ImageProvider backgroundImage;
-    backgroundImage = NetworkImage(widget.imagePath);
+    //backgroundImage = NetworkImage(widget.imagePath);
+
+    backgroundImage= AssetImage('assets/images/profile.png') as ImageProvider;
     // if (profileinfo?.profileImageBytes != null) {
     //   backgroundImage = MemoryImage(profileinfo!.profileImageBytes!);
     // } else if (profileinfo!.profileImagePath.startsWith('assets/')) {
