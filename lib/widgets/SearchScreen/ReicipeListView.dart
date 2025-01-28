@@ -1,11 +1,9 @@
-import 'package:dim/data/constants.dart';
 import 'package:dim/models/CollectionModel.dart';
 // import 'package:dim/models/GroceryModel.dart';
 import 'package:dim/screens/AddPost/fetchRecipes.dart';
 import 'package:dim/widgets/Recipe/MealItem.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../models/RecipeModel.dart';
@@ -17,6 +15,7 @@ class RecipeListView extends StatefulWidget {
   @override
   State<RecipeListView> createState() => _RecipeListViewState();
 }
+
 Future<List<CollectionModelItem>> fetchCollections() async {
   final supabase = Supabase.instance.client;
   final user = FirebaseAuth.instance.currentUser;
@@ -38,15 +37,14 @@ Future<List<CollectionModelItem>> fetchCollections() async {
 
     final collections = response
         .map((collection) => {
-      'id': collection['id'],
-      'collection_name': collection['collection_name']
-    })
+              'id': collection['id'],
+              'collection_name': collection['collection_name']
+            })
         .toList();
     debugPrint('Collections fetched successfully for user: ${user.uid}');
     List<CollectionModelItem> collectionList = collections
         .map((collection) => CollectionModelItem(
-        id: collection['id'],
-        name: collection['collection_name']))
+            id: collection['id'], name: collection['collection_name']))
         .toList();
     // print(collections);
     return collectionList;
@@ -61,15 +59,18 @@ void addCollectionItem(CollectionModelItem collection) {
   collectionsList.value.add(collection);
   // collectionsList.notifyListeners();
 }
+
 List<Recipe> recipeList = [];
+
 class _RecipeListViewState extends State<RecipeListView> {
   bool _isLoading = false;
   @override
-  void initState()  {
+  void initState() {
     super.initState();
     _fetchAndSetRecipes(widget.searchQuery);
     _initialize();
   }
+
   Future<void> _initialize() async {
     // await fetchCollections();
     collectionsList.value = await fetchCollections();

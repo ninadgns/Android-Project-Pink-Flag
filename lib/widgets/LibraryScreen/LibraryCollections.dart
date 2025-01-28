@@ -32,7 +32,7 @@ class _LibraryCollectionsState extends State<LibraryCollections> {
           child: Column(
         children: [
           SizedBox(height: height * 0.3),
-          Text('No collections found'),
+          const Text('No collections found'),
         ],
       ));
     }

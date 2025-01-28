@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import '../widgets/Recipe/MealItem.dart';
 import '../widgets/SearchScreen/ReicipeListView.dart';
 
-class CollectionsScreen extends StatelessWidget {
-  CollectionsScreen({super.key, required this.item});
+class Categorycollectionscreen extends StatelessWidget {
+  Categorycollectionscreen({super.key, required this.item});
   CollectionModelItem item;
   @override
   Widget build(BuildContext context) {

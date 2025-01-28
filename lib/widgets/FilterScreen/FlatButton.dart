@@ -4,10 +4,12 @@ class FlatButton extends StatefulWidget {
   FlatButton({
     super.key,
     required this.item,
-    this.isSelected = false,
+    required this.isSelected,
+    required this.toggleSelection,
   });
   String item;
   bool isSelected;
+  final Function(String) toggleSelection;
 
   @override
   State<FlatButton> createState() => _FlatButtonState();
@@ -30,9 +32,7 @@ class _FlatButtonState extends State<FlatButton> {
             ),
           )),
       onPressed: () {
-        setState(() {
-          widget.isSelected = !widget.isSelected;
-        });
+        widget.toggleSelection(widget.item);
       },
       child: Text(widget.item, style: Theme.of(context).textTheme.bodyMedium),
     );
