@@ -16,6 +16,7 @@ class _MealPlanScreenState extends State<MealPlanScreen> {
   final _mealPlanService = MealPlanService(supabase: Supabase.instance.client);
   List<DayMeals> _mealPlan = [];
   bool _isLoading = true;
+  String? _currentMealPlanId;
 
   @override
   void initState() {
@@ -26,18 +27,32 @@ class _MealPlanScreenState extends State<MealPlanScreen> {
   Future<void> _loadMealPlan() async {
     try {
       setState(() => _isLoading = true);
-      final response = await _mealPlanService.generateMealPlan();
+      final response = await _mealPlanService.generateAndSaveMealPlan();
 
-      final mealsByDay = <String, List<MealPlan>>{};
-      for (final meal in response) {
-        final mealPlan = MealPlan.fromJson(meal);
-        mealsByDay.putIfAbsent(mealPlan.dayOfWeek, () => []).add(mealPlan);
+      _currentMealPlanId = response['id'];
+      final List<DayMeals> dayMealsList = [];
+
+      // Process each day's meals from day_1 to day_7
+      for (int i = 1; i <= 7; i++) {
+        final dayKey = 'day_$i';
+        if (response[dayKey] != null) {
+          final List<dynamic> dayMeals = response[dayKey];
+          final meals = dayMeals.map((meal) => MealPlan(
+            dayOfWeek: 'Day-$i',
+            mealType: meal['meal_type'],
+            recipeName: meal['recipe_name'],
+            recipeId: '', // Since we're not storing recipe_id in the new format
+          )).toList();
+
+          dayMealsList.add(DayMeals(
+            day: 'Day-$i',
+            meals: meals,
+          ));
+        }
       }
 
       setState(() {
-        _mealPlan = mealsByDay.entries
-            .map((e) => DayMeals(day: e.key, meals: e.value))
-            .toList();
+        _mealPlan = dayMealsList;
       });
     } catch (e) {
       if (mounted) {
@@ -47,6 +62,37 @@ class _MealPlanScreenState extends State<MealPlanScreen> {
       }
     } finally {
       setState(() => _isLoading = false);
+    }
+  }
+
+  Future<void> _updateDayMeal(String day, String mealType, String newRecipeName) async {
+    try {
+      if (_currentMealPlanId == null) return;
+
+      final dayNumber = int.parse(day.split('-')[1]);
+      final currentDayMeals = _mealPlan
+          .firstWhere((dm) => dm.day == day)
+          .meals
+          .map((m) => {
+        'meal_type': m.mealType,
+        'recipe_name': m.mealType == mealType ? newRecipeName : m.recipeName,
+      })
+          .toList();
+
+      await _mealPlanService.updateDayMeals(
+        mealPlanId: _currentMealPlanId!,
+        dayNumber: dayNumber,
+        meals: currentDayMeals,
+      );
+
+      // Refresh the meal plan after updating
+      _loadMealPlan();
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error updating meal: $e')),
+        );
+      }
     }
   }
 
@@ -116,8 +162,12 @@ class _MealPlanScreenState extends State<MealPlanScreen> {
             recipeName: meal.recipeName,
             mealType: meal.mealType,
             onEdit: () async {
-              // Show recipe selection dialog
-              // Update meal plan using service
+              // Here you would implement your recipe selection dialog
+              // For example:
+              // final newRecipe = await showRecipeSelectionDialog(context);
+              // if (newRecipe != null) {
+              //   await _updateDayMeal(dayMeals.day, meal.mealType, newRecipe);
+              // }
             },
           )),
         ],

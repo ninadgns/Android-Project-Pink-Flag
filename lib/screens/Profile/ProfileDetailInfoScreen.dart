@@ -410,18 +410,22 @@ class _ProfileDetailInfoScreenState extends State<ProfileDetailInfoScreen>
     ImageProvider backgroundImage;
     //backgroundImage = NetworkImage(widget.imagePath);
 
-    backgroundImage= AssetImage('assets/images/profile.png') as ImageProvider;
-    // if (profileinfo?.profileImageBytes != null) {
-    //   backgroundImage = MemoryImage(profileinfo!.profileImageBytes!);
-    // } else if (profileinfo!.profileImagePath.startsWith('assets/')) {
-    //   backgroundImage = AssetImage(profileinfo!.profileImagePath);
-    // } else {
-    //   if (kIsWeb) {
-    //     backgroundImage = NetworkImage(widget.imagePath);
-    //   } else {
-    //     backgroundImage = FileImage(File(profileinfo!.profileImagePath));
-    //   }
-    // }
+    // backgroundImage= (widget.imagePath.isNotEmpty &&
+    //     Uri.tryParse(widget.imagePath)?.hasAbsolutePath == true)
+    //     ? NetworkImage(widget.imagePath)
+    //     : AssetImage(widget.imagePath) as ImageProvider;
+    //
+    if (profileinfo?.profileImageBytes != null) {
+      backgroundImage = MemoryImage(profileinfo!.profileImageBytes!);
+    } else if (profileinfo!.profileImagePath.startsWith('assets/')) {
+      backgroundImage = AssetImage(profileinfo!.profileImagePath) as ImageProvider;
+    } else {
+      if (kIsWeb) {
+        backgroundImage = NetworkImage(widget.imagePath);
+      } else {
+        backgroundImage = FileImage(File(profileinfo!.profileImagePath)) as ImageProvider;
+      }
+    }
 
     return Scaffold(
       // Adding a stack so we can put a custom painted background behind the main content

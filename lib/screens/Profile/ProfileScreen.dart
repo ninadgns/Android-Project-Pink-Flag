@@ -359,8 +359,10 @@ class _ProfileScreenState extends State<ProfileScreen>
                           children: [
                             CircleAvatar(
                               radius: maxAvatarRadius,
-                              backgroundImage: AssetImage(
-                                  'assets/images/profile.png') as ImageProvider,
+                              backgroundImage: (widget.imagePath.isNotEmpty &&
+                                  Uri.tryParse(widget.imagePath)?.hasAbsolutePath == true)
+                                  ? NetworkImage(widget.imagePath)
+                                  : AssetImage('assets/images/profile.png') as ImageProvider,
                             ),
                             SizedBox(height: size.height * 0.013),
                             Text(
