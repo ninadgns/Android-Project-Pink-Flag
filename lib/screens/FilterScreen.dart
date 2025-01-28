@@ -1,3 +1,4 @@
+import 'package:dim/widgets/SearchScreen/FilterListView.dart';
 import 'package:flutter/material.dart';
 
 import '/data/constants.dart';
@@ -95,6 +96,16 @@ class _FilterScreenState extends State<FilterScreen> {
                 '\nCook Time: $_sliderValue'
                 '\nDifficulty: $_selectedDifficulty'
                 '\nDish Type: $_selectedDishType');
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => Filterlistview(
+                  sliderValue: _sliderValue,
+                  selectedDifficulty: _selectedDifficulty,
+                  selectedDishType: _selectedDishType,
+                ),
+              ),
+            );
           },
           child: Container(
             padding: const EdgeInsets.all(8),
