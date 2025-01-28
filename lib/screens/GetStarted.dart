@@ -153,44 +153,44 @@ class _OnboardingState extends State<Getstarted> {
                             40), // Vertical space between buttons
 
                     // Third Button
-                    SizedBox(
-                      width: screenWidth * 0.3, // 90% of screen width
-                      child: ElevatedButton(
-                        onPressed: () {
-                          try {
-                            // Navigate to the home screen
-                            login1=false;
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => Homescreen()),
-                            );
-                          } catch (e) {
-                            // Show error message on failure
-                            //_showSnackBar('Failed: ${e.toString()}');
-                          }
-                          // Navigator.push(
-                          //   context,
-                          //   MaterialPageRoute(builder: (context) => LogIn()),
-                          // );
-                        },
-                        style: ElevatedButton.styleFrom(
-                          padding: EdgeInsets.symmetric(
-                            vertical: 15, // Taller button
-                          ),
-                          backgroundColor: const Color(0xFF39786D),
-                          foregroundColor: Colors.white,
-                          textStyle: GoogleFonts.roboto(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: const Color(0xFFFFFFFF),
-                          ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15.0),
-                          ),
-                        ),
-                        child: const Text("Guest"),
-                      ),
-                    ),
+                    // SizedBox(
+                    //   width: screenWidth * 0.3, // 90% of screen width
+                    //   child: ElevatedButton(
+                    //     onPressed: () {
+                    //       try {
+                    //         // Navigate to the home screen
+                    //         login1=false;
+                    //         Navigator.push(
+                    //           context,
+                    //           MaterialPageRoute(builder: (context) => Homescreen()),
+                    //         );
+                    //       } catch (e) {
+                    //         // Show error message on failure
+                    //         //_showSnackBar('Failed: ${e.toString()}');
+                    //       }
+                    //       // Navigator.push(
+                    //       //   context,
+                    //       //   MaterialPageRoute(builder: (context) => LogIn()),
+                    //       // );
+                    //     },
+                    //     style: ElevatedButton.styleFrom(
+                    //       padding: EdgeInsets.symmetric(
+                    //         vertical: 15, // Taller button
+                    //       ),
+                    //       backgroundColor: const Color(0xFF39786D),
+                    //       foregroundColor: Colors.white,
+                    //       textStyle: GoogleFonts.roboto(
+                    //         fontSize: 20,
+                    //         fontWeight: FontWeight.bold,
+                    //         color: const Color(0xFFFFFFFF),
+                    //       ),
+                    //       shape: RoundedRectangleBorder(
+                    //         borderRadius: BorderRadius.circular(15.0),
+                    //       ),
+                    //     ),
+                    //     child: const Text("Guest"),
+                    //   ),
+                    // ),
                   ],
                 ),
               ),

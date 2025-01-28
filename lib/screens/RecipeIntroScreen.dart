@@ -12,8 +12,6 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '/widgets/RecipeIntroScreen/DetailsInfo.dart';
 import '../models/RecipeModel.dart';
 import '../widgets/RecipeIntroScreen/IngredientsInfo.dart';
-import 'review_screen.dart';
-
 
 class RecipeIntro extends StatefulWidget {
   RecipeIntro({super.key, required this.recipe});
@@ -356,28 +354,15 @@ class _RecipeIntroState extends State<RecipeIntro> {
                                               const Text('4.7 ',
                                                   style: TextStyle(
                                                       color: Colors.grey)),
-
-                                              Row(
-                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                children: [// Navigate to Review Screen
-                                                  TextButton(
-                                                    onPressed: () {
-                                                      Navigator.push(
-                                                        context,
-                                                        MaterialPageRoute(
-                                                          builder: (context) => ReviewScreen(
-                                                            recipeId: widget.recipe.id,
-                                                            userId: FirebaseAuth.instance.currentUser!.uid,
-                                                          ),
-                                                        ),
-                                                      );
-                                                    },
-                                                    child: const Text(
-                                                      'View Reviews',
-                                                      style: TextStyle(fontSize: 14, color: Colors.blue),
-                                                    ),
-                                                  ),
-                                                ],
+                                              Text(
+                                                '(18 reviews)',
+                                                style: TextStyle(
+                                                  color: Colors.grey[400],
+                                                  fontSize: 12,
+                                                  decoration:
+                                                      TextDecoration.underline,
+                                                  decorationColor: Colors.grey,
+                                                ),
                                               ),
                                             ],
                                           ),
