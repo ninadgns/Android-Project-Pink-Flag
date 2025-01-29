@@ -39,7 +39,7 @@ class AboutScreen extends StatelessWidget {
                   ),
                 ],
               ),
-              SizedBox(height: 30),
+              SizedBox(height: 25),
               ClipRRect(
                 borderRadius: BorderRadius.circular(100),
                 child: Image.asset(
@@ -54,7 +54,7 @@ class AboutScreen extends StatelessWidget {
                       fontWeight: FontWeight.bold,
                     ),
               ),
-              SizedBox(height: 10),
+              SizedBox(height: 8),
               Text(
                 "Crafting Innovation, Serving Excellence!",
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
@@ -66,7 +66,7 @@ class AboutScreen extends StatelessWidget {
               Column(
                 children: [...teamMembers],
               ),
-              SizedBox(height: 15),
+              SizedBox(height: 18),
               InkWell(
                 onTap: () async {
                   await launchURL(repoLink);
