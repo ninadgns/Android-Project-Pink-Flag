@@ -26,6 +26,11 @@ class DateSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    final textScale = MediaQuery.of(context).textScaleFactor;
+    final padding = size.width * 0.03;
+    final iconSize = size.width * 0.045;
+
     return InkWell(
       onTap: () async {
         final date = await showDatePicker(
@@ -37,7 +42,7 @@ class DateSelector extends StatelessWidget {
         if (date != null) onDateSelected(date);
       },
       child: Container(
-        padding: const EdgeInsets.all(12),
+        padding: EdgeInsets.all(padding),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(8),
@@ -45,11 +50,18 @@ class DateSelector extends StatelessWidget {
         ),
         child: Row(
           children: [
-            Icon(Icons.calendar_today, size: 18, color: Colors.grey[600]),
-            const SizedBox(width: 8),
+            Icon(
+              Icons.calendar_today,
+              size: iconSize,
+              color: Colors.grey[600],
+            ),
+            SizedBox(width: size.width * 0.02),
             Text(
               _formatDate(selectedDate),
-              style: TextStyle(color: Colors.grey[800]),
+              style: TextStyle(
+                color: Colors.grey[800],
+                fontSize: textScale * 14,
+              ),
             ),
           ],
         ),

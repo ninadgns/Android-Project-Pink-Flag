@@ -260,7 +260,7 @@ class _ProfileDetailInfoScreenState extends State<ProfileDetailInfoScreen>
               style: TextButton.styleFrom(
                 foregroundColor: const Color(0xFF00ACC1),
               ),
-              child: Text('Save', style: TextStyle(fontSize: screenSize.width * 0.035)),
+              child: Text('Done', style: TextStyle(fontSize: screenSize.width * 0.035)),
             ),
           ],
         );
@@ -386,50 +386,51 @@ class _ProfileDetailInfoScreenState extends State<ProfileDetailInfoScreen>
     );
   }
 
-  Widget _buildStat(int number, String label) {
-    final screenSize = MediaQuery.of(context).size;
+  // Widget _buildStat(int number, String label) {
+  //   final screenSize = MediaQuery.of(context).size;
+  //
+  //   return Container(
+  //     padding: EdgeInsets.symmetric(
+  //       horizontal: screenSize.width * 0.04,
+  //       vertical: screenSize.height * 0.015,
+  //     ),
+  //     decoration: BoxDecoration(
+  //       color: const Color(0xFFE0F7FA).withOpacity(0.8),
+  //       borderRadius: BorderRadius.circular(14),
+  //       boxShadow: [
+  //         BoxShadow(
+  //           color: Colors.grey.withOpacity(0.1),
+  //           spreadRadius: 1,
+  //           blurRadius: 5,
+  //           offset: const Offset(0, 2),
+  //         ),
+  //       ],
+  //     ),
+  //     child: Column(
+  //       mainAxisSize: MainAxisSize.min,
+  //       children: [
+  //         Text(
+  //           number.toString(),
+  //           style: TextStyle(
+  //             fontSize: screenSize.width * 0.05,
+  //             fontWeight: FontWeight.bold,
+  //             color: const Color(0xFF00796B),
+  //           ),
+  //         ),
+  //         SizedBox(height: screenSize.height * 0.005),
+  //         Text(
+  //           label,
+  //           style: TextStyle(
+  //             color: Colors.grey[800],
+  //             fontSize: screenSize.width * 0.035,
+  //             fontWeight: FontWeight.w500,
+  //           ),
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
 
-    return Container(
-      padding: EdgeInsets.symmetric(
-        horizontal: screenSize.width * 0.04,
-        vertical: screenSize.height * 0.015,
-      ),
-      decoration: BoxDecoration(
-        color: const Color(0xFFE0F7FA).withOpacity(0.8),
-        borderRadius: BorderRadius.circular(14),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
-            spreadRadius: 1,
-            blurRadius: 5,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(
-            number.toString(),
-            style: TextStyle(
-              fontSize: screenSize.width * 0.05,
-              fontWeight: FontWeight.bold,
-              color: const Color(0xFF00796B),
-            ),
-          ),
-          SizedBox(height: screenSize.height * 0.005),
-          Text(
-            label,
-            style: TextStyle(
-              color: Colors.grey[800],
-              fontSize: screenSize.width * 0.035,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -499,11 +500,11 @@ class _ProfileDetailInfoScreenState extends State<ProfileDetailInfoScreen>
                         });
                       },
                     ),
-                    IconButton(
-                      icon: const Icon(Icons.share, color: Colors.black),
-                      iconSize: screenSize.width * 0.05,
-                      onPressed: _shareProfile,
-                    ),
+                    // IconButton(
+                    //   icon: const Icon(Icons.share, color: Colors.black),
+                    //   iconSize: screenSize.width * 0.05,
+                    //   onPressed: _shareProfile,
+                    // ),
                   ],
                 ),
                 Expanded(
@@ -556,22 +557,22 @@ class _ProfileDetailInfoScreenState extends State<ProfileDetailInfoScreen>
                             ],
                           ),
                         ),
-                        Container(
-                          margin: EdgeInsets.symmetric(
-                            vertical: screenSize.height * 0.02,
-                            horizontal: screenSize.width * 0.03,
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              Expanded(child: _buildStat(profileinfo!.recipesCount, 'Recipes')),
-                              SizedBox(width: screenSize.width * 0.02),
-                              Expanded(child: _buildStat(profileinfo!.followingCount, 'Following')),
-                              SizedBox(width: screenSize.width * 0.02),
-                              Expanded(child: _buildStat(profileinfo!.followerCount, 'Followers')),
-                            ],
-                          ),
-                        ),
+                        // Container(
+                        //   margin: EdgeInsets.symmetric(
+                        //     vertical: screenSize.height * 0.02,
+                        //     horizontal: screenSize.width * 0.03,
+                        //   ),
+                        //   child: Row(
+                        //     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        //     children: [
+                        //       Expanded(child: _buildStat(profileinfo!.recipesCount, 'Recipes')),
+                        //       SizedBox(width: screenSize.width * 0.02),
+                        //       Expanded(child: _buildStat(profileinfo!.followingCount, 'Following')),
+                        //       SizedBox(width: screenSize.width * 0.02),
+                        //       Expanded(child: _buildStat(profileinfo!.followerCount, 'Followers')),
+                        //     ],
+                        //   ),
+                        // ),
                         SizedBox(height: screenSize.height * 0.03),
                         _buildEditableField(
                           label: 'Full Name',

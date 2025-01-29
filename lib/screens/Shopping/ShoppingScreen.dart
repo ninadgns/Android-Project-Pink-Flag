@@ -33,51 +33,65 @@ class _ShoppingScreenState extends State<ShoppingScreen> with SingleTickerProvid
     Share.share('See my shopping list: $shoppingListLink');
   }
 
-
   void _saveInDB() {
     ///store in db
-
   }
-
 
   @override
   Widget build(BuildContext context) {
-    return  Scaffold(
+    final size = MediaQuery.of(context).size;
+    final textScale = MediaQuery.of(context).textScaleFactor;
+    final padding = size.width * 0.04;
+    final iconSize = size.width * 0.06;
+    final appBarHeight = size.height * 0.08;
+
+    return Scaffold(
       backgroundColor: Colors.grey[100],
-      appBar:AppBar(
-        backgroundColor: Colors.teal.shade200,
-        automaticallyImplyLeading: false,
-        elevation: 0,
-        title: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'Shopping List',
-              style: TextStyle(
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(appBarHeight),
+        child: AppBar(
+          backgroundColor: Colors.teal.shade200,
+          automaticallyImplyLeading: false,
+          elevation: 0,
+          title: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Shopping List',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: textScale * 24,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              Text(
+                '${_formatDate(_startDate)} - ${_formatDate(_endDate)}',
+                style: TextStyle(
+                  color: Colors.white70,
+                  fontSize: textScale * 14,
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            // IconButton(
+            //   icon: Icon(
+            //     Icons.share,
+            //     color: Colors.white,
+            //     size: iconSize,
+            //   ),
+            //   onPressed: _shareShoppingList,
+            // ),
+            IconButton(
+              icon: Icon(
+                Icons.check,
                 color: Colors.white,
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
+                size: iconSize,
               ),
-            ),
-            Text(
-              '${_formatDate(_startDate)} - ${_formatDate(_endDate)}',
-              style: const TextStyle(
-                color: Colors.white70,
-                fontSize: 14,
-              ),
+              onPressed: _saveInDB,
             ),
           ],
         ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.share_outlined, color: Colors.white),
-            onPressed: _saveInDB,
-          ),
-          IconButton(
-            icon: const Icon(Icons.check, color: Colors.white),
-            onPressed: _shareShoppingList,
-          ),
-        ],
       ),
       body: LayoutBuilder(
         builder: (context, constraints) {
@@ -86,6 +100,7 @@ class _ShoppingScreenState extends State<ShoppingScreen> with SingleTickerProvid
             child: ConstrainedBox(
               constraints: BoxConstraints(
                 minHeight: constraints.maxHeight,
+                minWidth: constraints.maxWidth,
               ),
               child: Container(
                 decoration: const BoxDecoration(
@@ -99,7 +114,7 @@ class _ShoppingScreenState extends State<ShoppingScreen> with SingleTickerProvid
                 child: Column(
                   children: [
                     Padding(
-                      padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.04),
+                      padding: EdgeInsets.all(padding),
                       child: Row(
                         children: [
                           Expanded(
@@ -109,7 +124,7 @@ class _ShoppingScreenState extends State<ShoppingScreen> with SingleTickerProvid
                               onDateSelected: (date) => setState(() => _startDate = date),
                             ),
                           ),
-                          SizedBox(width: MediaQuery.of(context).size.width * 0.04),
+                          SizedBox(width: size.width * 0.04),
                           Expanded(
                             child: DateSelector(
                               label: 'To',
@@ -127,7 +142,7 @@ class _ShoppingScreenState extends State<ShoppingScreen> with SingleTickerProvid
                       onAddItem: () => setState(() {}),
                       onUpdate: () => setState(() {}),
                     )),
-                    SizedBox(height: MediaQuery.of(context).size.height * 0.15),
+                    SizedBox(height: size.height * 0.15),
                   ],
                 ),
               ),
@@ -135,6 +150,12 @@ class _ShoppingScreenState extends State<ShoppingScreen> with SingleTickerProvid
           );
         },
       ),
-   );
+    );
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
   }
 }

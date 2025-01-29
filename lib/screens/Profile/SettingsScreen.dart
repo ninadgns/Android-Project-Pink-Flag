@@ -1,4 +1,3 @@
-// ignore_for_file: prefer_const_constructors
 
 import 'package:dim/models/FirebaseApi.dart';
 import 'package:dim/models/NotificationManagement/NotificationSettings.dart';
@@ -525,7 +524,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       title: 'Clear Cache',
                       subtitle: 'Free up storage by clearing cached data.',
                       onTap: _showClearCacheDialog,
-                      iconColor: Colors.black26,
+                      iconColor: Colors.indigo,
                     ),
                     _buildSettingItem(
                       icon: Icons.star,
