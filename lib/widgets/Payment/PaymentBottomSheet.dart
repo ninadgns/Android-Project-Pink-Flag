@@ -27,15 +27,15 @@ void showPaymentBottomSheet({
   final TextEditingController cvcController = TextEditingController(text: selectedMethod?.cvc ?? '');
   final TextEditingController nameController = TextEditingController(text: selectedMethod?.cardHolderName ?? '');
   final TextEditingController zipController = TextEditingController(text: selectedMethod?.zipCode ?? '');
-  String? selectedCardType = selectedMethod?.cardType;
+  String? selectedCardType= selectedMethod?.cardType;
   bool isSave = false;
   final formKey = GlobalKey<FormState>();
 
-  Amount = amount;
-  planID = planId;
+  Amount= amount;
+  planID=planId;
 
-  if (selectedMethod != null) {
-    isSave = true;
+  if(selectedMethod!=null){
+    isSave=true;
   }
 
   showModalBottomSheet(
@@ -50,72 +50,58 @@ void showPaymentBottomSheet({
       builder: (context, StateSetter setModalState) {
         final size = MediaQuery.of(context).size;
 
-        return SafeArea(
-          child: Padding(
-            padding: EdgeInsets.only(
-              bottom: MediaQuery.of(context).viewInsets.bottom,
-            ),
-            child: DraggableScrollableSheet(
-              initialChildSize: 0.7,
-              minChildSize: 0.5,
-              maxChildSize: 0.95,
-              expand: false,
-              builder: (context, scrollController) {
-                return SingleChildScrollView(
-                  controller: scrollController,
-                  child: Container(
-                    padding: EdgeInsets.all(size.width * 0.05),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        _buildHeader(context, amount, size),
-                        SizedBox(height: size.height * 0.02),
-                        _buildCardTypeSelector(
-                          setModalState,
-                          selectedCardType,
-                              (value) {
-                            setModalState(() => selectedCardType = value);
-                          },
-                          size,
-                        ),
-                        SizedBox(height: size.height * 0.02),
-                        _buildPaymentForm(
-                          context,
-                          cardNumberController,
-                          expiryController,
-                          cvcController,
-                          nameController,
-                          zipController,
-                          size,
-                          formKey,
-                        ),
-                        _buildSaveCardCheckbox(
-                          isSave,
-                              (value) => setModalState(() => isSave = value!),
-                          size,
-                        ),
-                        SizedBox(height: size.height * 0.02),
-                        _buildPayButton(
-                          context,
-                          amount,
-                          cardNumberController,
-                          nameController,
-                          selectedCardType,
-                          expiryController,
-                          cvcController,
-                          zipController,
-                          isSave,
-                          onPaymentComplete,
-                          size,
-                          formKey,
-                        ),
-                        SizedBox(height: size.height * 0.02),
-                      ],
-                    ),
-                  ),
-                );
-              },
+        return Padding(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewInsets.bottom,
+          ),
+          child: Container(
+            padding: EdgeInsets.all(size.width * 0.05),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildHeader(context, amount, size),
+                SizedBox(height: size.height * 0.02),
+                _buildCardTypeSelector(
+                  setModalState,
+                  selectedCardType,
+                      (value) {
+                    setModalState(() => selectedCardType = value);
+                  },
+                  size,
+                ),
+                SizedBox(height: size.height * 0.02),
+                _buildPaymentForm(
+                  context,
+                  cardNumberController,
+                  expiryController,
+                  cvcController,
+                  nameController,
+                  zipController,
+                  size,
+                  formKey,
+                ),
+                _buildSaveCardCheckbox(
+                  isSave,
+                      (value) => setModalState(() => isSave = value!),
+                  size,
+                ),
+                SizedBox(height: size.height * 0.02),
+                _buildPayButton(
+                  context,
+                  amount,
+                  cardNumberController,
+                  nameController,
+                  selectedCardType,
+                  expiryController,
+                  cvcController,
+                  zipController,
+                  isSave,
+                  onPaymentComplete,
+                  size,
+                  formKey
+                ),
+              ],
             ),
           ),
         );
@@ -378,7 +364,7 @@ Future<void> _handlePayment(
   final supabase = Supabase.instance.client;
 
   try {
-    final backendURL= 'https://ce65-103-94-135-27.ngrok-free.app';
+    final backendURL= 'http://localhost:8000';
     final apiKey = 'ekta_stripe_backend';
     final String? userId = FirebaseAuth.instance.currentUser?.uid;
     if (userId == null) throw Exception('User not authenticated');
@@ -481,16 +467,11 @@ Future<void> _handlePayment(
     }
 
     final confirmData = jsonDecode(confirmResult.body);
-    print(confirmData);
+
     if (confirmData['status'] == 'succeeded') {
       final DateTime now = DateTime.now();
       final DateTime expiresAt = now.add(Duration(days: 30)); // Add one month
       final String formattedExpiresAt = expiresAt.toIso8601String(); // Format as ISO 8601 string
-
-      await supabase.from('user_subscriptions').update({
-        'is_active': false,
-      }).eq('user_id', userId);
-
 
       await supabase.from('user_subscriptions').insert({
         'user_id': userId,
@@ -505,7 +486,7 @@ Future<void> _handlePayment(
           .select('id')
           .eq('user_id', userId)
           .single(); // Use `.single()` to fetch a single row instead of a list
-      print(response);
+
       final userSubId = response['id'];
 
       // Update the user subscription history
@@ -514,7 +495,7 @@ Future<void> _handlePayment(
           .select('id')
           .eq('user_id', userId)
           .maybeSingle();
-      print(a);
+
       bool isHISTORY= a?['id'] ?? false;
 
       if(!isHISTORY){
