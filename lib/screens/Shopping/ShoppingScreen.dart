@@ -95,14 +95,14 @@ class _ShoppingScreenState extends State<ShoppingScreen>
                   minHeight: constraints.maxHeight,
                 ),
                 child: Container(
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
-                    image: DecorationImage(
-                      image: AssetImage('assets/images/tealwhite.jpeg'),
-                      repeat: ImageRepeat.repeat,
-                      opacity: 0.15,
-                    ),
-                  ),
+                  // decoration: const BoxDecoration(
+                  //   color: Colors.white,
+                  //   image: DecorationImage(
+                  //     image: AssetImage('assets/images/tealwhite.jpeg'),
+                  //     repeat: ImageRepeat.repeat,
+                  //     opacity: 0.15,
+                  //   ),
+                  //),
                   child: Column(
                     children: [
                       ...categoryColors.keys.map((category) => CategorySection(
