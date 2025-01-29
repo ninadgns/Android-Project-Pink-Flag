@@ -26,8 +26,14 @@ class _ProfileScreenState extends State<ProfileScreen>
   late AnimationController _mainController;
   late AnimationController _bellController;
   late Animation<double> _bellAnimation;
+
   late Animation<double> _profileFade;
+
+  //late Animation<double> _achievementFade;
+
   late List<Animation<double>> _menuItemFades;
+
+  // Track if animations have already run once
   static bool _hasAnimated = false;
   String userName = '';
 
@@ -59,20 +65,11 @@ class _ProfileScreenState extends State<ProfileScreen>
     }
   }
 
-  Future<void> _onRefresh() async {
-    await _loadUserData();
-  }
-
   void _showLogoutDialog() {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
         backgroundColor: Colors.white,
-        title: Text('Logout',
-            style: Theme.of(context)
-                .textTheme
-                .headlineSmall!
-                .copyWith(color: Colors.black, fontWeight: FontWeight.bold)),
         title: Text('Logout',
             style: Theme.of(context)
                 .textTheme
@@ -84,7 +81,7 @@ class _ProfileScreenState extends State<ProfileScreen>
             onPressed: () => Navigator.pop(context),
             style: TextButton.styleFrom(
               foregroundColor: Colors.black,
-            ),
+            ), // Dismiss the dialog
             child: const Text('Cancel'),
           ),
           TextButton(
@@ -107,16 +104,19 @@ class _ProfileScreenState extends State<ProfileScreen>
   }
 
   void _initializeAnimations() {
+    // Main controller for one-time fade/slide animations
     _mainController = AnimationController(
       duration: const Duration(milliseconds: 2000),
       vsync: this,
     );
 
+    // Separate controller for the bell
     _bellController = AnimationController(
       duration: const Duration(seconds: 2),
       vsync: this,
     );
 
+    // Bell swinging animation
     _bellAnimation = Tween(begin: -0.05, end: 0.05).animate(
       CurvedAnimation(
         parent: _bellController,
@@ -131,6 +131,13 @@ class _ProfileScreenState extends State<ProfileScreen>
         curve: const Interval(0.0, 0.2, curve: Curves.easeIn),
       ),
     );
+
+    // _achievementFade = Tween(begin: 0.0, end: 1.0).animate(
+    //   CurvedAnimation(
+    //     parent: _mainController,
+    //     curve: const Interval(0.2, 0.4, curve: Curves.easeIn),
+    //   ),
+    // );
 
     final intervals = <Interval>[
       const Interval(0.4, 0.5, curve: Curves.easeIn),
@@ -147,11 +154,13 @@ class _ProfileScreenState extends State<ProfileScreen>
       );
     }).toList();
 
+    // Run main animations only once
     if (!_hasAnimated) {
       _mainController.forward().then((_) {
         _hasAnimated = true;
       });
     } else {
+      // If already animated, set all values to end state
       _mainController.value = 1.0;
     }
   }
@@ -172,6 +181,9 @@ class _ProfileScreenState extends State<ProfileScreen>
       case 'Notifications':
         screen = const NotificationsScreen();
         break;
+      // case 'Achievements':
+      //   screen = const AchievementScreen();
+      //   break;
       case 'Useful Features':
         screen = const UsefulArticleScreen();
         break;
@@ -201,6 +213,7 @@ class _ProfileScreenState extends State<ProfileScreen>
     return Icon(icon, color: color, size: 28);
   }
 
+  // Helper to build background decorations
   Widget _buildColoredCircle(Color color, double size) {
     return Container(
       width: size,
@@ -215,12 +228,21 @@ class _ProfileScreenState extends State<ProfileScreen>
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
+    // Calculate dynamic sizes with maximum constraints
     final double maxAvatarRadius = size.width * 0.15;
     final double titleFontSize = size.width * 0.060;
     final double nameFontSize = size.width * 0.048;
     final double subTextFontSize = size.width * 0.04;
 
     final menuItems = [
+      // MenuItemTile(
+      //   icon: Icons.article_outlined,
+      //   iconColor: const Color(0xFFEF9A9A),
+      //   title: 'Useful Features',
+      //   titleColor: Colors.pinkAccent,
+      //   isPro: true,
+      //   onTap: () => _navigateToScreen(context, 'Useful Features'),
+      // ),
       MenuItemTile(
         icon: Icons.post_add,
         iconColor: const Color(0xFF81C784),
@@ -255,155 +277,169 @@ class _ProfileScreenState extends State<ProfileScreen>
     return Scaffold(
       backgroundColor: const Color(0xFFFFFCF7),
       body: SafeArea(
+        // Added SafeArea
         child: Stack(
           children: [
+            //background designs
             Positioned(
               top: -30,
               left: -30,
-              child: _buildColoredCircle(const Color(0xFF26A69A), 120),
+              child: _buildColoredCircle(
+                  const Color(0xFF26A69A), 120), // Teal circle
             ),
             Positioned(
               top: 100,
               right: -40,
-              child: _buildColoredCircle(const Color(0xFFEF9A9A), 80),
+              child: _buildColoredCircle(
+                  const Color(0xFFEF9A9A), 80), // Pink circle
             ),
             Positioned(
               bottom: 120,
               left: -60,
-              child: _buildColoredCircle(const Color(0xFF81C784), 140),
+              child: _buildColoredCircle(
+                  const Color(0xFF81C784), 140), // Green circle
             ),
             Positioned(
               bottom: 50,
               right: -30,
-              child: _buildColoredCircle(const Color(0xFFFFB74D), 100),
+              child: _buildColoredCircle(
+                  const Color(0xFFFFB74D), 100), // Amber circle
             ),
             Positioned(
               top: 260,
               right: 100,
-              child: _buildColoredCircle(Colors.indigo[300]!, 70),
+              child:
+                  _buildColoredCircle(Colors.indigo[300]!, 70), // Indigo circle
             ),
-            RefreshIndicator(
-              onRefresh: _onRefresh,
-              child: SingleChildScrollView(
-                physics: const AlwaysScrollableScrollPhysics(),
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                children: [
+                  // Header with Profile text and notification icon
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          IconButton(
-                            onPressed: () {
-                              Navigator.pop(context);
-                            },
-                            icon: const Icon(Icons.arrow_back_ios),
-                          ),
-                          Text(
-                            'Profile',
-                            style: TextStyle(
-                              fontSize: titleFontSize,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          Wrap(
-                            children: [
-                              InkWell(
-                                onTap: () async {
-                                  _showLogoutDialog();
-                                },
-                                child: const Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Icon(
-                                      Icons.logout_rounded,
-                                      color: Colors.red,
-                                    ),
-                                    Text(
-                                      'Logout',
-                                      style: TextStyle(
-                                        color: Colors.red,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              )
-                            ],
-                          ),
-                        ],
+                      IconButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        icon: const Icon(Icons.arrow_back_ios),
                       ),
-                      SizedBox(height: size.height * 0.05),
-                      FadeTransition(
-                        opacity: _profileFade,
-                        child: Center(
-                          child: ConstrainedBox(
-                            constraints: BoxConstraints(
-                              maxHeight: size.height * 0.5,
-                            ),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
+                      Text(
+                        'Profile',
+                        style: TextStyle(
+                          fontSize: titleFontSize,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Wrap(
+                        children: [
+                          InkWell(
+                            onTap: () async {
+                              _showLogoutDialog();
+                            },
+                            child: const Column(
                               mainAxisAlignment: MainAxisAlignment.center,
+                              mainAxisSize: MainAxisSize.min,
                               children: [
-                                CircleAvatar(
-                                  radius: maxAvatarRadius,
-                                  backgroundImage: (widget
-                                              .imagePath.isNotEmpty &&
-                                          Uri.tryParse(widget.imagePath)
-                                                  ?.hasAbsolutePath ==
-                                              true)
-                                      ? NetworkImage(widget.imagePath)
-                                      : AssetImage('assets/images/profile.png')
-                                          as ImageProvider,
+                                Icon(
+                                  Icons.logout_rounded,
+                                  color: Colors.red,
                                 ),
-                                SizedBox(height: size.height * 0.015),
                                 Text(
-                                  userName,
+                                  'Logout',
                                   style: TextStyle(
-                                    fontSize: nameFontSize,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                SizedBox(height: size.height * 0.023),
-                                Material(
-                                  color: Colors.transparent,
-                                  child: InkWell(
-                                    onTap: () => _navigateToScreen(
-                                        context, 'My Profile'),
-                                    child: Text(
-                                      'My Profile',
-                                      style: TextStyle(
-                                        color: Colors.grey[600],
-                                        fontSize: subTextFontSize,
-                                        decoration: TextDecoration.underline,
-                                      ),
-                                    ),
+                                    color: Colors.red,
+                                    fontWeight: FontWeight.w500,
                                   ),
                                 ),
                               ],
                             ),
-                          ),
-                        ),
+                          )
+                        ],
                       ),
-                      SizedBox(height: size.height * 0.04),
-                      ...List.generate(
-                        menuItems.length,
-                        (index) => FadeTransition(
-                          opacity: _menuItemFades[index],
-                          child: Column(
-                            children: [
-                              menuItems[index],
-                              SizedBox(height: size.height * 0.023),
-                            ],
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: size.height * 0.15),
                     ],
                   ),
-                ),
+                  SizedBox(height: size.height * 0.05),
+
+                  FadeTransition(
+                    opacity: _profileFade,
+                    child: Center(
+                      child: ConstrainedBox(
+                        constraints: BoxConstraints(
+                          maxHeight: size.height * 0.5,
+                        ),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            CircleAvatar(
+                              radius: maxAvatarRadius,
+                              backgroundImage: (widget.imagePath.isNotEmpty &&
+                                      Uri.tryParse(widget.imagePath)
+                                              ?.hasAbsolutePath ==
+                                          true)
+                                  ? NetworkImage(widget.imagePath)
+                                  : AssetImage('assets/images/profile.png')
+                                      as ImageProvider,
+                            ),
+                            SizedBox(height: size.height * 0.015),
+                            Text(
+                              userName,
+                              style: TextStyle(
+                                fontSize: nameFontSize,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            SizedBox(height: size.height * 0.023),
+                            Material(
+                              color: Colors.transparent,
+                              child: InkWell(
+                                onTap: () =>
+                                    _navigateToScreen(context, 'My Profile'),
+                                child: Text(
+                                  'My Profile',
+                                  style: TextStyle(
+                                    color: Colors.grey[600],
+                                    fontSize: subTextFontSize,
+                                    decoration: TextDecoration.underline,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: size.height * 0.04),
+
+                  //const SizedBox(height: 20),
+
+                  // Menu Items fade in sequentially
+                  Expanded(
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          ...List.generate(
+                            menuItems.length,
+                            (index) => FadeTransition(
+                              opacity: _menuItemFades[index],
+                              child: Column(
+                                children: [
+                                  menuItems[index],
+                                  SizedBox(height: size.height * 0.023),
+                                ],
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: size.height * 0.15),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
           ],
