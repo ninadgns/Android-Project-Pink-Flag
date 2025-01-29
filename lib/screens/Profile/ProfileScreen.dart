@@ -70,7 +70,11 @@ class _ProfileScreenState extends State<ProfileScreen>
       context: context,
       builder: (context) => AlertDialog(
         backgroundColor: Colors.white,
-        title:  Text('Logout', style: Theme.of(context).textTheme.headlineSmall!.copyWith(color: Colors.black, fontWeight: FontWeight.bold)),
+        title: Text('Logout',
+            style: Theme.of(context)
+                .textTheme
+                .headlineSmall!
+                .copyWith(color: Colors.black, fontWeight: FontWeight.bold)),
         content: const Text('Are you sure you want to logout?'),
         actions: [
           TextButton(
@@ -91,7 +95,6 @@ class _ProfileScreenState extends State<ProfileScreen>
             style: TextButton.styleFrom(
               backgroundColor: Colors.black,
               foregroundColor: Colors.white,
-
             ),
             child: const Text('Logout'),
           ),
@@ -178,9 +181,9 @@ class _ProfileScreenState extends State<ProfileScreen>
       case 'Notifications':
         screen = const NotificationsScreen();
         break;
-    // case 'Achievements':
-    //   screen = const AchievementScreen();
-    //   break;
+      // case 'Achievements':
+      //   screen = const AchievementScreen();
+      //   break;
       case 'Useful Features':
         screen = const UsefulArticleScreen();
         break;
@@ -224,9 +227,7 @@ class _ProfileScreenState extends State<ProfileScreen>
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery
-        .of(context)
-        .size;
+    final size = MediaQuery.of(context).size;
     // Calculate dynamic sizes with maximum constraints
     final double maxAvatarRadius = size.width * 0.15;
     final double titleFontSize = size.width * 0.060;
@@ -257,9 +258,9 @@ class _ProfileScreenState extends State<ProfileScreen>
         onTap: () => _navigateToScreen(context, 'Subscription Management'),
       ),
       MenuItemTile(
-        icon: Icons.star_outline,
+        icon: Icons.restaurant_menu,
         iconColor: const Color(0xFF26A69A),
-        title: 'Preferences',
+        title: 'Meal Preferences',
         titleColor: Colors.teal[700]!,
         isPro: false,
         onTap: () => _navigateToScreen(context, 'Preferences'),
@@ -308,7 +309,7 @@ class _ProfileScreenState extends State<ProfileScreen>
               top: 260,
               right: 100,
               child:
-              _buildColoredCircle(Colors.indigo[300]!, 70), // Indigo circle
+                  _buildColoredCircle(Colors.indigo[300]!, 70), // Indigo circle
             ),
             Padding(
               padding: const EdgeInsets.all(16.0),
@@ -336,7 +337,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                         children: [
                           InkWell(
                             onTap: () async {
-                               _showLogoutDialog();
+                              _showLogoutDialog();
                             },
                             child: const Column(
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -376,9 +377,12 @@ class _ProfileScreenState extends State<ProfileScreen>
                             CircleAvatar(
                               radius: maxAvatarRadius,
                               backgroundImage: (widget.imagePath.isNotEmpty &&
-                                  Uri.tryParse(widget.imagePath)?.hasAbsolutePath == true)
+                                      Uri.tryParse(widget.imagePath)
+                                              ?.hasAbsolutePath ==
+                                          true)
                                   ? NetworkImage(widget.imagePath)
-                                  : AssetImage('assets/images/profile.png') as ImageProvider,
+                                  : AssetImage('assets/images/profile.png')
+                                      as ImageProvider,
                             ),
                             SizedBox(height: size.height * 0.015),
                             Text(
@@ -411,7 +415,6 @@ class _ProfileScreenState extends State<ProfileScreen>
                   ),
                   SizedBox(height: size.height * 0.04),
 
-
                   //const SizedBox(height: 20),
 
                   // Menu Items fade in sequentially
@@ -421,16 +424,15 @@ class _ProfileScreenState extends State<ProfileScreen>
                         children: [
                           ...List.generate(
                             menuItems.length,
-                                (index) =>
-                                FadeTransition(
-                                  opacity: _menuItemFades[index],
-                                  child: Column(
-                                    children: [
-                                      menuItems[index],
-                                      SizedBox(height: size.height * 0.023),
-                                    ],
-                                  ),
-                                ),
+                            (index) => FadeTransition(
+                              opacity: _menuItemFades[index],
+                              child: Column(
+                                children: [
+                                  menuItems[index],
+                                  SizedBox(height: size.height * 0.023),
+                                ],
+                              ),
+                            ),
                           ),
                           SizedBox(height: size.height * 0.15),
                         ],

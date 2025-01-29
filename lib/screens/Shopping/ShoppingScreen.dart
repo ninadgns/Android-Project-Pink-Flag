@@ -12,7 +12,8 @@ class ShoppingScreen extends StatefulWidget {
   State<ShoppingScreen> createState() => _ShoppingScreenState();
 }
 
-class _ShoppingScreenState extends State<ShoppingScreen> with SingleTickerProviderStateMixin {
+class _ShoppingScreenState extends State<ShoppingScreen>
+    with SingleTickerProviderStateMixin {
   final GroceryService _groceryService = GroceryService();
   DateTime _startDate = DateTime.now();
   DateTime _endDate = DateTime.now().add(const Duration(days: 7));
@@ -22,8 +23,18 @@ class _ShoppingScreenState extends State<ShoppingScreen> with SingleTickerProvid
 
   String _formatDate(DateTime date) {
     const List<String> months = [
-      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec'
     ];
     return '${date.day} ${months[date.month - 1]}';
   }
@@ -33,19 +44,15 @@ class _ShoppingScreenState extends State<ShoppingScreen> with SingleTickerProvid
     Share.share('See my shopping list: $shoppingListLink');
   }
 
-
   void _saveInDB() {
     ///store in db
-
   }
-
 
   @override
   Widget build(BuildContext context) {
-    return  Scaffold(
+    return Scaffold(
       backgroundColor: Colors.grey[100],
-      appBar:AppBar(
-        backgroundColor: Colors.teal.shade200,
+      appBar: AppBar(
         automaticallyImplyLeading: false,
         elevation: 0,
         title: Column(
@@ -55,7 +62,7 @@ class _ShoppingScreenState extends State<ShoppingScreen> with SingleTickerProvid
               'Shopping List',
               style: TextStyle(
                 color: Colors.white,
-                fontSize: 24,
+                fontSize: 22,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -99,34 +106,38 @@ class _ShoppingScreenState extends State<ShoppingScreen> with SingleTickerProvid
                 child: Column(
                   children: [
                     Padding(
-                      padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.04),
+                      padding: EdgeInsets.all(
+                          MediaQuery.of(context).size.width * 0.04),
                       child: Row(
                         children: [
                           Expanded(
                             child: DateSelector(
                               label: 'From',
                               selectedDate: _startDate,
-                              onDateSelected: (date) => setState(() => _startDate = date),
+                              onDateSelected: (date) =>
+                                  setState(() => _startDate = date),
                             ),
                           ),
-                          SizedBox(width: MediaQuery.of(context).size.width * 0.04),
+                          SizedBox(
+                              width: MediaQuery.of(context).size.width * 0.04),
                           Expanded(
                             child: DateSelector(
                               label: 'To',
                               selectedDate: _endDate,
-                              onDateSelected: (date) => setState(() => _endDate = date),
+                              onDateSelected: (date) =>
+                                  setState(() => _endDate = date),
                             ),
                           ),
                         ],
                       ),
                     ),
                     ...categoryColors.keys.map((category) => CategorySection(
-                      category: category,
-                      backgroundColor: categoryColors[category]!,
-                      groceryService: _groceryService,
-                      onAddItem: () => setState(() {}),
-                      onUpdate: () => setState(() {}),
-                    )),
+                          category: category,
+                          backgroundColor: categoryColors[category]!,
+                          groceryService: _groceryService,
+                          onAddItem: () => setState(() {}),
+                          onUpdate: () => setState(() {}),
+                        )),
                     SizedBox(height: MediaQuery.of(context).size.height * 0.15),
                   ],
                 ),
@@ -135,6 +146,6 @@ class _ShoppingScreenState extends State<ShoppingScreen> with SingleTickerProvid
           );
         },
       ),
-   );
+    );
   }
 }

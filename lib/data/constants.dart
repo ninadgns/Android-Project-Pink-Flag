@@ -14,8 +14,8 @@ bool login1 = false;
 
 final bottomNavigationItems = [
   const BottomNavigationBarItem(
-    icon: Icon(CupertinoIcons.search),
-    label: 'Search',
+    icon: Icon(CupertinoIcons.compass),
+    label: 'Explore',
   ),
   const BottomNavigationBarItem(
     icon: Icon(CupertinoIcons.book),
@@ -31,7 +31,7 @@ final bottomNavigationItems = [
   ),
   const BottomNavigationBarItem(
     icon: Icon(Icons.date_range_outlined),
-    label: 'Meal Planner',
+    label: 'Meal Plan',
   ),
   // const BottomNavigationBarItem(
   //   icon: Icon(CupertinoIcons.profile_circled),

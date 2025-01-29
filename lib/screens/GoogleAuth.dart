@@ -32,7 +32,7 @@ Future<void> handleGoogleSignIn(
       'email': email,
       'full_name': displayName,
       'photo_url': photoUrl,
-    });
+    }, ignoreDuplicates: true);
 
     // Navigate to the home screen on successful login
     if (firebaseUid.isNotEmpty) {

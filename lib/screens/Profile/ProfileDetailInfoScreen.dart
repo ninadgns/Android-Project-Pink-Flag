@@ -1,12 +1,13 @@
 import 'dart:io' show File;
+
+import 'package:dim/models/ProfileInfoModel.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:share_plus/share_plus.dart';
-import 'dart:typed_data';
-import 'package:dim/models/ProfileInfoModel.dart';
 import 'package:intl/intl.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+
 import '../../services/ProfileService.dart';
 
 class ProfileDetailInfoScreen extends StatefulWidget {
@@ -15,7 +16,8 @@ class ProfileDetailInfoScreen extends StatefulWidget {
   const ProfileDetailInfoScreen({super.key, required this.imagePath});
 
   @override
-  State<ProfileDetailInfoScreen> createState() => _ProfileDetailInfoScreenState();
+  State<ProfileDetailInfoScreen> createState() =>
+      _ProfileDetailInfoScreenState();
 }
 
 class _ProfileDetailInfoScreenState extends State<ProfileDetailInfoScreen>
@@ -101,15 +103,18 @@ class _ProfileDetailInfoScreenState extends State<ProfileDetailInfoScreen>
               style: TextButton.styleFrom(
                 foregroundColor: const Color(0xFF00ACC1),
               ),
-              child: Text('Cancel', style: TextStyle(fontSize: screenSize.width * 0.035)),
+              child: Text('Cancel',
+                  style: TextStyle(fontSize: screenSize.width * 0.035)),
             ),
             TextButton(
               onPressed: () {
                 setState(() {
                   String newHandle = controller.text;
-                  var socialMediaIds = profileinfo!.socialMediaHandles.map((item) {
+                  var socialMediaIds =
+                      profileinfo!.socialMediaHandles.map((item) {
                     if (item.platform == media.platform) {
-                      return SocialMediaHandle(platform: item.platform, handle: newHandle);
+                      return SocialMediaHandle(
+                          platform: item.platform, handle: newHandle);
                     }
                     return item;
                   }).toList();
@@ -119,7 +124,8 @@ class _ProfileDetailInfoScreenState extends State<ProfileDetailInfoScreen>
               style: TextButton.styleFrom(
                 foregroundColor: const Color(0xFF00ACC1),
               ),
-              child: Text('Done', style: TextStyle(fontSize: screenSize.width * 0.035)),
+              child: Text('Done',
+                  style: TextStyle(fontSize: screenSize.width * 0.035)),
             ),
           ],
         );
@@ -183,7 +189,8 @@ class _ProfileDetailInfoScreenState extends State<ProfileDetailInfoScreen>
               style: TextButton.styleFrom(
                 foregroundColor: const Color(0xFF00ACC1),
               ),
-              child: Text('Cancel', style: TextStyle(fontSize: screenSize.width * 0.035)),
+              child: Text('Cancel',
+                  style: TextStyle(fontSize: screenSize.width * 0.035)),
             ),
             TextButton(
               onPressed: () {
@@ -203,7 +210,8 @@ class _ProfileDetailInfoScreenState extends State<ProfileDetailInfoScreen>
               style: TextButton.styleFrom(
                 foregroundColor: const Color(0xFF00ACC1),
               ),
-              child: Text('Add', style: TextStyle(fontSize: screenSize.width * 0.035)),
+              child: Text('Add',
+                  style: TextStyle(fontSize: screenSize.width * 0.035)),
             ),
           ],
         );
@@ -211,7 +219,8 @@ class _ProfileDetailInfoScreenState extends State<ProfileDetailInfoScreen>
     );
   }
 
-  void _editField(String fieldName, String initialValue, bool multiline, Function(String) onSave) {
+  void _editField(String fieldName, String initialValue, bool multiline,
+      Function(String) onSave) {
     final controller = TextEditingController(text: initialValue);
     final screenSize = MediaQuery.of(context).size;
 
@@ -227,7 +236,8 @@ class _ProfileDetailInfoScreenState extends State<ProfileDetailInfoScreen>
           content: TextField(
             cursorColor: Colors.black,
             controller: controller,
-            keyboardType: multiline ? TextInputType.multiline : TextInputType.text,
+            keyboardType:
+                multiline ? TextInputType.multiline : TextInputType.text,
             maxLines: multiline ? 4 : 1,
             decoration: InputDecoration(
               hintText: 'Enter new $fieldName',
@@ -250,7 +260,8 @@ class _ProfileDetailInfoScreenState extends State<ProfileDetailInfoScreen>
               style: TextButton.styleFrom(
                 foregroundColor: const Color(0xFF00ACC1),
               ),
-              child: Text('Cancel', style: TextStyle(fontSize: screenSize.width * 0.035)),
+              child: Text('Cancel',
+                  style: TextStyle(fontSize: screenSize.width * 0.035)),
             ),
             TextButton(
               onPressed: () {
@@ -260,7 +271,8 @@ class _ProfileDetailInfoScreenState extends State<ProfileDetailInfoScreen>
               style: TextButton.styleFrom(
                 foregroundColor: const Color(0xFF00ACC1),
               ),
-              child: Text('Save', style: TextStyle(fontSize: screenSize.width * 0.035)),
+              child: Text('Save',
+                  style: TextStyle(fontSize: screenSize.width * 0.035)),
             ),
           ],
         );
@@ -269,7 +281,8 @@ class _ProfileDetailInfoScreenState extends State<ProfileDetailInfoScreen>
   }
 
   void _shareProfile() {
-    final profileLink = 'https://example.com/users/${profileinfo?.fullName.replaceAll(' ', '_')}';
+    final profileLink =
+        'https://example.com/users/${profileinfo?.fullName.replaceAll(' ', '_')}';
     Share.share('Check out my profile: $profileLink');
   }
 
@@ -290,11 +303,13 @@ class _ProfileDetailInfoScreenState extends State<ProfileDetailInfoScreen>
         borderRadius: BorderRadius.circular(12.0),
       ),
       child: Row(
-        crossAxisAlignment: isMultiline ? CrossAxisAlignment.start : CrossAxisAlignment.center,
+        crossAxisAlignment:
+            isMultiline ? CrossAxisAlignment.start : CrossAxisAlignment.center,
         children: [
           Expanded(
             child: Padding(
-              padding: EdgeInsets.symmetric(vertical: screenSize.height * 0.015),
+              padding:
+                  EdgeInsets.symmetric(vertical: screenSize.height * 0.015),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -353,7 +368,8 @@ class _ProfileDetailInfoScreenState extends State<ProfileDetailInfoScreen>
           SizedBox(height: screenSize.height * 0.01),
           ...profileinfo!.socialMediaHandles.map((item) {
             return Padding(
-              padding: EdgeInsets.symmetric(vertical: screenSize.height * 0.005),
+              padding:
+                  EdgeInsets.symmetric(vertical: screenSize.height * 0.005),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -479,32 +495,36 @@ class _ProfileDetailInfoScreenState extends State<ProfileDetailInfoScreen>
           SafeArea(
             child: Column(
               children: [
-                Row(
-                  children: [
-                    IconButton(
-                      icon: const Icon(Icons.arrow_back, color: Colors.black),
-                      iconSize: screenSize.width * 0.05,
-                      onPressed: () => Navigator.pop(context),
-                    ),
-                    const Spacer(),
-                    IconButton(
-                      icon: Icon(
-                          isEditMode ? Icons.close : Icons.edit,
-                          color: Colors.black
+                Padding(
+                  padding:
+                      EdgeInsets.symmetric(horizontal: screenSize.width * 0.04),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      IconButton(
+                        icon: const Icon(Icons.arrow_back_ios),
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
                       ),
-                      iconSize: screenSize.width * 0.05,
-                      onPressed: () {
-                        setState(() {
-                          isEditMode = !isEditMode;
-                        });
-                      },
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.share, color: Colors.black),
-                      iconSize: screenSize.width * 0.05,
-                      onPressed: _shareProfile,
-                    ),
-                  ],
+                      Row(
+                        children: [
+                          IconButton(
+                            icon: Icon(isEditMode ? Icons.close : Icons.edit),
+                            onPressed: () {
+                              setState(() {
+                                isEditMode = !isEditMode;
+                              });
+                            },
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.share),
+                            onPressed: _shareProfile,
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
                 Expanded(
                   child: SingleChildScrollView(
@@ -526,9 +546,15 @@ class _ProfileDetailInfoScreenState extends State<ProfileDetailInfoScreen>
                             alignment: Alignment.bottomRight,
                             children: [
                               CircleAvatar(
-                                radius: avatarRadius,
-                                backgroundImage: backgroundImage,
-                              ),
+                                  radius: avatarRadius,
+                                  backgroundImage: (widget
+                                              .imagePath.isNotEmpty &&
+                                          Uri.tryParse(widget.imagePath)
+                                                  ?.hasAbsolutePath ==
+                                              true)
+                                      ? NetworkImage(widget.imagePath)
+                                      : AssetImage('assets/images/profile.png')
+                                          as ImageProvider),
                               if (isEditMode)
                                 Positioned(
                                   bottom: 0,
@@ -544,7 +570,8 @@ class _ProfileDetailInfoScreenState extends State<ProfileDetailInfoScreen>
                                           width: screenSize.width * 0.005,
                                         ),
                                       ),
-                                      padding: EdgeInsets.all(screenSize.width * 0.015),
+                                      padding: EdgeInsets.all(
+                                          screenSize.width * 0.015),
                                       child: Icon(
                                         Icons.camera_alt,
                                         color: Colors.white,
@@ -564,11 +591,17 @@ class _ProfileDetailInfoScreenState extends State<ProfileDetailInfoScreen>
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
-                              Expanded(child: _buildStat(profileinfo!.recipesCount, 'Recipes')),
+                              Expanded(
+                                  child: _buildStat(
+                                      profileinfo!.recipesCount, 'Recipes')),
                               SizedBox(width: screenSize.width * 0.02),
-                              Expanded(child: _buildStat(profileinfo!.followingCount, 'Following')),
+                              Expanded(
+                                  child: _buildStat(profileinfo!.followingCount,
+                                      'Following')),
                               SizedBox(width: screenSize.width * 0.02),
-                              Expanded(child: _buildStat(profileinfo!.followerCount, 'Followers')),
+                              Expanded(
+                                  child: _buildStat(
+                                      profileinfo!.followerCount, 'Followers')),
                             ],
                           ),
                         ),
@@ -576,92 +609,109 @@ class _ProfileDetailInfoScreenState extends State<ProfileDetailInfoScreen>
                         _buildEditableField(
                           label: 'Full Name',
                           value: profileinfo!.fullName,
-                          onEdit: () => _editField('Full Name', profileinfo!.fullName, false, (newVal) {
-                            final nameRegExp = RegExp(r"^[a-zA-Zà-úÀ-Ú\s'-]{2,40}$");
+                          onEdit: () => _editField(
+                              'Full Name', profileinfo!.fullName, false,
+                              (newVal) {
+                            final nameRegExp =
+                                RegExp(r"^[a-zA-Zà-úÀ-Ú\s'-]{2,40}$");
                             if (nameRegExp.hasMatch(newVal)) {
                               setState(() => profileinfo!.fullName = newVal);
                             } else {
                               ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(content: Text('Invalid name. Use only letters, spaces, hyphens, or apostrophes.'))
-                              );
+                                  const SnackBar(
+                                      content: Text(
+                                          'Invalid name. Use only letters, spaces, hyphens, or apostrophes.')));
                             }
                           }),
                         ),
                         _buildEditableField(
                           label: 'User Name',
                           value: profileinfo!.userName,
-                          onEdit: () => _editField('User Name', profileinfo!.userName, false, (newVal) {
+                          onEdit: () => _editField(
+                              'User Name', profileinfo!.userName, false,
+                              (newVal) {
                             setState(() => profileinfo!.userName = newVal);
                           }),
                         ),
                         _buildEditableField(
                           label: 'Email',
                           value: profileinfo!.email,
-                          onEdit: () => _editField('Email', profileinfo!.email, false, (newVal) {
-                            final emailRegExp = RegExp(r'^[\w-.]+@[\w-]+\.(com|org|net|edu|gov)$');
+                          onEdit: () => _editField(
+                              'Email', profileinfo!.email, false, (newVal) {
+                            final emailRegExp = RegExp(
+                                r'^[\w-.]+@[\w-]+\.(com|org|net|edu|gov)$');
                             if (emailRegExp.hasMatch(newVal)) {
                               setState(() => profileinfo!.email = newVal);
                             } else {
                               ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(content: Text('Invalid email address. Use a valid format (e.g., user@example.com).'))
-                              );
+                                  const SnackBar(
+                                      content: Text(
+                                          'Invalid email address. Use a valid format (e.g., user@example.com).')));
                             }
                           }),
                         ),
                         _buildEditableField(
                           label: 'Phone Number',
                           value: profileinfo!.phoneNumber,
-                          onEdit: () => _editField('Phone Number', profileinfo!.phoneNumber, false, (newVal) {
+                          onEdit: () => _editField(
+                              'Phone Number', profileinfo!.phoneNumber, false,
+                              (newVal) {
                             final phoneRegExp = RegExp(r'^\+?\d{10,15}$');
                             if (phoneRegExp.hasMatch(newVal)) {
                               setState(() => profileinfo!.phoneNumber = newVal);
                             } else {
                               ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(content: Text('Invalid phone number. Use digits with optional +.'))
-                              );
+                                  const SnackBar(
+                                      content: Text(
+                                          'Invalid phone number. Use digits with optional +.')));
                             }
                           }),
                         ),
                         _buildEditableField(
                           label: 'Date of Birth',
                           value: profileinfo!.dateofBirth != null
-                              ? DateFormat('yyyy-MM-dd').format(profileinfo!.dateofBirth!)
+                              ? DateFormat('yyyy-MM-dd')
+                                  .format(profileinfo!.dateofBirth!)
                               : '',
                           onEdit: () => _editField(
                               'Date of Birth',
                               profileinfo!.dateofBirth != null
-                                  ? DateFormat('yyyy-MM-dd').format(profileinfo!.dateofBirth!)
+                                  ? DateFormat('yyyy-MM-dd')
+                                      .format(profileinfo!.dateofBirth!)
                                   : '',
-                              false,
-                                  (newVal) {
-                                setState(() => profileinfo!.dateofBirth = DateTime.parse(newVal));
-                              }
-                          ),
+                              false, (newVal) {
+                            setState(() => profileinfo!.dateofBirth =
+                                DateTime.parse(newVal));
+                          }),
                         ),
                         _buildEditableField(
                           label: 'Bio',
                           value: profileinfo!.bio,
                           isMultiline: true,
-                          onEdit: () => _editField('Bio', profileinfo!.bio, true, (newVal) {
+                          onEdit: () => _editField(
+                              'Bio', profileinfo!.bio, true, (newVal) {
                             setState(() => profileinfo!.bio = newVal);
                           }),
                         ),
                         _buildEditableField(
                           label: 'Workplace',
                           value: profileinfo!.workplace,
-                          onEdit: () => _editField('Workplace', profileinfo!.workplace, false, (newVal) {
+                          onEdit: () => _editField(
+                              'Workplace', profileinfo!.workplace, false,
+                              (newVal) {
                             setState(() => profileinfo!.workplace = newVal);
                           }),
                         ),
                         _buildEditableField(
                           label: 'Living City',
                           value: profileinfo!.city,
-                          onEdit: () => _editField('Living City', profileinfo!.city, false, (newVal) {
+                          onEdit: () => _editField(
+                              'Living City', profileinfo!.city, false,
+                              (newVal) {
                             setState(() => profileinfo!.city = newVal);
                           }),
                         ),
                         _buildSocialMediaSection(),
-
                         if (isEditMode)
                           Padding(
                             padding: EdgeInsets.all(screenSize.width * 0.04),
@@ -672,12 +722,15 @@ class _ProfileDetailInfoScreenState extends State<ProfileDetailInfoScreen>
                                   isEditMode = false;
                                 });
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(content: Text('Changes saved successfully')),
+                                  const SnackBar(
+                                      content:
+                                          Text('Changes saved successfully')),
                                 );
                               },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: const Color(0xFF0E98A7),
-                                minimumSize: Size(double.infinity, screenSize.height * 0.06),
+                                minimumSize: Size(
+                                    double.infinity, screenSize.height * 0.06),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10),
                                 ),
@@ -711,8 +764,12 @@ class SoftPastelBackgroundPainter extends CustomPainter {
     final pastelBlue = const Color(0xFFADD6CF).withOpacity(0.3);
     final pastelPink = const Color(0xFFF0AF9E).withOpacity(0.3);
 
-    final paintBlue = Paint()..color = pastelBlue..style = PaintingStyle.fill;
-    final paintPink = Paint()..color = pastelPink..style = PaintingStyle.fill;
+    final paintBlue = Paint()
+      ..color = pastelBlue
+      ..style = PaintingStyle.fill;
+    final paintPink = Paint()
+      ..color = pastelPink
+      ..style = PaintingStyle.fill;
 
     Path path1 = Path();
     path1.moveTo(0, size.height * 0.1);
@@ -720,7 +777,8 @@ class SoftPastelBackgroundPainter extends CustomPainter {
         size.width * 0.4, size.height * 0.15);
     path1.quadraticBezierTo(size.width * 0.6, size.height * 0.3,
         size.width * 0.2, size.height * 0.35);
-    path1.quadraticBezierTo(size.width * 0.05, size.height * 0.4, 0, size.height * 0.35);
+    path1.quadraticBezierTo(
+        size.width * 0.05, size.height * 0.4, 0, size.height * 0.35);
     path1.close();
     canvas.drawPath(path1, paintBlue);
 
@@ -730,8 +788,8 @@ class SoftPastelBackgroundPainter extends CustomPainter {
         size.width * 0.6, size.height * 0.85);
     path2.quadraticBezierTo(size.width * 0.4, size.height * 0.7,
         size.width * 0.8, size.height * 0.65);
-    path2.quadraticBezierTo(size.width * 0.95, size.height * 0.6,
-        size.width, size.height * 0.65);
+    path2.quadraticBezierTo(
+        size.width * 0.95, size.height * 0.6, size.width, size.height * 0.65);
     path2.close();
     canvas.drawPath(path2, paintPink);
   }
