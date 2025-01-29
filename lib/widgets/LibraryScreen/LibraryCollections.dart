@@ -7,8 +7,8 @@ import '../../screens/RecipeIntroScreen.dart';
 import 'CollectionItem.dart';
 
 class LibraryCollections extends StatefulWidget {
-  const LibraryCollections({super.key});
-
+   LibraryCollections({super.key, required this.flag});
+  bool flag ;
   @override
   State<LibraryCollections> createState() => _LibraryCollectionsState();
 }
@@ -32,7 +32,7 @@ class _LibraryCollectionsState extends State<LibraryCollections> {
           child: Column(
         children: [
           SizedBox(height: height * 0.3),
-          Text('No collections found'),
+          const Text('No collections found'),
         ],
       ));
     }

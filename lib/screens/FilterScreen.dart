@@ -1,7 +1,8 @@
+import 'package:dim/widgets/SearchScreen/FilterListView.dart';
 import 'package:flutter/material.dart';
+
 import '/data/constants.dart';
 import '/widgets/FilterScreen/WarpedList.dart';
-
 import '../widgets/FilterScreen/CookTimeSlider.dart';
 import '../widgets/FilterScreen/FindFromHome.dart';
 
@@ -13,7 +14,9 @@ class FilterScreen extends StatefulWidget {
 }
 
 class _FilterScreenState extends State<FilterScreen> {
-  final double _sliderValue = 0;
+  late double _sliderValue = 0;
+  late List<String> _selectedDifficulty = [];
+  late List<String> _selectedDishType = [];
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +33,7 @@ class _FilterScreenState extends State<FilterScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   IconButton(
                     onPressed: () {
@@ -38,58 +41,43 @@ class _FilterScreenState extends State<FilterScreen> {
                     },
                     icon: const Icon(Icons.arrow_back_ios),
                   ),
-                  IconButton(
-                    onPressed: () {},
-                    icon: const Icon(
-                      Icons.bookmark_border_rounded,
-                    ),
-                    color: Colors.white,
-                    iconSize: 18.0,
-                    padding: const EdgeInsets.all(0),
-                    splashRadius: 14.0,
-                    highlightColor: Colors.black12,
-                    constraints: const BoxConstraints(
-                      minHeight: 36,
-                      minWidth: 36,
-                    ),
-                    style: ButtonStyle(
-                      backgroundColor: WidgetStateProperty.all(
-                        Colors.black.withOpacity(0.15),
-                      ),
-                      shape: WidgetStateProperty.all(const CircleBorder()),
-                    ),
+                  Text(
+                    'Filter',
+                    style: Theme.of(context)
+                        .textTheme
+                        .headlineMedium!
+                        .copyWith(fontWeight: FontWeight.bold),
                   ),
                 ],
               ),
-              const SizedBox(height: 4),
-              Text(
-                'Filter',
-                style: Theme.of(context)
-                    .textTheme
-                    .headlineMedium!
-                    .copyWith(fontWeight: FontWeight.bold),
-              ),
+
               const SizedBox(height: 16),
               const FindFromHome(),
               const SizedBox(height: 16),
               Text('Cook Time', style: Theme.of(context).textTheme.titleMedium),
               const SizedBox(height: 12),
-              const CookTimeSlider(),
+              CookTimeSlider(onValueChanged: (value) {
+                setState(() {
+                  _sliderValue = value;
+                });
+              }),
               // SizedBox(height: 12),
               WarpedList(
+                onSelectionChanged: (selectedItems) {
+                  _selectedDifficulty = selectedItems;
+                },
                 items: difficulty,
                 title: 'Difficulty',
               ),
               const SizedBox(height: 12),
               WarpedList(
+                onSelectionChanged: (selectedItems) {
+                  _selectedDishType = selectedItems;
+                },
                 items: dishType,
                 title: 'Dish type',
               ),
               const SizedBox(height: 12),
-              WarpedList(
-                items: suggestedDiets,
-                title: 'Suggested diets',
-              ),
               SizedBox(height: height / 10),
             ],
           ),
@@ -103,7 +91,22 @@ class _FilterScreenState extends State<FilterScreen> {
               Colors.black,
             ),
           ),
-          onPressed: () {},
+          onPressed: () {
+            print('Results'
+                '\nCook Time: $_sliderValue'
+                '\nDifficulty: $_selectedDifficulty'
+                '\nDish Type: $_selectedDishType');
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => Filterlistview(
+                  sliderValue: _sliderValue,
+                  selectedDifficulty: _selectedDifficulty,
+                  selectedDishType: _selectedDishType,
+                ),
+              ),
+            );
+          },
           child: Container(
             padding: const EdgeInsets.all(8),
             width: width * 0.75,

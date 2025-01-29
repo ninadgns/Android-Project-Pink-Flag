@@ -171,10 +171,17 @@ final supabase = Supabase.instance.client;
 
 Future<List<Map<String, dynamic>>> fetchRecipesByTag(String tag) async {
   try {
-    // Step 1: Fetch recipe IDs associated with the given tag
-
-    final tagResponse =
-        await supabase.from('tags').select('recipe_id').eq('tag', tag);
+    // Step 1: Fetch recipe IDs associated with the given tag\
+    PostgrestList tagResponse;
+    if (tag == 'Popular') {
+      tagResponse = await supabase
+          .from('tags')
+          .select('recipe_id')
+          .eq('is_popular', true);
+    } else {
+      tagResponse =
+          await supabase.from('tags').select('recipe_id').eq('tag', tag);
+    }
     if (tagResponse.isEmpty) {
       debugPrint('No recipes found for the tag: $tag.');
       return [];
@@ -207,6 +214,76 @@ Future<List<Map<String, dynamic>>> fetchRecipesByTag(String tag) async {
     return List<Map<String, dynamic>>.from(recipeResponse);
   } catch (e) {
     debugPrint('Failed to fetch recipes for tag $tag: $e');
+    throw Exception('Failed to fetch recipes for the given tag.');
+  }
+}
+
+Future<List<Map<String, dynamic>>> filterRecipes(
+  double sliderValue,
+  List<String> selectedDifficulty,
+  List<String> selectedDishType,
+) async {
+  try {
+    // Step 1: Fetch recipe IDs associated with the given tag\
+    PostgrestList initialResponse;
+    if (sliderValue == 0) {
+      initialResponse = await supabase.from('recipes').select('id');
+    } else {
+      initialResponse = await supabase
+          .from('recipes')
+          .select('id')
+          .lte('total_duration', sliderValue.toInt())
+          .inFilter(
+              'difficulty',
+              selectedDifficulty.isEmpty
+                  ? ['Easy', 'Medium', 'Like A Pro']
+                  : selectedDifficulty);
+    }
+
+    if (initialResponse.isEmpty) {
+      debugPrint('No recipes found for time: $sliderValue.');
+      return [];
+    }
+
+    PostgrestList tagResponse;
+    if (selectedDishType.isEmpty) {
+      tagResponse = initialResponse;
+    } else {
+      tagResponse = await supabase
+          .from('tags')
+          .select('recipe_id')
+          .inFilter(
+              'recipe_id', initialResponse.map((tag) => tag['id']).toList())
+          .inFilter('tag', selectedDishType);
+    }
+
+    // Extract recipe IDs from the response
+    final recipeIds = tagResponse.map((tag) => tag['recipe_id']).toList();
+
+    // Step 2: Fetch recipes using the recipe IDs
+    final recipeResponse = await supabase.from('recipes').select('''
+            id,
+            title,
+            description,
+            difficulty,
+            total_duration,
+            serving_count,
+            created_at,
+            title_photo,
+            nutrition(protein, carbs, fat),
+            ingredients(name, quantity, unit),
+            steps(description, time, step_order)
+          ''').inFilter('id', recipeIds).order('created_at', ascending: false);
+
+    if (recipeResponse.isEmpty) {
+      debugPrint('No recipes found with the given filters.');
+      return [];
+    }
+
+    debugPrint('Recipes fetched successfully for the given filters.');
+    return List<Map<String, dynamic>>.from(recipeResponse);
+  } catch (e) {
+    debugPrint('Failed to fetch recipes for given filters: $e');
     throw Exception('Failed to fetch recipes for the given tag.');
   }
 }

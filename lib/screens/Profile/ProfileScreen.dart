@@ -37,7 +37,6 @@ class _ProfileScreenState extends State<ProfileScreen>
   static bool _hasAnimated = false;
   String userName = '';
 
-
   @override
   void initState() {
     super.initState();
@@ -64,6 +63,41 @@ class _ProfileScreenState extends State<ProfileScreen>
     } catch (e) {
       print('Error loading user data: $e');
     }
+  }
+
+  void _showLogoutDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: Colors.white,
+        title:  Text('Logout', style: Theme.of(context).textTheme.headlineSmall!.copyWith(color: Colors.black, fontWeight: FontWeight.bold)),
+        content: const Text('Are you sure you want to logout?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            style: TextButton.styleFrom(
+              foregroundColor: Colors.black,
+            ), // Dismiss the dialog
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () async {
+              await FirebaseAuth.instance.signOut();
+              Navigator.of(context).pushAndRemoveUntil(
+                MaterialPageRoute(builder: (context) => const Onboarding()),
+                (Route<dynamic> route) => false,
+              );
+            },
+            style: TextButton.styleFrom(
+              backgroundColor: Colors.black,
+              foregroundColor: Colors.white,
+
+            ),
+            child: const Text('Logout'),
+          ),
+        ],
+      ),
+    );
   }
 
   void _initializeAnimations() {
@@ -188,7 +222,6 @@ class _ProfileScreenState extends State<ProfileScreen>
     );
   }
 
-
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery
@@ -239,7 +272,6 @@ class _ProfileScreenState extends State<ProfileScreen>
         onTap: () => _navigateToScreen(context, 'Settings'),
       ),
     ];
-
 
     return Scaffold(
       backgroundColor: const Color(0xFFFFFCF7),
@@ -302,25 +334,9 @@ class _ProfileScreenState extends State<ProfileScreen>
                       ),
                       Wrap(
                         children: [
-                          // RotationTransition(
-                          //   turns: _bellAnimation,
-                          //   child: IconButton(
-                          //     icon: const Icon(
-                          //       Icons.notifications_outlined,
-                          //       color: Colors.black,
-                          //     ),
-                          //     onPressed: () =>
-                          //         _navigateToScreen(context, 'Notifications'),
-                          //   ),
-                          // ),
                           InkWell(
                             onTap: () async {
-                              await FirebaseAuth.instance.signOut();
-                              Navigator.of(context).pushAndRemoveUntil(
-                                MaterialPageRoute(
-                                    builder: (context) => const Onboarding()),
-                                    (Route<dynamic> route) => false,
-                              );
+                               _showLogoutDialog();
                             },
                             child: const Column(
                               mainAxisAlignment: MainAxisAlignment.center,

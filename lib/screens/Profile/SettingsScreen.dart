@@ -1,7 +1,13 @@
+// ignore_for_file: prefer_const_constructors
+
+import 'package:dim/models/FirebaseApi.dart';
+import 'package:dim/models/NotificationManagement/NotificationSettings.dart';
 import 'package:dim/screens/GetStarted.dart';
+import 'package:dim/screens/Profile/AboutScreen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:provider/provider.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -13,7 +19,6 @@ class SettingsScreen extends StatefulWidget {
 class _SettingsScreenState extends State<SettingsScreen> {
   //bool accountPrivacy = false;
   bool notifications = true;
-
   Widget _buildSettingItem({
     required IconData icon,
     required String title,
@@ -60,11 +65,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
         ),
         subtitle: subtitle != null
             ? Text(
-          subtitle,
-          style: TextStyle(
-            fontSize: size.width * 0.035, // Responsive subtitle size
-          ),
-        )
+                subtitle,
+                style: TextStyle(
+                  fontSize: size.width * 0.035, // Responsive subtitle size
+                ),
+              )
             : null,
         trailing: trailing,
         onTap: onTap,
@@ -98,7 +103,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
       fontWeight: FontWeight.bold,
     );
   }
-
 
   void _showClearCacheDialog() {
     showDialog(
@@ -210,7 +214,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 
-
   void _showLogoutDialog() {
     showDialog(
       context: context,
@@ -250,7 +253,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 Navigator.pushAndRemoveUntil(
                   context,
                   MaterialPageRoute(builder: (context) => Getstarted()),
-                      (route) => false,
+                  (route) => false,
                 );
               } catch (e) {
                 Navigator.pop(context);
@@ -304,7 +307,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(size.width * 0.03),
-                  borderSide: const BorderSide(color: Color(0xFFFF8A80), width: 1),
+                  borderSide:
+                      const BorderSide(color: Color(0xFFFF8A80), width: 1),
                 ),
                 hintText: 'Enter your feedback here...',
                 hintStyle: TextStyle(fontSize: size.width * 0.04),
@@ -335,7 +339,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
       ),
     );
   }
-
 
   void _showHelpCenterDialog() {
     final size = MediaQuery.of(context).size;
@@ -377,8 +380,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               Text('Use the Feedback option in Settings to report any issues.',
                   style: _getDialogContentStyle(context)),
               SizedBox(height: size.height * 0.02),
-              Text('Contact Support',
-                  style: _getDialogSubheaderStyle(context)),
+              Text('Contact Support', style: _getDialogSubheaderStyle(context)),
               SizedBox(height: size.height * 0.01),
               Text('Email: support@app.com\nPhone: 1-800-APP',
                   style: _getDialogContentStyle(context)),
@@ -398,65 +400,60 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 
-
   void _showAboutDialog() {
     final size = MediaQuery.of(context).size;
-
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        backgroundColor: Color(0xFFFFE6E8),
-        title: Text('About Us', style: _getDialogTitleStyle(context)),
-        content: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text('Our Mission', style: _getDialogSubheaderStyle(context)),
-              SizedBox(height: size.height * 0.01),
-              Text(
-                'We strive to create innovative solutions that make people\'s lives easier and more connected.',
-                style: _getDialogContentStyle(context),
-              ),
-              SizedBox(height: size.height * 0.02),
-              Text('Our Goals', style: _getDialogSubheaderStyle(context)),
-              SizedBox(height: size.height * 0.01),
-              Text(
-                '• Provide exceptional user experience\n'
-                    '• Maintain highest security standards\n'
-                    '• Continuous innovation and improvement\n'
-                    '• Build a strong, supportive community',
-                style: _getDialogContentStyle(context),
-              ),
-              SizedBox(height: size.height * 0.02),
-              Text(
-                'App Version: 1.0.0\n'
-                    'Developer: A\n'
-                    'Website: www.a.com',
-                style: _getDialogContentStyle(context),
-              ),
-            ],
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            style: TextButton.styleFrom(
-              foregroundColor: Color(0xFFFF8A80),
-            ),
-            child: Text('Close', style: _getDialogButtonStyle(context)),
-          ),
-        ],
-      ),
-    );
+    // showDialog(
+    //   context: context,
+    //   builder: (context) => AlertDialog(
+    //     backgroundColor: Color(0xFFFFE6E8),
+    //     title: Text('About Us', style: _getDialogTitleStyle(context)),
+    //     content: SingleChildScrollView(
+    //       child: Column(
+    //         crossAxisAlignment: CrossAxisAlignment.start,
+    //         mainAxisSize: MainAxisSize.min,
+    //         children: [
+    //           Text('Our Mission', style: _getDialogSubheaderStyle(context)),
+    //           SizedBox(height: size.height * 0.01),
+    //           Text(
+    //             'We strive to create innovative solutions that make people\'s lives easier and more connected.',
+    //             style: _getDialogContentStyle(context),
+    //           ),
+    //           SizedBox(height: size.height * 0.02),
+    //           Text('Our Goals', style: _getDialogSubheaderStyle(context)),
+    //           SizedBox(height: size.height * 0.01),
+    //           Text(
+    //             '• Provide exceptional user experience\n'
+    //                 '• Maintain highest security standards\n'
+    //                 '• Continuous innovation and improvement\n'
+    //                 '• Build a strong, supportive community',
+    //             style: _getDialogContentStyle(context),
+    //           ),
+    //           SizedBox(height: size.height * 0.02),
+    //           Text(
+    //             'App Version: 1.0.0\n'
+    //                 'Developer: A\n'
+    //                 'Website: www.a.com',
+    //             style: _getDialogContentStyle(context),
+    //           ),
+    //         ],
+    //       ),
+    //     ),
+    //     actions: [
+    //       TextButton(
+    //         onPressed: () => Navigator.pop(context),
+    //         style: TextButton.styleFrom(
+    //           foregroundColor: Color(0xFFFF8A80),
+    //         ),
+    //         child: Text('Close', style: _getDialogButtonStyle(context)),
+    //       ),
+    //     ],
+    //   ),
+    // );
   }
-
-
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-
+    final isNotificationEnabled = Provider.of<NotificationSettings>(context);
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
@@ -476,20 +473,21 @@ class _SettingsScreenState extends State<SettingsScreen> {
             children: [
               // App Bar
               Padding(
-                padding: EdgeInsets.all(size.width * 0.04),
+                padding:
+                    EdgeInsets.all(MediaQuery.of(context).size.width * 0.04),
                 child: Row(
                   children: [
                     IconButton(
                       icon: Icon(
                         Icons.arrow_back,
-                        size: size.width * 0.06,
+                        size: MediaQuery.of(context).size.width * 0.06,
                       ),
                       onPressed: () => Navigator.pop(context),
                     ),
                     Text(
                       'Settings',
                       style: TextStyle(
-                        fontSize: size.width * 0.05,
+                        fontSize: MediaQuery.of(context).size.width * 0.05,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -500,19 +498,28 @@ class _SettingsScreenState extends State<SettingsScreen> {
               // Settings List
               Expanded(
                 child: ListView(
-                  padding: EdgeInsets.symmetric(vertical: size.height * 0.01),
+                  padding: EdgeInsets.symmetric(
+                      vertical: MediaQuery.of(context).size.height * 0.01),
                   children: [
                     _buildSettingItem(
-                      icon: Icons.notifications,
-                      title: 'Notifications',
-                      subtitle: 'Control app notifications and alerts.',
-                      trailing: Switch(
-                        value: notifications,
-                        onChanged: (value) => setState(() => notifications = value),
-                        activeColor: const Color(0xFFFF9999),
-                      ),
-                      iconColor: Colors.orange,
-                    ),
+                        icon: Icons.notifications,
+                        title: 'Notifications',
+                        subtitle: 'Control app notifications and alerts.',
+                        trailing: Switch(
+                          value: isNotificationEnabled.isNotificationsEnabled,
+                          onChanged: (value) async {
+                            // setState(()  {
+                            //
+                            //   // await FirebaseApi.initNotifications(enableNotifications: value);
+                            // });
+                            await isNotificationEnabled
+                                .toggleNotifications(value);
+                            await FirebaseApi()
+                                .initNotifications(enableNotifications: value);
+                          },
+                          activeColor: const Color(0xFFFF9999),
+                        ),
+                        iconColor: Colors.orange),
                     _buildSettingItem(
                       icon: Icons.cleaning_services,
                       title: 'Clear Cache',
@@ -537,7 +544,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     _buildSettingItem(
                       icon: Icons.help,
                       title: 'Help Center',
-                      subtitle: 'Get assistance with frequently asked questions.',
+                      subtitle:
+                          'Get assistance with frequently asked questions.',
                       onTap: _showHelpCenterDialog,
                       iconColor: Colors.deepOrangeAccent,
                     ),
@@ -545,7 +553,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       icon: Icons.info,
                       title: 'About Us',
                       subtitle: 'Learn more about our mission.',
-                      onTap: _showAboutDialog,
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => AboutScreen()),
+                        );
+                      },
                       iconColor: Colors.blue,
                     ),
                   ],
