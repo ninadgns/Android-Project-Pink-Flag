@@ -169,82 +169,89 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> with RouteAware
           ),
         ),
       ),
-      body: Container(
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          image: DecorationImage(
-            image: AssetImage('assets/images/teal.png'),
-            repeat: ImageRepeat.repeat,
-            opacity: 0.08,
-          ),
-        ),
-        child: Column(
-          children: [
-            Padding(
-              padding: EdgeInsets.all(horizontalPadding),
-              child: CurrentPlanCard(
-                subscription: _currentSubscription,
+      body: RefreshIndicator(
+        onRefresh: _loadInitialData,
+        child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          child: Container(
+            height: screenSize.height - (screenSize.height * 0.07), // Subtract AppBar height
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              image: DecorationImage(
+                image: AssetImage('assets/images/teal.png'),
+                repeat: ImageRepeat.repeat,
+                opacity: 0.08,
               ),
             ),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
-              child: SizedBox(
-                width: buttonWidth,
-                child: ElevatedButton(
-                  onPressed: () => _navigateToPayments(1, null, _currentSubscription),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF80CBC4),
-                    minimumSize: Size.fromHeight(screenSize.height * 0.06),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(screenSize.width * 0.03),
-                    ),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        Icons.payment,
-                        color: Colors.white,
-                        size: screenSize.width * 0.05,
-                      ),
-                      SizedBox(width: screenSize.width * 0.02),
-                      Text(
-                        'Payment Methods',
-                        style: TextStyle(
-                          fontSize: screenSize.width * 0.04,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ],
+            child: Column(
+              children: [
+                Padding(
+                  padding: EdgeInsets.all(horizontalPadding),
+                  child: CurrentPlanCard(
+                    subscription: _currentSubscription,
                   ),
                 ),
-              ),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+                  child: SizedBox(
+                    width: buttonWidth,
+                    child: ElevatedButton(
+                      onPressed: () => _navigateToPayments(1, null, _currentSubscription),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF80CBC4),
+                        minimumSize: Size.fromHeight(screenSize.height * 0.06),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(screenSize.width * 0.03),
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.payment,
+                            color: Colors.white,
+                            size: screenSize.width * 0.05,
+                          ),
+                          SizedBox(width: screenSize.width * 0.02),
+                          Text(
+                            'Payment Methods',
+                            style: TextStyle(
+                              fontSize: screenSize.width * 0.04,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(height: screenSize.height * 0.02),
+                Expanded(
+                  child: PageView.builder(
+                    controller: _pageController,
+                    itemCount: _plans.length,
+                    onPageChanged: (index) {
+                      setState(() {
+                        _currentPage = index;
+                      });
+                    },
+                    itemBuilder: (context, index) {
+                      return SubscriptionPlanCard(
+                        plan: _plans[index],
+                        isSelected: index == _currentPage,
+                        onSubscribe: (plan) => _navigateToPayments(2, plan, _currentSubscription),
+                      );
+                    },
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(bottom: screenSize.height * 0.04),
+                  child: _buildPageIndicator(),
+                ),
+              ],
             ),
-            SizedBox(height: screenSize.height * 0.02),
-            Expanded(
-              child: PageView.builder(
-                controller: _pageController,
-                itemCount: _plans.length,
-                onPageChanged: (index) {
-                  setState(() {
-                    _currentPage = index;
-                  });
-                },
-                itemBuilder: (context, index) {
-                  return SubscriptionPlanCard(
-                    plan: _plans[index],
-                    isSelected: index == _currentPage,
-                    onSubscribe: (plan) => _navigateToPayments(2, plan, _currentSubscription),
-                  );
-                },
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(bottom: screenSize.height * 0.04),
-              child: _buildPageIndicator(),
-            ),
-          ],
+          ),
         ),
       ),
     );
