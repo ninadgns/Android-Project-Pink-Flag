@@ -1,9 +1,9 @@
-import 'package:flutter/material.dart';
-import '../../services/GroceryService.dart';
 import 'package:dim/data/constants.dart';
-import 'package:share_plus/share_plus.dart';
-import 'package:dim/widgets/ShoppingScreen/DateSelector.dart';
 import 'package:dim/widgets/ShoppingScreen/CategorySection.dart';
+import 'package:flutter/material.dart';
+import 'package:share_plus/share_plus.dart';
+
+import '../../services/GroceryService.dart';
 
 class ShoppingScreen extends StatefulWidget {
   const ShoppingScreen({super.key});
@@ -50,117 +50,84 @@ class _ShoppingScreenState extends State<ShoppingScreen>
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-    final textScale = MediaQuery.of(context).textScaleFactor;
-    final padding = size.width * 0.04;
-    final iconSize = size.width * 0.06;
-    final appBarHeight = size.height * 0.08;
-
     return Scaffold(
-      backgroundColor: Colors.grey[100],
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(appBarHeight),
-        child: AppBar(
-          backgroundColor: Colors.teal.shade200,
-          automaticallyImplyLeading: false,
-          elevation: 0,
-          title: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Shopping List',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: textScale * 24,
-                  fontWeight: FontWeight.bold,
+        body: Column(children: [
+      // Custom Header
+      Container(
+        padding: EdgeInsets.symmetric(
+          vertical: MediaQuery.of(context).size.height * 0.02,
+          horizontal: MediaQuery.of(context).size.width * 0.05,
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            // Back Button
+
+            // Centered Title
+            Text(
+              'Shopping List',
+              style: Theme.of(context).textTheme.displayMedium,
+            ),
+
+            // Action Buttons
+            Row(
+              children: [
+                IconButton(
+                  icon: const Icon(Icons.share_outlined, color: Colors.black),
+                  onPressed: _saveInDB,
                 ),
-              ),
-              Text(
-                '${_formatDate(_startDate)} - ${_formatDate(_endDate)}',
-                style: TextStyle(
-                  color: Colors.white70,
-                  fontSize: textScale * 14,
+                IconButton(
+                  icon: const Icon(Icons.check, color: Colors.black),
+                  onPressed: _shareShoppingList,
                 ),
-              ),
-            ],
-          ),
-          actions: [
-            // IconButton(
-            //   icon: Icon(
-            //     Icons.share,
-            //     color: Colors.white,
-            //     size: iconSize,
-            //   ),
-            //   onPressed: _shareShoppingList,
-            // ),
-            IconButton(
-              icon: Icon(
-                Icons.check,
-                color: Colors.white,
-                size: iconSize,
-              ),
-              onPressed: _saveInDB,
+              ],
             ),
           ],
         ),
       ),
-      body: LayoutBuilder(
-        builder: (context, constraints) {
-          return SingleChildScrollView(
-            controller: _scrollController,
-            child: ConstrainedBox(
-              constraints: BoxConstraints(
-                minHeight: constraints.maxHeight,
-                minWidth: constraints.maxWidth,
-              ),
-              child: Container(
-                decoration: const BoxDecoration(
-                  color: Colors.white,
-                  image: DecorationImage(
-                    image: AssetImage('assets/images/tealwhite.jpeg'),
-                    repeat: ImageRepeat.repeat,
-                    opacity: 0.15,
+      Expanded(
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            return SingleChildScrollView(
+              controller: _scrollController,
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  minHeight: constraints.maxHeight,
+                ),
+                child: Container(
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    image: DecorationImage(
+                      image: AssetImage('assets/images/tealwhite.jpeg'),
+                      repeat: ImageRepeat.repeat,
+                      opacity: 0.15,
+                    ),
+                  ),
+                  child: Column(
+                    children: [
+                      ...categoryColors.keys.map((category) => CategorySection(
+                            category: category,
+                            backgroundColor: categoryColors[category]!,
+                            groceryService: _groceryService,
+                            onAddItem: () => setState(() {}),
+                            onUpdate: () => setState(() {}),
+                          )),
+                      SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.15),
+                    ],
                   ),
                 ),
-                child: Column(
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.all(padding),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: DateSelector(
-                              label: 'From',
-                              selectedDate: _startDate,
-                              onDateSelected: (date) => setState(() => _startDate = date),
-                            ),
-                          ),
-                          SizedBox(width: size.width * 0.04),
-                          Expanded(
-                            child: DateSelector(
-                              label: 'To',
-                              selectedDate: _endDate,
-                              onDateSelected: (date) => setState(() => _endDate = date),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    ...categoryColors.keys.map((category) => CategorySection(
-                      category: category,
-                      backgroundColor: categoryColors[category]!,
-                      groceryService: _groceryService,
-                      onAddItem: () => setState(() {}),
-                      onUpdate: () => setState(() {}),
-                    )),
-                    SizedBox(height: size.height * 0.15),
-                  ],
-                ),
               ),
-            ),
-          );
-        },
-      ),
-    );
+            );
+          },
+        ),
+      )
+    ]));
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
   }
 }
