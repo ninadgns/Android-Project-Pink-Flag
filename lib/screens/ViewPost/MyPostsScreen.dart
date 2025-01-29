@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:dim/screens/AddPost/CreateRecipePostScreen.dart';
 import '../../services/love_react_service.dart';
+import '../../services/review_service.dart';
 import '../review_screen.dart';
 import 'RecipeCard.dart';
 import 'CommentSection.dart';
@@ -150,6 +151,8 @@ class _RecipePostState extends State<RecipePost> {
   final TextEditingController _commentController = TextEditingController();
   final LoveReactService _loveReactService = LoveReactService();
   bool _isInitialized = false;
+  final ReviewService _reviewService = ReviewService();
+  double? averageRating;
 
   @override
   void initState() {
@@ -158,6 +161,19 @@ class _RecipePostState extends State<RecipePost> {
     likeCount = widget.likes;
     commentsList = List.from(widget.comments);
     _initializeLikeStatus();
+    _fetchAverageRating();
+  }
+  Future<void> _fetchAverageRating() async {
+    try {
+      final rating = await _reviewService.fetchAverageRating(widget.id!);
+      if (mounted) {
+        setState(() {
+          averageRating = rating;
+        });
+      }
+    } catch (e) {
+      print('Error fetching average rating: $e');
+    }
   }
 
   Future<void> _initializeLikeStatus() async {
@@ -275,6 +291,7 @@ class _RecipePostState extends State<RecipePost> {
       recipeId: widget.id ?? '',  // ✅ Pass the correct recipe ID
       showComments: () => _openReviewScreen(context),  // ✅ Open review screen instead of comments
       steps: widget.steps,
+      averageRating: averageRating,
     );
   }
 

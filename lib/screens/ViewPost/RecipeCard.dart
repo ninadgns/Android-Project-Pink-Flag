@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../services/review_service.dart';
+import 'package:intl/intl.dart';
 
 class RecipeCard extends StatelessWidget {
   final bool isMyPost;
@@ -20,6 +21,7 @@ class RecipeCard extends StatelessWidget {
   final Map<String, dynamic> user;
   final String recipeId;
   final List<Map<String, dynamic>> steps;
+  final double? averageRating;
 
   const RecipeCard({
     super.key,
@@ -36,7 +38,7 @@ class RecipeCard extends StatelessWidget {
     required this.onLike,
     required this.user,
     required this.recipeId,
-    required this.createdAt, required void Function() showComments, required this.steps,
+    required this.createdAt, required void Function() showComments, required this.steps, this.averageRating,
   });
 
   @override
@@ -66,7 +68,29 @@ class RecipeCard extends StatelessWidget {
                 const SizedBox(width: 8),
               ],
             ),
-            subtitle: Text(createdAt),
+            subtitle: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  _formatDate(createdAt),  // Use formatted date
+                  style: const TextStyle(color: Colors.black54),
+                ),
+                Row(  // Corrected 'child' to 'Row'
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const Icon(Icons.star, size: 16, color: Colors.amber),
+                    const SizedBox(width: 4),
+                    Text(
+                      averageRating != null
+                          ? '${averageRating!.toStringAsFixed(1)}'
+                          : 'Not rated',
+                      style: const TextStyle(color: Colors.grey),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+
             trailing: IconButton(
               icon: const Icon(Icons.more_vert),
               onPressed: () {
@@ -279,5 +303,14 @@ class RecipeCard extends StatelessWidget {
         ],
       ),
     );
+  }
+}
+
+String _formatDate(String dateTimeString) {
+  try {
+    final dateTime = DateTime.parse(dateTimeString);
+    return DateFormat('yyyy-MM-dd').format(dateTime);  // Format as YYYY-MM-DD
+  } catch (e) {
+    return dateTimeString;  // Return the original string if parsing fails
   }
 }
