@@ -34,7 +34,7 @@ class _StepsInputState extends State<StepsInput> {
 
   void _showStepInputDialog() {
     final TextEditingController stepDescriptionController =
-        TextEditingController();
+    TextEditingController();
     final TextEditingController stepTimeController = TextEditingController();
 
     showDialog(
@@ -111,22 +111,22 @@ class _StepsInputState extends State<StepsInput> {
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
         const SizedBox(height: 8),
         ..._steps.map((step) => ListTile(
-              leading: CircleAvatar(
-                child: Text(step['step_order'].toString()), // Show step order
-              ),
-              title: Text(step['description']),
-              subtitle: Text('time: ${step['time']} min'),
-              trailing: IconButton(
-                icon: const Icon(Icons.delete, color: Colors.red),
-                onPressed: () {
-                  setState(() {
-                    _steps.remove(step);
-                    _reorderSteps(); // Recalculate step orders after deletion
-                  });
-                  widget.onChanged(_steps);
-                },
-              ),
-            )),
+          leading: CircleAvatar(
+            child: Text(step['step_order'].toString()), // Show step order
+          ),
+          title: Text(step['description']),
+          subtitle: Text('time: ${step['time']} min'),
+          trailing: IconButton(
+            icon: const Icon(Icons.delete, color: Colors.red),
+            onPressed: () {
+              setState(() {
+                _steps.remove(step);
+                _reorderSteps(); // Recalculate step orders after deletion
+              });
+              widget.onChanged(_steps);
+            },
+          ),
+        )),
         TextButton.icon(
           onPressed: _showStepInputDialog,
           icon: const Icon(Icons.add),

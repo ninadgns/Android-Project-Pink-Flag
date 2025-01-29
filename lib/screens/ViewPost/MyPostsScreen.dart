@@ -98,6 +98,7 @@ class RecipePost extends StatefulWidget {
   final String? createdAt;
   final bool initialIsLiked;
   final Map<String, dynamic> user;
+  final List<Map<String, dynamic>> steps;
 
   const RecipePost({
     super.key,
@@ -112,6 +113,7 @@ class RecipePost extends StatefulWidget {
     required this.onDelete,
     required this.onSave,
     required this.user,
+    required this.steps,
     this.id,
     this.createdAt,
     this.initialIsLiked = false,
@@ -129,6 +131,7 @@ class RecipePost extends StatefulWidget {
       createdAt: json['createdAt'],
       initialIsLiked: json['isLiked'] ?? false,
       user: json['user'],
+      steps: List<Map<String, dynamic>>.from(json['steps'] ?? []),
       isMyPost: false,
       onEdit: () {},
       onDelete: () {},
@@ -271,7 +274,7 @@ class _RecipePostState extends State<RecipePost> {
       onLike: _handleLike,
       recipeId: widget.id ?? '',  // ✅ Pass the correct recipe ID
       showComments: () => _openReviewScreen(context),  // ✅ Open review screen instead of comments
-
+      steps: widget.steps,
     );
   }
 
@@ -320,6 +323,8 @@ class AllPostsTab extends StatelessWidget {
           id: post.id,
           createdAt: post.createdAt,
           initialIsLiked: post.initialIsLiked,
+          steps: [],
+
         );
       },
     );
@@ -356,35 +361,40 @@ class _MyPostsTabState extends State<MyPostsTab> {
         throw Exception('User not authenticated');
       }
 
-      // Fetch recipes with related data
       final response = await Supabase.instance.client
           .from('recipes')
           .select('''
-            *,
-            nutrition(protein, carbs, fat),
-            ingredients(name, quantity, unit),
-            steps(description, time, step_order)
-          ''')
+          *,
+          nutrition(protein, carbs, fat),
+          ingredients(name, quantity, unit),
+          steps(description, time, step_order)
+        ''')
           .eq('user_id', currentUserId)
           .order('created_at', ascending: false);
 
-      debugPrint('Fetched recipes: $response'); // Debug print
+      debugPrint('Fetched recipes: $response');
 
-      // Convert the response to RecipePost objects
       final List<RecipePost> recipes = response.map<RecipePost>((recipeData) {
         // Transform ingredients data to string list
         final ingredients = (recipeData['ingredients'] as List)
             .map((ing) => "${ing['quantity']} ${ing['unit']} ${ing['name']}")
             .toList();
 
-        // Get the complete image URL from Supabase storage
-        String imageUrl = recipeData['title_photo'] ?? '';
+        // Transform steps data
+        final steps = (recipeData['steps'] as List).map((step) => {
+          'description': step['description'],
+          'time': step['time'],
+          'step_order': step['step_order'],
+        }).toList();
 
-        // If the URL doesn't start with 'http', it's a storage path
+        // Sort steps by step_order
+        steps.sort((a, b) => (a['step_order'] as int).compareTo(b['step_order'] as int));
+
+        String imageUrl = recipeData['title_photo'] ?? '';
         if (!imageUrl.startsWith('http')) {
           imageUrl = Supabase.instance.client.storage
-              .from('recipe') // your bucket name
-              .getPublicUrl(imageUrl.replaceFirst('recipe/', '')); // remove bucket prefix if present
+              .from('recipe')
+              .getPublicUrl(imageUrl.replaceFirst('recipe/', ''));
         }
 
         return RecipePost(
@@ -393,10 +403,11 @@ class _MyPostsTabState extends State<MyPostsTab> {
           title: recipeData['title'] ?? '',
           description: recipeData['description'] ?? '',
           ingredients: ingredients.cast<String>(),
-          imageUrl: imageUrl, // Use the complete URL
+          imageUrl: imageUrl,
           likes: 0,
           initialIsLiked: false,
           comments: [],
+          steps: steps, // Add steps here
           user: {
             'id': currentUserId,
             'name': 'Current User',
@@ -421,6 +432,9 @@ class _MyPostsTabState extends State<MyPostsTab> {
       });
     }
   }
+
+
+
   Future<void> _handleDeleteRecipe(String recipeId) async {
     try {
       final shouldDelete = await showDialog<bool>(

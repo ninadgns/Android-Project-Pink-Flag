@@ -427,7 +427,7 @@ class _EditRecipePostScreenState extends State<EditRecipePostScreen> {
                 const SizedBox(height: 16),
                 IngredientsList(
                   onChanged: _handleIngredients,
-                  //initialIngredients: _ingredients,
+                  initialIngredients: _ingredients,
                 ),
                 const SizedBox(height: 16),
                 NutritionInput(

@@ -19,6 +19,7 @@ class RecipeCard extends StatelessWidget {
   final VoidCallback onLike;
   final Map<String, dynamic> user;
   final String recipeId;
+  final List<Map<String, dynamic>> steps;
 
   const RecipeCard({
     super.key,
@@ -35,7 +36,7 @@ class RecipeCard extends StatelessWidget {
     required this.onLike,
     required this.user,
     required this.recipeId,
-    required this.createdAt, required void Function() showComments,
+    required this.createdAt, required void Function() showComments, required this.steps,
   });
 
   @override
@@ -126,14 +127,57 @@ class RecipeCard extends StatelessWidget {
                           overflow: TextOverflow.ellipsis,
                         ),
                         const SizedBox(height: 8),
-                        TextButton(
-                          onPressed: () {},
-                          style: TextButton.styleFrom(
-                            foregroundColor: Colors.black,
-                            padding: EdgeInsets.zero,
+                        if (steps.isNotEmpty) ...[
+                          const Text(
+                            'Steps:',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
                           ),
-                          child: const Text('Show Details'),
-                        ),
+                          const SizedBox(height: 8),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: steps.map((step) => Padding(
+                              padding: const EdgeInsets.only(bottom: 8.0),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  CircleAvatar(
+                                    radius: 12,
+                                    backgroundColor: Colors.grey[200],
+                                    child: Text(
+                                      step['step_order'].toString(),
+                                      style: const TextStyle(
+                                        fontSize: 12,
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          step['description'],
+                                          style: Theme.of(context).textTheme.bodyMedium,
+                                        ),
+                                        Text(
+                                          '${step['time']} minutes',
+                                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                            color: Colors.grey[600],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            )).toList(),
+                          ),
+                        ],
+
                       ],
                     ),
                   ),
