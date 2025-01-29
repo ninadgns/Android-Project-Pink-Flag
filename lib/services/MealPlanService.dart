@@ -169,8 +169,7 @@ class MealPlanService {
       throw Exception('Failed to fetch meal plan: $e');
     }
   }
-
-  // Check for active meal plan
+// Check for active meal plan
   Future<String?> getActiveMealPlanId() async {
     try {
       final userId = _auth.currentUser?.uid;

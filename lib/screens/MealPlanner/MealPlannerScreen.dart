@@ -31,16 +31,14 @@ class _MealPlanScreenState extends State<MealPlanScreen> {
 
       String? mealPlanId = await _mealPlanService.getActiveMealPlanId();
 
-      if (mealPlanId == null) {
-        final List<Map<String, dynamic>> response =
-            await _mealPlanService.generateMealPlan();
+      if(mealPlanId == null) {
+        final List<Map<String, dynamic>> response = await _mealPlanService
+            .generateMealPlan();
         final storedPlan = await _mealPlanService.storeMealPlan(response);
         mealPlanId = storedPlan['id'];
       }
 
-      // Get the meal plan details with dates from Supabase
-      final List<DayMeals> dayMealsList =
-          await _mealPlanService.fetchCurrentMealPlan(mealPlanId!);
+      final List<DayMeals> dayMealsList = await _mealPlanService.fetchCurrentMealPlan(mealPlanId!);
 
       setState(() {
         _mealPlan = dayMealsList;
@@ -61,7 +59,7 @@ class _MealPlanScreenState extends State<MealPlanScreen> {
     try {
       await _mealPlanService.deactivateCurrentMealPlans();
       return _loadMealPlan();
-    } catch (e) {
+    } catch(e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Error loading meal plan: $e')),
@@ -72,22 +70,21 @@ class _MealPlanScreenState extends State<MealPlanScreen> {
 
   String _getCurrentDate() {
     final now = DateTime.now();
-    final DateFormat formatter = DateFormat('d MMMM'); // Day and Month name
+    final DateFormat formatter = DateFormat('d MMMM');
     return formatter.format(now);
   }
 
   void _navigateToNextScreen() {
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (context) =>
-            const PreferencesScreen(), // Replace with your screen
+        builder: (context) => const PreferencesScreen(), // Replace with your screen
       ),
     );
   }
 
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
-
+    //const Color(0xFFF8E8C4)
     return Theme(
       data: Theme.of(context).copyWith(
         cardTheme: CardTheme(
@@ -100,81 +97,98 @@ class _MealPlanScreenState extends State<MealPlanScreen> {
         ),
       ),
       child: Scaffold(
-          body: Column(children: [
-        // Custom Header
-        Container(
-          padding: EdgeInsets.symmetric(
-            vertical: MediaQuery.of(context).size.height * 0.02,
-            horizontal: MediaQuery.of(context).size.width * 0.05,
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              // Back Button
-
-              // Centered Title
-              Text(
-                'Meal Plan',
-                style: Theme.of(context).textTheme.displayMedium,
-              ),
-
-              // Next Plan Button
+        appBar: PreferredSize(
+          preferredSize: Size.fromHeight(screenSize.height * 0.08),
+          child: AppBar(
+            title: Row(
+              children: [
+                Text(
+                  'Meal Plan',
+                  style: TextStyle(
+                    fontSize: screenSize.width * 0.065,
+                    color: Colors.black,
+                  ),
+                ),
+                SizedBox(width: screenSize.width * 0.08),
+                Text(
+                  _getCurrentDate(),
+                  style: TextStyle(
+                    fontSize: screenSize.width * 0.045,
+                    fontWeight: FontWeight.w300,
+                    color: Colors.black,
+                  ),
+                ),
+              ],
+            ),
+            backgroundColor: const Color(0xfffaf6f2),
+            automaticallyImplyLeading: false,
+            actions: [
               IconButton(
-                icon: const Icon(Icons.refresh, color: Colors.black),
+                icon: Icon(
+                  Icons.next_plan_outlined,
+                  size: screenSize.width * 0.07,
+                  color: Colors.black,
+                ),
                 onPressed: _giveNewPlan,
+                padding: EdgeInsets.all(screenSize.width * 0.03),
               ),
             ],
           ),
         ),
-
-        // Scrollable Meal Plan Content
-        Expanded(
-          child: _isLoading
-              ? const Center(child: CircularProgressIndicator())
-              : RefreshIndicator(
-                  onRefresh: _loadMealPlan,
-                  child: Column(
-                    children: [
-                      SizedBox(
-                        width: screenSize.width * 0.6,
-                        height: screenSize.height * 0.06,
-                        child: ElevatedButton(
-                          onPressed: _navigateToNextScreen,
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFF8CB5B5),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(
-                                  screenSize.width * 0.02),
-                            ),
-                          ),
-                          child: Text(
-                            'My Preferences',
-                            style: TextStyle(
-                              fontSize: screenSize.width * 0.04,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        child: ListView.builder(
-                          padding: EdgeInsets.symmetric(
-                              vertical: screenSize.height * 0.02),
-                          itemCount: _mealPlan.length,
-                          itemBuilder: (context, index) {
-                            final dayMeals = _mealPlan[index];
-                            return _buildDayCard(dayMeals, context);
-                          },
-                        ),
-                      ),
-                      SizedBox(height: screenSize.height * 0.1),
-                    ],
+        body: Column(
+          children: [
+            // Navigation button below AppBar
+            Padding(
+              padding: EdgeInsets.symmetric(
+                vertical: screenSize.height * 0.02,
+                horizontal: screenSize.width * 0.04,
+              ),
+              child: SizedBox(
+                width: screenSize.width * 0.6,
+                height: screenSize.height * 0.06,
+                child: ElevatedButton(
+                  onPressed: _navigateToNextScreen,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF8CB5B5),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(screenSize.width * 0.02),
+                    ),
+                  ),
+                  child: Text(
+                    'My Preferences',
+                    style: TextStyle(
+                      fontSize: screenSize.width * 0.04,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
+              ),
+            ),
+            // Main content with RefreshIndicator
+            Expanded(
+              child: _isLoading
+                  ? const Center(child: CircularProgressIndicator())
+                  : RefreshIndicator(
+                onRefresh: _loadMealPlan,
+                child: ListView.builder(
+                  padding: EdgeInsets.symmetric(
+                      vertical: screenSize.height * 0.02
+                  ),
+                  itemCount: _mealPlan.length,
+                  itemBuilder: (context, index) {
+                    final dayMeals = _mealPlan[index];
+                    return _buildDayCard(dayMeals, context);
+                  },
+                ),
+              ),
+            ),
+            SizedBox(height: screenSize.height * 0.1),
+          ],
         ),
-      ])),
+      ),
     );
   }
+
 
   Widget _buildDayCard(DayMeals dayMeals, BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
@@ -200,15 +214,15 @@ class _MealPlanScreenState extends State<MealPlanScreen> {
           Column(
             children: dayMeals.meals
                 .map((meal) => Padding(
-                      padding: EdgeInsets.symmetric(
-                        vertical: screenSize.height * 0.004,
-                      ),
-                      child: RecipeItem(
-                        recipeName: meal.recipeName,
-                        mealType: meal.mealType,
-                        onEdit: () async {},
-                      ),
-                    ))
+              padding: EdgeInsets.symmetric(
+                vertical: screenSize.height * 0.004,
+              ),
+              child: RecipeItem(
+                recipeName: meal.recipeName,
+                mealType: meal.mealType,
+                onEdit: () async {},
+              ),
+            ))
                 .toList(),
           ),
         ],
