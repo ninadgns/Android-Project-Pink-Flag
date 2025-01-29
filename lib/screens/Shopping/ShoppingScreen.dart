@@ -52,99 +52,80 @@ class _ShoppingScreenState extends State<ShoppingScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[100],
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        elevation: 0,
-        title: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'Shopping List',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
+      body: Column(
+        children: [
+          // Custom Header
+          Container(
+            padding: EdgeInsets.symmetric(
+              vertical: MediaQuery.of(context).size.height * 0.02,
+              horizontal: MediaQuery.of(context).size.width * 0.05,
+            ),
+            decoration: const BoxDecoration(
+              borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(20),
+                bottomRight: Radius.circular(20),
               ),
             ),
-            Text(
-              '${_formatDate(_startDate)} - ${_formatDate(_endDate)}',
-              style: const TextStyle(
-                color: Colors.white70,
-                fontSize: 14,
-              ),
-            ),
-          ],
-        ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.share_outlined, color: Colors.white),
-            onPressed: _saveInDB,
-          ),
-          IconButton(
-            icon: const Icon(Icons.check, color: Colors.white),
-            onPressed: _shareShoppingList,
-          ),
-        ],
-      ),
-      body: LayoutBuilder(
-        builder: (context, constraints) {
-          return SingleChildScrollView(
-            controller: _scrollController,
-            child: ConstrainedBox(
-              constraints: BoxConstraints(
-                minHeight: constraints.maxHeight,
-              ),
-              child: Container(
-                decoration: const BoxDecoration(
-                  color: Colors.white,
-                  image: DecorationImage(
-                    image: AssetImage('assets/images/tealwhite.jpeg'),
-                    repeat: ImageRepeat.repeat,
-                    opacity: 0.15,
-                  ),
-                ),
-                child: Column(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                // Back Button
+                // Title with Date Range
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Padding(
-                      padding: EdgeInsets.all(
-                          MediaQuery.of(context).size.width * 0.04),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: DateSelector(
-                              label: 'From',
-                              selectedDate: _startDate,
-                              onDateSelected: (date) =>
-                                  setState(() => _startDate = date),
-                            ),
-                          ),
-                          SizedBox(
-                              width: MediaQuery.of(context).size.width * 0.04),
-                          Expanded(
-                            child: DateSelector(
-                              label: 'To',
-                              selectedDate: _endDate,
-                              onDateSelected: (date) =>
-                                  setState(() => _endDate = date),
-                            ),
-                          ),
-                        ],
-                      ),
+                    Text(
+                      'Shopping List',
+                      style: Theme.of(context).textTheme.displayMedium,
                     ),
-                    ...categoryColors.keys.map((category) => CategorySection(
-                          category: category,
-                          backgroundColor: categoryColors[category]!,
-                          groceryService: _groceryService,
-                          onAddItem: () => setState(() {}),
-                          onUpdate: () => setState(() {}),
-                        )),
-                    SizedBox(height: MediaQuery.of(context).size.height * 0.15),
                   ],
                 ),
-              ),
+                // Action Icons (Save & Share)
+                Row(
+                  children: [
+                    IconButton(
+                      icon:
+                          const Icon(Icons.share_outlined, color: Colors.black),
+                      onPressed: _saveInDB,
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.check, color: Colors.black),
+                      onPressed: _shareShoppingList,
+                    ),
+                  ],
+                ),
+              ],
             ),
-          );
-        },
+          ),
+          Expanded(child: LayoutBuilder(
+            builder: (context, constraints) {
+              return SingleChildScrollView(
+                controller: _scrollController,
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(
+                    minHeight: constraints.maxHeight,
+                  ),
+                  child: Container(
+                    child: Column(
+                      children: [
+                        ...categoryColors.keys
+                            .map((category) => CategorySection(
+                                  category: category,
+                                  backgroundColor: categoryColors[category]!,
+                                  groceryService: _groceryService,
+                                  onAddItem: () => setState(() {}),
+                                  onUpdate: () => setState(() {}),
+                                )),
+                        SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.15),
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            },
+          ))
+        ],
       ),
     );
   }
