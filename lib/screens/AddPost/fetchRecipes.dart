@@ -9,6 +9,7 @@ Future<List<Map<String, dynamic>>> fetchRecipes() async {
     final response = await supabase.from('recipes').select('''
           id,
           title,
+          user_id,
           description,
           difficulty,
           total_duration,
@@ -43,6 +44,7 @@ Future<List<Map<String, dynamic>>> fetchRecipesGivenCategory() async {
     final response = await supabase.from('recipes').select('''
           id,
           title,
+          user_id,
           description,
           difficulty,
           total_duration,
@@ -77,6 +79,7 @@ Future<List<Map<String, dynamic>>> fullTextSearchRecipes(String prompt) async {
     final recipeResponse = await supabase.from('recipes').select('''
           id,
           title,
+          user_id,
           description,
           difficulty,
           total_duration,
@@ -123,6 +126,7 @@ Future<List<Map<String, dynamic>>> fullTextSearchIngredients(
     final recipesResponse = await supabase.from('recipes').select('''
           id,
           title,
+          user_id,
           description,
           difficulty,
           total_duration,
@@ -194,6 +198,7 @@ Future<List<Map<String, dynamic>>> fetchRecipesByTag(String tag) async {
     final recipeResponse = await supabase.from('recipes').select('''
             id,
             title,
+            user_id,
             description,
             difficulty,
             total_duration,
@@ -264,6 +269,7 @@ Future<List<Map<String, dynamic>>> filterRecipes(
     final recipeResponse = await supabase.from('recipes').select('''
             id,
             title,
+            user_id,
             description,
             difficulty,
             total_duration,

@@ -123,7 +123,7 @@ class Recipe {
   factory Recipe.fromMap(Map<String, dynamic> map) {
     final recipe = Recipe(
       id: map['id'] ?? '',
-      userId: map['userId'] ?? '',
+      userId: map['user_id'] ?? '',
       name: map['title'] ?? '',
       description: map['description'] ?? '',
       totalDuration: map['totalDuration'] ?? 0,
@@ -143,7 +143,7 @@ class Recipe {
   Map<String, dynamic> toMap() {
     return {
       'id': id,
-      'userId': userId,
+      'user_id': userId,
       'name': name,
       'description': description,
       'totalDuration': totalDuration,

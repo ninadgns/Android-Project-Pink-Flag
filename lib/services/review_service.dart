@@ -36,7 +36,7 @@ class ReviewService {
           .eq('recipe_id', recipeId);
 
       if (response == null || response.isEmpty) {
-        return null;
+        return 0.0;
       }
 
       // Convert ratings to double, handling potential int values
@@ -51,7 +51,7 @@ class ReviewService {
       }).toList();
 
       if (ratings.isEmpty) {
-        return null;
+        return 0.0;
       }
 
       // Calculate average and round to 1 decimal place
@@ -59,7 +59,7 @@ class ReviewService {
       return double.parse(average.toStringAsFixed(1));
     } catch (e) {
       print('Error fetching average rating: $e');
-      return null;
+      return 0.0;
     }
   }
 

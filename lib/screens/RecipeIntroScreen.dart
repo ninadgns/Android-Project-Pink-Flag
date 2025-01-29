@@ -16,7 +16,6 @@ import '../models/RecipeModel.dart';
 import '../widgets/RecipeIntroScreen/IngredientsInfo.dart';
 import 'review_screen.dart';
 
-
 class RecipeIntro extends StatefulWidget {
   RecipeIntro({super.key, required this.recipe});
   Recipe recipe;
@@ -42,7 +41,7 @@ class _RecipeIntroState extends State<RecipeIntro> {
   bool isSaved = false;
   final ReviewService _reviewService = ReviewService();
   int totalReviews = 0;
-
+  String recipeUserName = "";
   @override
   void initState() {
     // TODO: implement initState
@@ -51,6 +50,7 @@ class _RecipeIntroState extends State<RecipeIntro> {
     widget.recipe.calculateTotalDuration();
     _fetchReviewCount();
     _fetchAverageRating();
+    func();
     final userId = FirebaseAuth.instance.currentUser!.uid;
     final recipeId = widget.recipe.id;
     _isRecipeSaved(userId, recipeId).then((value) {
@@ -58,6 +58,10 @@ class _RecipeIntroState extends State<RecipeIntro> {
         isSaved = value;
       });
     });
+  }
+
+  void func() async {
+    await _fetchRecipeUserName();
   }
 
   Future<void> _fetchAverageRating() async {
@@ -70,7 +74,8 @@ class _RecipeIntroState extends State<RecipeIntro> {
 
   Future<void> _fetchReviewCount() async {
     try {
-      final reviewCount = await _reviewService.fetchReviewCount(widget.recipe.id);
+      final reviewCount =
+          await _reviewService.fetchReviewCount(widget.recipe.id);
       if (mounted) {
         setState(() {
           totalReviews = reviewCount;
@@ -86,10 +91,25 @@ class _RecipeIntroState extends State<RecipeIntro> {
     }
   }
 
+  Future<void> _fetchRecipeUserName() async {
+    final supabase = Supabase.instance.client;
+    try {
+      final response = await supabase
+          .from('users')
+          .select('full_name')
+          .eq('id', widget.recipe.userId)
+          .maybeSingle();
 
-
-
-
+      setState(() {
+        recipeUserName = response?['full_name'] as String;
+      });
+      print(
+          '**************************: $recipeUserName **********************');
+    } catch (e) {
+      print('user id ' + widget.recipe.userId);
+      print('Exception fetching recipe user name: $e');
+    }
+  }
 
   Future<bool> _isRecipeSaved(String userId, String recipeId) async {
     final supabase = Supabase.instance.client;
@@ -274,6 +294,7 @@ class _RecipeIntroState extends State<RecipeIntro> {
                         shape: WidgetStateProperty.all(const CircleBorder()),
                       ),
                     ),
+
                   ],
                 )),
           ),
@@ -357,6 +378,33 @@ class _RecipeIntroState extends State<RecipeIntro> {
                                       ),
                                     ),
                                     const SizedBox(height: 4),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          'By - ',
+                                          style: const TextStyle(
+                                            color: Colors.grey,
+                                            // overflow: TextOverflow.ellipsis,
+                                          ),
+                                          // maxLines: 1,
+                                        ),
+                                        Text(
+                                          recipeUserName,
+                                          style: const TextStyle(
+                                            color: Colors.grey,
+                                            overflow: TextOverflow.ellipsis,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                          maxLines: 1,
+                                        ),
+                                      ],
+                                    ),
+                                    SizedBox(
+                                      height: 8,
+                                    ),
+
                                     Text(
                                       widget.recipe.description,
                                       style: const TextStyle(
@@ -399,20 +447,24 @@ class _RecipeIntroState extends State<RecipeIntro> {
                                                   averageRating != null
                                                       ? '${averageRating!.toStringAsFixed(1)}'
                                                       : 'Not rated',
-                                                  style: const TextStyle(color: Colors.grey)
-                                              ),
+                                                  style: const TextStyle(
+                                                      color: Colors.grey)),
                                               SizedBox(width: width * 0.04),
                                             ],
                                           ),
                                         ),
                                       ],
                                     ),
-                                    const SizedBox(height: 16),
+                                    const SizedBox(height: 8),
+
+                                    // const SizedBox(height: 16),
                                     Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
                                       children: [
                                         // Love React Button
-                                        LoveReactButton(recipeId: widget.recipe.id),
+                                        LoveReactButton(
+                                            recipeId: widget.recipe.id),
 
                                         // View Reviews Button
                                         TextButton(
@@ -420,23 +472,28 @@ class _RecipeIntroState extends State<RecipeIntro> {
                                             Navigator.push(
                                               context,
                                               MaterialPageRoute(
-                                                builder: (context) => ReviewScreen(
+                                                builder: (context) =>
+                                                    ReviewScreen(
                                                   recipeId: widget.recipe.id,
-                                                  userId: FirebaseAuth.instance.currentUser!.uid,
+                                                  userId: FirebaseAuth.instance
+                                                      .currentUser!.uid,
                                                 ),
                                               ),
                                             );
                                           },
-                                          child: Text( // Removed the 'const' keyword
+                                          child: Text(
+                                            // Removed the 'const' keyword
                                             '💬 Rate/Reviews ($totalReviews)',
-                                            style: const TextStyle(fontSize: 14, color: Colors.black),
+                                            style: const TextStyle(
+                                                fontSize: 14,
+                                                color: Colors.black),
                                           ),
                                         ),
                                       ],
                                     ),
                                   ],
                                 ),
-                                const SizedBox(height: 16),
+                                const SizedBox(height: 12),
                                 Container(
                                   height: 50,
                                   decoration: BoxDecoration(

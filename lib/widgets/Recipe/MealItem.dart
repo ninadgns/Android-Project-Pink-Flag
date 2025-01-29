@@ -104,10 +104,14 @@ class _MealItemState extends State<MealItem> {
   }
 
   Future<void> _fetchAverageRating() async {
-    final rating = await _reviewService.fetchAverageRating(widget.recipe.id);
-    setState(() {
-      averageRating = rating!;
-    });
+    try {
+      final rating = await _reviewService.fetchAverageRating(widget.recipe.id);
+      setState(() {
+        averageRating = rating!;
+      });
+    } on Exception catch (e) {
+      // TODO
+    }
   }
 
   Future<void> _toggleSaveRecipe(

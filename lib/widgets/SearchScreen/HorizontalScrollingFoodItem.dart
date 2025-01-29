@@ -1,6 +1,8 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../models/RecipeModel.dart';
 import '../../screens/RecipeIntroScreen.dart';
@@ -24,17 +26,102 @@ class _HorizontalScrollingFoodState extends State<HorizontalScrollingFood> {
   double? averageRating = 0.0;
   final ReviewService _reviewService = ReviewService();
   Future<void> _fetchAverageRating() async {
-    final rating = await _reviewService.fetchAverageRating(widget.recipe.id);
-    setState(() {
-      averageRating = rating!;
-    });
+    try {
+      final rating = await _reviewService.fetchAverageRating(widget.recipe.id);
+      setState(() {
+        averageRating = rating!;
+      });
+    } on Exception catch (e) {
+      // TODO
+    }
   }
 @override
   void initState() {
     // TODO: implement initState
     super.initState();
     _fetchAverageRating();
+    final userId = FirebaseAuth.instance.currentUser!.uid;
+    final recipeId = widget.recipe.id;
+
+    _isRecipeSaved(userId, recipeId).then((value) {
+      setState(() {
+        isSaved = value;
+      });
+    });
+
+}
+  Future<bool> _isRecipeSaved(String userId, String recipeId) async {
+    final supabase = Supabase.instance.client;
+    final response = await supabase
+        .from('saved_recipes')
+        .select('id')
+        .eq('user_id', userId)
+        .eq('recipe_id', recipeId)
+        .maybeSingle();
+    return response != null;
   }
+
+  bool isSaved = false;
+  Future<void> _toggleSaveRecipe(
+      String userId, String recipeId, BuildContext context) async {
+    setState(() {
+      isSaved = !isSaved;
+    });
+    try {
+      final supabase = Supabase.instance.client;
+
+      // Check if the record exists
+      final response = await supabase
+          .from('saved_recipes')
+          .select('id')
+          .eq('user_id', userId)
+          .eq('recipe_id', recipeId)
+          .maybeSingle();
+      print(response);
+      if (response != null) {
+        // Record exists, so delete it
+        final deleteResponse = await supabase
+            .from('saved_recipes')
+            .delete()
+            .eq('user_id', userId)
+            .eq('recipe_id', recipeId)
+            .select('id')
+            .single();
+
+        if (deleteResponse == null) {
+          print('Error deleting recipe');
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Recipe removed successfully')),
+          );
+
+          print('Recipe removed successfully');
+        }
+      } else {
+        // Record does not exist, so insert it
+        final insertResponse = await supabase
+            .from('saved_recipes')
+            .insert({
+          'user_id': userId,
+          'recipe_id': recipeId,
+        })
+            .select('id')
+            .single();
+
+        if (insertResponse == null) {
+          print('Error saving recipe');
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Recipe saved successfully')),
+          );
+          print('Recipe saved successfully');
+        }
+      }
+    } on Exception catch (e) {
+      print('Error toggling recipe save: $e');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
@@ -70,23 +157,34 @@ class _HorizontalScrollingFoodState extends State<HorizontalScrollingFood> {
                   Positioned(
                     top: width / 30,
                     right: width / 30,
-                    child: IconButton(
+                    child:                     IconButton(
                       onPressed: () {
-                        print('Bookmark pressed');
+                        final userID = FirebaseAuth.instance.currentUser!.uid;
+                        final recipeID = widget.recipe.id;
+                        _toggleSaveRecipe(userID, recipeID, context);
                       },
-                      icon: const Icon(
-                        Icons.bookmark_border_rounded,
+                      icon: Icon(
+                        isSaved
+                            ? Icons.bookmark_rounded
+                            : Icons.bookmark_border_rounded,
                       ),
                       color: Colors.white,
                       iconSize: 18.0,
-                      highlightColor: Colors.black12,
                       padding: const EdgeInsets.all(0),
                       splashRadius: 14.0,
+                      highlightColor: Colors.black12,
                       constraints: const BoxConstraints(
                         minHeight: 36,
                         minWidth: 36,
                       ),
+                      style: ButtonStyle(
+                        backgroundColor: WidgetStateProperty.all(
+                          Colors.black.withOpacity(0.15),
+                        ),
+                        shape: WidgetStateProperty.all(const CircleBorder()),
+                      ),
                     ),
+
                   ),
                   Positioned(
                     bottom: width / 15,
