@@ -1,5 +1,8 @@
+import 'package:dim/screens/review_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import '../../services/review_service.dart';
 
 class RecipeCard extends StatelessWidget {
   final bool isMyPost;
@@ -9,15 +12,13 @@ class RecipeCard extends StatelessWidget {
   final String imageUrl;
   final bool isLiked;
   final int likeCount;
-  final List<Map<String, dynamic>> commentsList;
+  final String createdAt;
   final VoidCallback onEdit;
   final VoidCallback onDelete;
   final VoidCallback onSave;
+  final VoidCallback onLike;
   final Map<String, dynamic> user;
-  final String createdAt;
-  final Function() onLike;
-  final Function(BuildContext) showComments;
-  final String Function(DateTime) getTimeAgo;
+  final String recipeId;
 
   const RecipeCard({
     super.key,
@@ -28,19 +29,19 @@ class RecipeCard extends StatelessWidget {
     required this.imageUrl,
     required this.isLiked,
     required this.likeCount,
-    required this.commentsList,
     required this.onEdit,
     required this.onDelete,
     required this.onSave,
-    required this.user,
-    required this.createdAt,
     required this.onLike,
-    required this.showComments,
-    required this.getTimeAgo,
+    required this.user,
+    required this.recipeId,
+    required this.createdAt, required void Function() showComments,
   });
 
   @override
   Widget build(BuildContext context) {
+    final reviewService = ReviewService();
+
     return Card(
       margin: const EdgeInsets.only(bottom: 16),
       child: Column(
@@ -57,20 +58,14 @@ class RecipeCard extends StatelessWidget {
                   title,
                   style: TextStyle(
                     fontSize: 18.0,
-                    fontWeight: FontWeight.bold, // Optional: make text bold
-                    color: Colors.black, // Optional: set text color
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
                   ),
                 ),
                 const SizedBox(width: 8),
-                // Text(
-                //   'by ${user['name']}',
-                //   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                //     color: Colors.grey[600],
-                //   ),
-                // ),
               ],
             ),
-            subtitle: Text(getTimeAgo(DateTime.parse(createdAt))),
+            subtitle: Text(createdAt),
             trailing: IconButton(
               icon: const Icon(Icons.more_vert),
               onPressed: () {
@@ -98,14 +93,7 @@ class RecipeCard extends StatelessWidget {
                           },
                         ),
                       ],
-                      ListTile(
-                        leading: const Icon(Icons.bookmark_border),
-                        title: const Text('Save Post'),
-                        onTap: () {
-                          Navigator.pop(context);
-                          onSave();
-                        },
-                      ),
+
                     ],
                   ),
                 );
@@ -165,7 +153,7 @@ class RecipeCard extends StatelessWidget {
                         shape: BoxShape.circle,
                       ),
                       child: AspectRatio(
-                        aspectRatio: 1, // This ensures a perfect circle
+                        aspectRatio: 1,
                         child: ClipOval(
                           child: Image.network(
                             imageUrl,
@@ -187,11 +175,9 @@ class RecipeCard extends StatelessWidget {
                                 color: Colors.grey[200],
                                 child: Center(
                                   child: CircularProgressIndicator(
-                                    value: loadingProgress.expectedTotalBytes !=
-                                            null
-                                        ? loadingProgress
-                                                .cumulativeBytesLoaded /
-                                            loadingProgress.expectedTotalBytes!
+                                    value: loadingProgress.expectedTotalBytes != null
+                                        ? loadingProgress.cumulativeBytesLoaded /
+                                        loadingProgress.expectedTotalBytes!
                                         : null,
                                   ),
                                 ),
@@ -219,11 +205,30 @@ class RecipeCard extends StatelessWidget {
                 ),
                 Text('$likeCount'),
                 const SizedBox(width: 16),
-                IconButton(
-                  icon: const Icon(Icons.add_comment_outlined),
-                  onPressed: () => showComments(context),
+                FutureBuilder<int>(
+                  future: reviewService.fetchReviewCount(recipeId),
+                  builder: (context, snapshot) {
+                    return Row(
+                      children: [
+                        IconButton(
+                          icon: const Icon(Icons.rate_review_outlined),
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ReviewScreen(
+                                  recipeId: recipeId,
+                                  userId: FirebaseAuth.instance.currentUser!.uid,
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                        Text(snapshot.data?.toString() ?? '0'),
+                      ],
+                    );
+                  },
                 ),
-                Text('${commentsList.length}'),
               ],
             ),
           ),
