@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:sign_in_button/sign_in_button.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:dim/data/constants.dart';
 import 'HomeScreen.dart';
@@ -35,7 +36,7 @@ class _SignUpState extends State<SignUp> {
   //   );
   // }
   void _navigateToHome(BuildContext context) {
-    login1=true;
+    login1 = true;
     Navigator.of(context).pushAndRemoveUntil(
       MaterialPageRoute(builder: (context) => Homescreen()),
       (Route<dynamic> route) => false,
@@ -278,19 +279,14 @@ class _SignUpState extends State<SignUp> {
   // Google button widget
   Widget _buildGoogleButton() {
     return Center(
-      child: ElevatedButton(
-        onPressed: () async {
-          handleGoogleSignIn(context, _showSnackBar);
-        },
-        style: ElevatedButton.styleFrom(
-          padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
-          backgroundColor: Colors.white,
-          textStyle: const TextStyle(fontSize: 18),
+      child: SignInButton(Buttons.google,
+          text: "Continue with Google",
+          padding: EdgeInsets.only(left: 10, right: 20, bottom: 10, top: 10),
           shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(0.0)),
-        ),
-        child: const Text("🇬 Continue with Google"),
-      ),
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0)),
+          onPressed: () async {
+        handleGoogleSignIn(context, _showSnackBar);
+      }),
     );
   }
 

@@ -73,6 +73,11 @@ class _ProfileScreenState extends State<ProfileScreen>
                 .textTheme
                 .headlineSmall!
                 .copyWith(color: Colors.black, fontWeight: FontWeight.bold)),
+        title: Text('Logout',
+            style: Theme.of(context)
+                .textTheme
+                .headlineSmall!
+                .copyWith(color: Colors.black, fontWeight: FontWeight.bold)),
         content: const Text('Are you sure you want to logout?'),
         actions: [
           TextButton(
@@ -87,7 +92,7 @@ class _ProfileScreenState extends State<ProfileScreen>
               await FirebaseAuth.instance.signOut();
               Navigator.of(context).pushAndRemoveUntil(
                 MaterialPageRoute(builder: (context) => const Onboarding()),
-                    (Route<dynamic> route) => false,
+                (Route<dynamic> route) => false,
               );
             },
             style: TextButton.styleFrom(
@@ -231,9 +236,9 @@ class _ProfileScreenState extends State<ProfileScreen>
         onTap: () => _navigateToScreen(context, 'Subscription Management'),
       ),
       MenuItemTile(
-        icon: Icons.star_outline,
+        icon: Icons.restaurant_menu,
         iconColor: const Color(0xFF26A69A),
-        title: 'Preferences',
+        title: 'Meal Preferences',
         titleColor: Colors.teal[700]!,
         isPro: false,
         onTap: () => _navigateToScreen(context, 'Preferences'),
@@ -344,13 +349,14 @@ class _ProfileScreenState extends State<ProfileScreen>
                               children: [
                                 CircleAvatar(
                                   radius: maxAvatarRadius,
-                                  backgroundImage: (widget.imagePath.isNotEmpty &&
-                                      Uri.tryParse(widget.imagePath)
-                                          ?.hasAbsolutePath ==
-                                          true)
+                                  backgroundImage: (widget
+                                              .imagePath.isNotEmpty &&
+                                          Uri.tryParse(widget.imagePath)
+                                                  ?.hasAbsolutePath ==
+                                              true)
                                       ? NetworkImage(widget.imagePath)
                                       : AssetImage('assets/images/profile.png')
-                                  as ImageProvider,
+                                          as ImageProvider,
                                 ),
                                 SizedBox(height: size.height * 0.015),
                                 Text(
@@ -364,8 +370,8 @@ class _ProfileScreenState extends State<ProfileScreen>
                                 Material(
                                   color: Colors.transparent,
                                   child: InkWell(
-                                    onTap: () =>
-                                        _navigateToScreen(context, 'My Profile'),
+                                    onTap: () => _navigateToScreen(
+                                        context, 'My Profile'),
                                     child: Text(
                                       'My Profile',
                                       style: TextStyle(
@@ -384,7 +390,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                       SizedBox(height: size.height * 0.04),
                       ...List.generate(
                         menuItems.length,
-                            (index) => FadeTransition(
+                        (index) => FadeTransition(
                           opacity: _menuItemFades[index],
                           child: Column(
                             children: [

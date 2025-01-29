@@ -12,7 +12,8 @@ class ShoppingScreen extends StatefulWidget {
   State<ShoppingScreen> createState() => _ShoppingScreenState();
 }
 
-class _ShoppingScreenState extends State<ShoppingScreen> with SingleTickerProviderStateMixin {
+class _ShoppingScreenState extends State<ShoppingScreen>
+    with SingleTickerProviderStateMixin {
   final GroceryService _groceryService = GroceryService();
   DateTime _startDate = DateTime.now();
   DateTime _endDate = DateTime.now().add(const Duration(days: 7));
@@ -22,8 +23,18 @@ class _ShoppingScreenState extends State<ShoppingScreen> with SingleTickerProvid
 
   String _formatDate(DateTime date) {
     const List<String> months = [
-      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec'
     ];
     return '${date.day} ${months[date.month - 1]}';
   }
@@ -151,11 +162,5 @@ class _ShoppingScreenState extends State<ShoppingScreen> with SingleTickerProvid
         },
       ),
     );
-  }
-
-  @override
-  void dispose() {
-    _scrollController.dispose();
-    super.dispose();
   }
 }
