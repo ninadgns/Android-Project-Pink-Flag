@@ -1,6 +1,7 @@
 import 'dart:io' show File;
 
 import 'package:dim/models/ProfileInfoModel.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -9,6 +10,7 @@ import 'package:share_plus/share_plus.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../services/ProfileService.dart';
+import '../Onboarding.dart';
 
 class ProfileDetailInfoScreen extends StatefulWidget {
   final String imagePath;
