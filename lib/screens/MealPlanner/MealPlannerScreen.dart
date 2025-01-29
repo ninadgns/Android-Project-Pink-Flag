@@ -79,7 +79,8 @@ class _MealPlanScreenState extends State<MealPlanScreen> {
   void _navigateToNextScreen() {
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (context) => const PreferencesScreen(), // Replace with your screen
+        builder: (context) =>
+            const PreferencesScreen(), // Replace with your screen
       ),
     );
   }
@@ -119,7 +120,7 @@ class _MealPlanScreenState extends State<MealPlanScreen> {
 
               // Next Plan Button
               IconButton(
-                icon: const Icon(Icons.next_plan_outlined, color: Colors.black),
+                icon: const Icon(Icons.refresh, color: Colors.black),
                 onPressed: _giveNewPlan,
               ),
             ],
@@ -134,6 +135,27 @@ class _MealPlanScreenState extends State<MealPlanScreen> {
                   onRefresh: _loadMealPlan,
                   child: Column(
                     children: [
+                      SizedBox(
+                        width: screenSize.width * 0.6,
+                        height: screenSize.height * 0.06,
+                        child: ElevatedButton(
+                          onPressed: _navigateToNextScreen,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFF8CB5B5),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(
+                                  screenSize.width * 0.02),
+                            ),
+                          ),
+                          child: Text(
+                            'My Preferences',
+                            style: TextStyle(
+                              fontSize: screenSize.width * 0.04,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ),
                       Expanded(
                         child: ListView.builder(
                           padding: EdgeInsets.symmetric(

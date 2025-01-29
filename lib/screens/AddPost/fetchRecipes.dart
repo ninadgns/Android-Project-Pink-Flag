@@ -27,7 +27,6 @@ Future<List<Map<String, dynamic>>> fetchRecipes() async {
     }
 
     debugPrint('Recipes fetched successfully.');
-    // debugPrint('Recipes: $response');
     print(response[0]['title_photo']);
     return List<Map<String, dynamic>>.from(response);
   } catch (e) {
@@ -229,9 +228,8 @@ Future<List<Map<String, dynamic>>> filterRecipes(
   List<String> selectedDishType,
 ) async {
   try {
-    // Step 1: Fetch recipe IDs associated with the given tag\
     PostgrestList initialResponse;
-    if (sliderValue == 0) {
+    if (sliderValue.toInt() == 0) {
       initialResponse = await supabase.from('recipes').select('id');
     } else {
       initialResponse = await supabase
@@ -244,15 +242,16 @@ Future<List<Map<String, dynamic>>> filterRecipes(
                   ? ['Easy', 'Medium', 'Like A Pro']
                   : selectedDifficulty);
     }
-
     if (initialResponse.isEmpty) {
       debugPrint('No recipes found for time: $sliderValue.');
       return [];
     }
 
     PostgrestList tagResponse;
+    final recipeIds;
     if (selectedDishType.isEmpty) {
       tagResponse = initialResponse;
+      recipeIds = tagResponse.map((tag) => tag['id']).toList();
     } else {
       tagResponse = await supabase
           .from('tags')
@@ -260,12 +259,9 @@ Future<List<Map<String, dynamic>>> filterRecipes(
           .inFilter(
               'recipe_id', initialResponse.map((tag) => tag['id']).toList())
           .inFilter('tag', selectedDishType);
+      recipeIds = tagResponse.map((tag) => tag['recipe_id']).toList();
     }
 
-    // Extract recipe IDs from the response
-    final recipeIds = tagResponse.map((tag) => tag['recipe_id']).toList();
-
-    // Step 2: Fetch recipes using the recipe IDs
     final recipeResponse = await supabase.from('recipes').select('''
             id,
             title,
