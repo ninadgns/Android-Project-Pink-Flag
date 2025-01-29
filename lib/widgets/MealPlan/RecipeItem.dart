@@ -14,12 +14,17 @@ class RecipeItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenSize = MediaQuery.of(context).size;
+
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      padding: EdgeInsets.symmetric(
+          horizontal: screenSize.width * 0.04,
+          vertical: screenSize.height * 0.01
+      ),
       child: Row(
         children: [
           _getIcon(),
-          const SizedBox(width: 16),
+          SizedBox(width: screenSize.width * 0.04),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -31,7 +36,7 @@ class RecipeItem extends StatelessWidget {
                     color: Colors.grey,
                   ),
                 ),
-                const SizedBox(height: 4),
+                SizedBox(height: screenSize.height * 0.005),
                 Text(
                   recipeName,
                   style: const TextStyle(fontSize: 16),
@@ -39,11 +44,6 @@ class RecipeItem extends StatelessWidget {
               ],
             ),
           ),
-          // if (onEdit != null)
-          //   IconButton(
-          //     icon: const Icon(Icons.edit, color: Colors.grey),
-          //     onPressed: onEdit,
-          //   ),
         ],
       ),
     );

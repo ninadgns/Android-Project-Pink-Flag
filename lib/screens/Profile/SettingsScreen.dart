@@ -16,7 +16,7 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
-  bool accountPrivacy = false;
+  //bool accountPrivacy = false;
   bool notifications = true;
   Widget _buildSettingItem({
     required IconData icon,
@@ -26,11 +26,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
     VoidCallback? onTap,
     Color iconColor = Colors.black54,
   }) {
+    // Get screen size for responsive design
+    final size = MediaQuery.of(context).size;
+
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+      margin: EdgeInsets.symmetric(
+        horizontal: size.width * 0.05,
+        vertical: size.height * 0.01,
+      ),
       decoration: BoxDecoration(
         color: Colors.white.withOpacity(0.9),
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(size.width * 0.04),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.05),
@@ -40,48 +46,107 @@ class _SettingsScreenState extends State<SettingsScreen> {
         ],
       ),
       child: ListTile(
-        leading: Icon(icon, color: iconColor),
+        contentPadding: EdgeInsets.symmetric(
+          horizontal: size.width * 0.04,
+          vertical: size.height * 0.01,
+        ),
+        leading: Icon(
+          icon,
+          color: iconColor,
+          size: size.width * 0.06, // Responsive icon size
+        ),
         title: Text(
           title,
-          style: const TextStyle(
-            fontSize: 16,
+          style: TextStyle(
+            fontSize: size.width * 0.04, // Responsive font size
             fontWeight: FontWeight.bold,
           ),
         ),
-        subtitle: subtitle != null ? Text(subtitle) : null,
+        subtitle: subtitle != null
+            ? Text(
+          subtitle,
+          style: TextStyle(
+            fontSize: size.width * 0.035, // Responsive subtitle size
+          ),
+        )
+            : null,
         trailing: trailing,
         onTap: onTap,
       ),
     );
   }
 
+  // Modified dialog text styles for dynamic font sizes
+  TextStyle _getDialogTitleStyle(BuildContext context) {
+    return TextStyle(
+      fontSize: MediaQuery.of(context).size.width * 0.04,
+      fontWeight: FontWeight.bold,
+    );
+  }
+
+  TextStyle _getDialogContentStyle(BuildContext context) {
+    return TextStyle(
+      fontSize: MediaQuery.of(context).size.width * 0.03,
+    );
+  }
+
+  TextStyle _getDialogButtonStyle(BuildContext context) {
+    return TextStyle(
+      fontSize: MediaQuery.of(context).size.width * 0.035,
+    );
+  }
+
+  TextStyle _getDialogSubheaderStyle(BuildContext context) {
+    return TextStyle(
+      fontSize: MediaQuery.of(context).size.width * 0.035,
+      fontWeight: FontWeight.bold,
+    );
+  }
+
+
   void _showClearCacheDialog() {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
         backgroundColor: Color(0xFFFFE6E8),
-        title: const Text('Clear Cache'),
-        content: const Text('Are you sure you want to clear the cache?'),
+        title: Text(
+          'Clear Cache',
+          style: _getDialogTitleStyle(context),
+        ),
+        content: Text(
+          'Are you sure you want to clear the cache?',
+          style: _getDialogContentStyle(context),
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
             style: TextButton.styleFrom(
               foregroundColor: Color(0xFFFF8A80),
             ),
-            child: const Text('Cancel'),
+            child: Text(
+              'Cancel',
+              style: _getDialogButtonStyle(context),
+            ),
           ),
           TextButton(
             onPressed: () {
-              // Implement cache clearing logic
               Navigator.pop(context);
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Cache cleared successfully')),
+                SnackBar(
+                  content: Text(
+                    'Cache cleared successfully',
+                    style: _getDialogContentStyle(context),
+                  ),
+                ),
               );
             },
             style: TextButton.styleFrom(
               foregroundColor: Color(0xFFFF8A80),
             ),
-            child: const Text('Clear'),
+            child: Text(
+              'Clear',
+              style: _getDialogButtonStyle(context),
+            ),
           ),
         ],
       ),
@@ -96,12 +161,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
       builder: (context) => StatefulBuilder(
         builder: (context, setState) => AlertDialog(
           backgroundColor: Color(0xFFFFE6E8),
-          title: const Text('Rate Our App'),
+          title: Text('Rate Our App', style: _getDialogTitleStyle(context)),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Text('How would you rate your experience?'),
-              const SizedBox(height: 20),
+              Text(
+                'How would you rate your experience?',
+                style: _getDialogContentStyle(context),
+              ),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.02),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: List.generate(5, (index) {
@@ -109,7 +177,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     icon: Icon(
                       index < selectedRating ? Icons.star : Icons.star_border,
                       color: Colors.amber,
-                      size: 32,
+                      size: MediaQuery.of(context).size.width * 0.08,
                     ),
                     onPressed: () {
                       setState(() {
@@ -127,7 +195,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               style: TextButton.styleFrom(
                 foregroundColor: Color(0xFFFF8A80),
               ),
-              child: const Text('Cancel'),
+              child: Text('Cancel', style: _getDialogButtonStyle(context)),
             ),
             TextButton(
               onPressed: () async {
@@ -138,7 +206,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               style: TextButton.styleFrom(
                 foregroundColor: Color(0xFFFF8A80),
               ),
-              child: const Text('Submit'),
+              child: Text('Submit', style: _getDialogButtonStyle(context)),
             ),
           ],
         ),
@@ -146,60 +214,66 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 
+
   void _showLogoutDialog() {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
         backgroundColor: Color(0xFFFFE6E8),
-        title: const Text('Logout'),
-        content: const Text('Are you sure you want to logout?'),
+        title: Text('Logout', style: _getDialogTitleStyle(context)),
+        content: Text(
+          'Are you sure you want to logout?',
+          style: _getDialogContentStyle(context),
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
             style: TextButton.styleFrom(
               foregroundColor: Color(0xFFFF8A80),
-            ), // Dismiss the dialog
-            child: const Text('Cancel'),
+            ),
+            child: Text('Cancel', style: _getDialogButtonStyle(context)),
           ),
           TextButton(
             onPressed: () async {
               try {
-                // Check if the user is signed in
                 User? user = FirebaseAuth.instance.currentUser;
                 print(user);
                 if (user != null) {
-                  // Get the list of sign-in methods for the user
                   List<String> providers = user.providerData
                       .map((userInfo) => userInfo.providerId)
                       .toList();
 
                   if (providers.contains('google.com')) {
-                    // If signed in with Google, also sign out from Google
                     GoogleSignIn googleSignIn = GoogleSignIn();
                     await googleSignIn.signOut();
                   }
 
-                  // Sign out from Firebase
                   await FirebaseAuth.instance.signOut();
                 }
 
-                // Navigate to GetStarted screen and clear the navigation stack
                 Navigator.pushAndRemoveUntil(
                   context,
                   MaterialPageRoute(builder: (context) => Getstarted()),
-                  (route) => false, // Remove all routes
+                      (route) => false,
                 );
               } catch (e) {
-                Navigator.pop(context); // Close the dialog
+                Navigator.pop(context);
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Logout failed: ${e.toString()}')),
+                  SnackBar(
+                    content: Text(
+                      'Logout failed: ${e.toString()}',
+                      style: TextStyle(
+                        fontSize: MediaQuery.of(context).size.width * 0.035,
+                      ),
+                    ),
+                  ),
                 );
               }
             },
             style: TextButton.styleFrom(
               foregroundColor: Color(0xFFFF8A80),
             ),
-            child: const Text('Logout'),
+            child: Text('Logout', style: _getDialogButtonStyle(context)),
           ),
         ],
       ),
@@ -208,31 +282,36 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   void _showFeedbackDialog() {
     final TextEditingController feedbackController = TextEditingController();
+    final size = MediaQuery.of(context).size;
 
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
         backgroundColor: Color(0xFFFFE6E8),
-        title: const Text('Send Feedback'),
+        title: Text('Send Feedback', style: _getDialogTitleStyle(context)),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Text('Share your thoughts with us:'),
-            const SizedBox(height: 16),
+            Text(
+              'Share your thoughts with us:',
+              style: _getDialogContentStyle(context),
+            ),
+            SizedBox(height: size.height * 0.02),
             TextField(
               controller: feedbackController,
               maxLines: 5,
               cursorColor: Color(0xFFFF8A80),
+              style: TextStyle(fontSize: size.width * 0.04),
               decoration: InputDecoration(
                 border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(size.width * 0.03),
                 ),
                 focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide:
-                      const BorderSide(color: Color(0xFFFF8A80), width: 1),
+                  borderRadius: BorderRadius.circular(size.width * 0.03),
+                  borderSide: const BorderSide(color: Color(0xFFFF8A80), width: 1),
                 ),
                 hintText: 'Enter your feedback here...',
+                hintStyle: TextStyle(fontSize: size.width * 0.04),
               ),
             ),
           ],
@@ -243,7 +322,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             style: TextButton.styleFrom(
               foregroundColor: Color(0xFFFF8A80),
             ),
-            child: const Text('Cancel'),
+            child: Text('Cancel', style: _getDialogButtonStyle(context)),
           ),
           TextButton(
             onPressed: () async {
@@ -254,43 +333,59 @@ class _SettingsScreenState extends State<SettingsScreen> {
             style: TextButton.styleFrom(
               foregroundColor: Color(0xFFFF8A80),
             ),
-            child: const Text('Submit'),
+            child: Text('Submit', style: _getDialogButtonStyle(context)),
           ),
         ],
       ),
     );
   }
+
 
   void _showHelpCenterDialog() {
+    final size = MediaQuery.of(context).size;
+
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
         backgroundColor: Color(0xFFFFE6E8),
-        title: const Text('Help Center'),
+        title: Text('Help Center', style: _getDialogTitleStyle(context)),
         content: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
-            children: const [
+            children: [
               Text('Frequently Asked Questions',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-              SizedBox(height: 16),
+                  style: _getDialogSubheaderStyle(context)),
+              SizedBox(height: size.height * 0.02),
               Text('1. How do I update my profile?',
-                  style: TextStyle(fontWeight: FontWeight.bold)),
-              Text('Go to Profile > Edit Profile to update your information.'),
-              SizedBox(height: 12),
+                  style: TextStyle(
+                    fontSize: size.width * 0.04,
+                    fontWeight: FontWeight.bold,
+                  )),
+              Text('Go to Profile > Edit Profile to update your information.',
+                  style: _getDialogContentStyle(context)),
+              SizedBox(height: size.height * 0.015),
               Text('2. How can I change my password?',
-                  style: TextStyle(fontWeight: FontWeight.bold)),
-              Text('Go to Settings > Account Privacy > Change Password.'),
-              SizedBox(height: 12),
+                  style: TextStyle(
+                    fontSize: size.width * 0.04,
+                    fontWeight: FontWeight.bold,
+                  )),
+              Text('Go to Settings > Account Privacy > Change Password.',
+                  style: _getDialogContentStyle(context)),
+              SizedBox(height: size.height * 0.015),
               Text('3. How do I report a problem?',
-                  style: TextStyle(fontWeight: FontWeight.bold)),
-              Text('Use the Feedback option in Settings to report any issues.'),
-              SizedBox(height: 16),
+                  style: TextStyle(
+                    fontSize: size.width * 0.04,
+                    fontWeight: FontWeight.bold,
+                  )),
+              Text('Use the Feedback option in Settings to report any issues.',
+                  style: _getDialogContentStyle(context)),
+              SizedBox(height: size.height * 0.02),
               Text('Contact Support',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-              SizedBox(height: 8),
-              Text('Email: support@app.com\nPhone: 1-800-APP'),
+                  style: _getDialogSubheaderStyle(context)),
+              SizedBox(height: size.height * 0.01),
+              Text('Email: support@app.com\nPhone: 1-800-APP',
+                  style: _getDialogContentStyle(context)),
             ],
           ),
         ),
@@ -300,41 +395,50 @@ class _SettingsScreenState extends State<SettingsScreen> {
             style: TextButton.styleFrom(
               foregroundColor: Color(0xFFFF8A80),
             ),
-            child: const Text('Close'),
+            child: Text('Close', style: _getDialogButtonStyle(context)),
           ),
         ],
       ),
     );
   }
 
+
   void _showAboutDialog() {
+    final size = MediaQuery.of(context).size;
+
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
         backgroundColor: Color(0xFFFFE6E8),
-        title: const Text('About Us'),
+        title: Text('About Us', style: _getDialogTitleStyle(context)),
         content: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
-            children: const [
-              Text('Our Mission',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-              SizedBox(height: 8),
+            children: [
+              Text('Our Mission', style: _getDialogSubheaderStyle(context)),
+              SizedBox(height: size.height * 0.01),
               Text(
-                  'We strive to create innovative solutions that make people\'s lives easier and more connected.'),
-              SizedBox(height: 16),
-              Text('Our Goals',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-              SizedBox(height: 8),
-              Text('• Provide exceptional user experience\n'
-                  '• Maintain highest security standards\n'
-                  '• Continuous innovation and improvement\n'
-                  '• Build a strong, supportive community'),
-              SizedBox(height: 16),
-              Text('App Version: 1.0.0\n'
-                  'Developer: A\n'
-                  'Website: www.a.com'),
+                'We strive to create innovative solutions that make people\'s lives easier and more connected.',
+                style: _getDialogContentStyle(context),
+              ),
+              SizedBox(height: size.height * 0.02),
+              Text('Our Goals', style: _getDialogSubheaderStyle(context)),
+              SizedBox(height: size.height * 0.01),
+              Text(
+                '• Provide exceptional user experience\n'
+                    '• Maintain highest security standards\n'
+                    '• Continuous innovation and improvement\n'
+                    '• Build a strong, supportive community',
+                style: _getDialogContentStyle(context),
+              ),
+              SizedBox(height: size.height * 0.02),
+              Text(
+                'App Version: 1.0.0\n'
+                    'Developer: A\n'
+                    'Website: www.a.com',
+                style: _getDialogContentStyle(context),
+              ),
             ],
           ),
         ),
@@ -344,12 +448,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
             style: TextButton.styleFrom(
               foregroundColor: Color(0xFFFF8A80),
             ),
-            child: const Text('Close'),
+            child: Text('Close', style: _getDialogButtonStyle(context)),
           ),
         ],
       ),
     );
   }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -373,17 +479,20 @@ class _SettingsScreenState extends State<SettingsScreen> {
             children: [
               // App Bar
               Padding(
-                padding: const EdgeInsets.all(16.0),
+                padding: EdgeInsets.all(size.width * 0.04),
                 child: Row(
                   children: [
                     IconButton(
-                      icon: const Icon(Icons.arrow_back),
+                      icon: Icon(
+                        Icons.arrow_back,
+                        size: size.width * 0.06,
+                      ),
                       onPressed: () => Navigator.pop(context),
                     ),
-                    const Text(
+                    Text(
                       'Settings',
                       style: TextStyle(
-                        fontSize: 20,
+                        fontSize: size.width * 0.05,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -394,19 +503,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
               // Settings List
               Expanded(
                 child: ListView(
-                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  padding: EdgeInsets.symmetric(vertical: size.height * 0.01),
                   children: [
-                    _buildSettingItem(
-                        icon: Icons.security,
-                        title: 'Account Privacy',
-                        subtitle: 'Manage who can see your profile and posts.',
-                        trailing: Switch(
-                          value: accountPrivacy,
-                          onChanged: (value) =>
-                              setState(() => accountPrivacy = value),
-                          activeColor: const Color(0xFFFF8A80),
-                        ),
-                        iconColor: Colors.indigoAccent),
                     _buildSettingItem(
                         icon: Icons.notifications,
                         title: 'Notifications',
@@ -425,45 +523,40 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         ),
                         iconColor: Colors.orange),
                     _buildSettingItem(
-                        icon: Icons.cleaning_services,
-                        title: 'Clear Cache',
-                        subtitle: 'Free up storage by clearing cached data.',
-                        onTap: _showClearCacheDialog,
-                        iconColor: Colors.black26),
+                      icon: Icons.cleaning_services,
+                      title: 'Clear Cache',
+                      subtitle: 'Free up storage by clearing cached data.',
+                      onTap: _showClearCacheDialog,
+                      iconColor: Colors.black26,
+                    ),
                     _buildSettingItem(
-                        icon: Icons.star,
-                        title: 'Rate App',
-                        subtitle:
-                            'Rate us on the app store and share feedback.',
-                        onTap: _showRatingDialog,
-                        iconColor: Colors.amber),
+                      icon: Icons.star,
+                      title: 'Rate App',
+                      subtitle: 'Rate us on the app store and share feedback.',
+                      onTap: _showRatingDialog,
+                      iconColor: Colors.amber,
+                    ),
                     _buildSettingItem(
-                        icon: Icons.feedback,
-                        title: 'Feedback',
-                        subtitle:
-                            'Share your thoughts to help improve the app.',
-                        onTap: _showFeedbackDialog,
-                        iconColor: Colors.teal),
+                      icon: Icons.feedback,
+                      title: 'Feedback',
+                      subtitle: 'Share your thoughts to help improve the app.',
+                      onTap: _showFeedbackDialog,
+                      iconColor: Colors.teal,
+                    ),
                     _buildSettingItem(
-                        icon: Icons.help,
-                        title: 'Help Center',
-                        subtitle:
-                            'Get assistance with frequently asked questions.',
-                        onTap: _showHelpCenterDialog,
-                        iconColor: Colors.deepOrangeAccent),
+                      icon: Icons.help,
+                      title: 'Help Center',
+                      subtitle: 'Get assistance with frequently asked questions.',
+                      onTap: _showHelpCenterDialog,
+                      iconColor: Colors.deepOrangeAccent,
+                    ),
                     _buildSettingItem(
-                        icon: Icons.info,
-                        title: 'About Us',
-                        subtitle: 'Learn more about our mission.',
-                        onTap: _showAboutDialog,
-                        iconColor: Colors.blue),
-                    // _buildSettingItem(
-                    //   icon: Icons.logout,
-                    //   title: 'Logout',
-                    //   subtitle: 'Sign out of your account securely.',
-                    //   iconColor: Colors.red,
-                    //   onTap: _showLogoutDialog,
-                    // ),
+                      icon: Icons.info,
+                      title: 'About Us',
+                      subtitle: 'Learn more about our mission.',
+                      onTap: _showAboutDialog,
+                      iconColor: Colors.blue,
+                    ),
                   ],
                 ),
               ),

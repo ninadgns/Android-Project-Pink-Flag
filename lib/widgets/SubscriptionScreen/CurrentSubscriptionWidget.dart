@@ -11,16 +11,18 @@ class CurrentPlanCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenSize = MediaQuery.of(context).size;
+
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(screenSize.width * 0.04),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(screenSize.width * 0.04),
         boxShadow: [
           BoxShadow(
             color: Colors.grey.withOpacity(0.1),
             spreadRadius: 1,
-            blurRadius: 10,
+            blurRadius: screenSize.width * 0.025,
           ),
         ],
       ),
@@ -30,31 +32,34 @@ class CurrentPlanCard extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text(
+              Text(
                 'Current Plan',
                 style: TextStyle(
-                  fontSize: 18,
+                  fontSize: screenSize.width * 0.045,
                   fontWeight: FontWeight.bold,
                 ),
               ),
               if (subscription!.isPastDue)
                 Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: screenSize.width * 0.02,
+                    vertical: screenSize.height * 0.005,
+                  ),
                   decoration: BoxDecoration(
                     color: Colors.red[50],
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: BorderRadius.circular(screenSize.width * 0.02),
                   ),
                   child: Row(
                     children: [
                       Icon(Icons.warning_amber_rounded,
-                          color: Colors.red[700], size: 16),
-                      const SizedBox(width: 4),
+                          color: Colors.red[700],
+                          size: screenSize.width * 0.04),
+                      SizedBox(width: screenSize.width * 0.01),
                       Text(
                         '${subscription!.daysOverdue} days overdue',
                         style: TextStyle(
                           color: Colors.red[700],
-                          fontSize: 12,
+                          fontSize: screenSize.width * 0.03,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -63,33 +68,33 @@ class CurrentPlanCard extends StatelessWidget {
                 ),
             ],
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: screenSize.height * 0.01),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
                 subscription!.planName,
-                style: const TextStyle(
-                  fontSize: 16,
+                style: TextStyle(
+                  fontSize: screenSize.width * 0.04,
                   color: Colors.black87,
                 ),
               ),
               Text(
                 '\$${subscription!.price.toStringAsFixed(2)}/month',
                 style: TextStyle(
-                  fontSize: 16,
+                  fontSize: screenSize.width * 0.04,
                   color: Theme.of(context).primaryColor,
                   fontWeight: FontWeight.bold,
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 4),
+          SizedBox(height: screenSize.height * 0.005),
           if(subscription!.price!=0.0)
             Text(
               'Renews on ${_formatDate(subscription!.renewalDate)}',
               style: TextStyle(
-                fontSize: 14,
+                fontSize: screenSize.width * 0.035,
                 color: subscription!.isPastDue ? Colors.red : Colors.grey[600],
               ),
             ),

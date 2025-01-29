@@ -51,8 +51,8 @@ class _DietSectionState extends State<DietSection> {
   @override
   Widget build(BuildContext context) {
     List<String> displayedOptions = _dietOptions;
-    if (!widget.preferenceData.showMore['diet']! && displayedOptions.length > 6) {
-      displayedOptions = displayedOptions.sublist(0, 6);
+    if (!widget.preferenceData.showMore['diet']! && displayedOptions.length > 4) {
+      displayedOptions = displayedOptions.sublist(0, 4);
     }
 
     return PreferenceBaseSection(

@@ -1,6 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import 'MealPlanService.dart';
+
 class PreferencesService {
   final SupabaseClient _supabase;
   final FirebaseAuth _firebaseAuth;
@@ -125,6 +127,9 @@ class PreferencesService {
             'ingredient_id': ingredientId,
             'is_customized': true,
           });
+
+          final _mealPlanService = MealPlanService(supabase: Supabase.instance.client);
+          await _mealPlanService.deactivateCurrentMealPlans();
         }
       }
     } catch (e) {
@@ -136,8 +141,7 @@ class PreferencesService {
     try {
       final response = await _supabase
           .from('diets')
-          .select('diet_id, diet_name')
-          .order('diet_name');
+          .select('diet_id, diet_name');
       return List<Map<String, dynamic>>.from(response);
     } catch (e) {
       throw Exception('Failed to fetch diet options: $e');

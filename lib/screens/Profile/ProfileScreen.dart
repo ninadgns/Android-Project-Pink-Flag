@@ -28,7 +28,8 @@ class _ProfileScreenState extends State<ProfileScreen>
   late Animation<double> _bellAnimation;
 
   late Animation<double> _profileFade;
-  late Animation<double> _achievementFade;
+
+  //late Animation<double> _achievementFade;
 
   late List<Animation<double>> _menuItemFades;
 
@@ -128,12 +129,12 @@ class _ProfileScreenState extends State<ProfileScreen>
       ),
     );
 
-    _achievementFade = Tween(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(
-        parent: _mainController,
-        curve: const Interval(0.2, 0.4, curve: Curves.easeIn),
-      ),
-    );
+    // _achievementFade = Tween(begin: 0.0, end: 1.0).animate(
+    //   CurvedAnimation(
+    //     parent: _mainController,
+    //     curve: const Interval(0.2, 0.4, curve: Curves.easeIn),
+    //   ),
+    // );
 
     final intervals = <Interval>[
       const Interval(0.4, 0.5, curve: Curves.easeIn),
@@ -177,9 +178,9 @@ class _ProfileScreenState extends State<ProfileScreen>
       case 'Notifications':
         screen = const NotificationsScreen();
         break;
-      case 'Achievements':
-        screen = const AchievementScreen();
-        break;
+    // case 'Achievements':
+    //   screen = const AchievementScreen();
+    //   break;
       case 'Useful Features':
         screen = const UsefulArticleScreen();
         break;
@@ -223,7 +224,15 @@ class _ProfileScreenState extends State<ProfileScreen>
 
   @override
   Widget build(BuildContext context) {
-    double height = MediaQuery.of(context).size.height;
+    final size = MediaQuery
+        .of(context)
+        .size;
+    // Calculate dynamic sizes with maximum constraints
+    final double maxAvatarRadius = size.width * 0.15;
+    final double titleFontSize = size.width * 0.060;
+    final double nameFontSize = size.width * 0.048;
+    final double subTextFontSize = size.width * 0.04;
+
     final menuItems = [
       // MenuItemTile(
       //   icon: Icons.article_outlined,
@@ -299,7 +308,7 @@ class _ProfileScreenState extends State<ProfileScreen>
               top: 260,
               right: 100,
               child:
-                  _buildColoredCircle(Colors.indigo[300]!, 70), // Indigo circle
+              _buildColoredCircle(Colors.indigo[300]!, 70), // Indigo circle
             ),
             Padding(
               padding: const EdgeInsets.all(16.0),
@@ -316,10 +325,10 @@ class _ProfileScreenState extends State<ProfileScreen>
                         },
                         icon: const Icon(Icons.arrow_back_ios),
                       ),
-                      const Text(
+                      Text(
                         'Profile',
                         style: TextStyle(
-                          fontSize: 24,
+                          fontSize: titleFontSize,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -351,48 +360,46 @@ class _ProfileScreenState extends State<ProfileScreen>
                       ),
                     ],
                   ),
-                  const SizedBox(height: 35),
+                  SizedBox(height: size.height * 0.05),
 
                   FadeTransition(
                     opacity: _profileFade,
                     child: Center(
                       child: ConstrainedBox(
                         constraints: BoxConstraints(
-                          maxHeight: height * 0.3,
+                          maxHeight: size.height * 0.5,
                         ),
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             CircleAvatar(
-                              radius: height * 0.07,
-                              backgroundImage: NetworkImage(widget.imagePath),
-                              // backgroundImage: AssetImage('assets/images/profile.png') as ImageProvider,
+                              radius: maxAvatarRadius,
+                              backgroundImage: (widget.imagePath.isNotEmpty &&
+                                  Uri.tryParse(widget.imagePath)?.hasAbsolutePath == true)
+                                  ? NetworkImage(widget.imagePath)
+                                  : AssetImage('assets/images/profile.png') as ImageProvider,
                             ),
-                            SizedBox(height: height * 0.01),
+                            SizedBox(height: size.height * 0.015),
                             Text(
                               userName,
                               style: TextStyle(
-                                fontSize: height * 0.028,
+                                fontSize: nameFontSize,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
-                            SizedBox(height: height * 0.005),
+                            SizedBox(height: size.height * 0.023),
                             Material(
                               color: Colors.transparent,
                               child: InkWell(
                                 onTap: () =>
                                     _navigateToScreen(context, 'My Profile'),
-                                child: FittedBox(
-                                  fit: BoxFit.scaleDown,
-                                  child: Text(
-                                    'My Profile',
-                                    style: TextStyle(
-                                      color: Colors.grey[600],
-                                      fontSize: height * 0.02,
-                                      decoration:
-                                          TextDecoration.underline, // clickable
-                                    ),
+                                child: Text(
+                                  'My Profile',
+                                  style: TextStyle(
+                                    color: Colors.grey[600],
+                                    fontSize: subTextFontSize,
+                                    decoration: TextDecoration.underline,
                                   ),
                                 ),
                               ),
@@ -402,53 +409,10 @@ class _ProfileScreenState extends State<ProfileScreen>
                       ),
                     ),
                   ),
-                  const SizedBox(height: 30),
+                  SizedBox(height: size.height * 0.04),
 
-                  // Achievements Card
-                  FadeTransition(
-                    opacity: _achievementFade,
-                    child: Container(
-                      padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        color: Colors.blue[50],
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Row(
-                        children: [
-                          _buildAnimatedIcon(Icons.restaurant, Colors.indigo),
-                          const SizedBox(width: 16),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Text(
-                                'Achievements',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.blueAccent,
-                                ),
-                              ),
-                              Material(
-                                color: Colors.transparent,
-                                child: InkWell(
-                                  onTap: () => _navigateToScreen(
-                                      context, 'Achievements'),
-                                  child: Text(
-                                    'Review your progress',
-                                    style: TextStyle(
-                                      color: Colors.grey[600],
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                          const Spacer(),
-                        ],
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 20),
+
+                  //const SizedBox(height: 20),
 
                   // Menu Items fade in sequentially
                   Expanded(
@@ -457,19 +421,18 @@ class _ProfileScreenState extends State<ProfileScreen>
                         children: [
                           ...List.generate(
                             menuItems.length,
-                            (index) {
-                              return FadeTransition(
-                                opacity: _menuItemFades[index],
-                                child: Column(
-                                  children: [
-                                    menuItems[index],
-                                    const SizedBox(height: 10),
-                                  ],
+                                (index) =>
+                                FadeTransition(
+                                  opacity: _menuItemFades[index],
+                                  child: Column(
+                                    children: [
+                                      menuItems[index],
+                                      SizedBox(height: size.height * 0.023),
+                                    ],
+                                  ),
                                 ),
-                              );
-                            },
                           ),
-                          SizedBox(height: height / 7),
+                          SizedBox(height: size.height * 0.15),
                         ],
                       ),
                     ),
