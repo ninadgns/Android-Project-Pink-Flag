@@ -9,6 +9,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import 'ForgetPass.dart';
 import 'HomeScreen.dart';
 import 'PasswordField.dart';
 import 'curve.dart';
@@ -38,6 +39,12 @@ class _LogInState extends State<LogIn> {
       context,
       MaterialPageRoute(builder: (context) => SignUp()),
     );
+  }
+
+  void _navigateToForgetPass() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => ForgotPassword()),);
   }
 
   @override
@@ -258,25 +265,50 @@ class _LogInState extends State<LogIn> {
   Widget _buildSignUpPrompt() {
     return Padding(
       padding: const EdgeInsets.only(top: 0.0),
-      child: Center(
-        child: RichText(
-          text: TextSpan(
-            text: "Don't have an account? ",
-            style: TextStyle(color: Colors.black, fontSize: 16),
-            children: [
-              TextSpan(
-                text: "Sign Up",
-                style: TextStyle(
-                  color: Colors.blue,
-                  fontWeight: FontWeight.bold,
-                  decoration: TextDecoration.underline,
-                ),
-                recognizer: TapGestureRecognizer()..onTap = _navigateToSignUp,
+      child: Column(
+        children: [
+          Center(
+            child: RichText(
+              text: TextSpan(
+                text: "Don't have an account? ",
+                style: TextStyle(color: Colors.black, fontSize: 16),
+                children: [
+                  TextSpan(
+                    text: "Sign Up",
+                    style: TextStyle(
+                      color: Colors.blue,
+                      fontWeight: FontWeight.bold,
+                      decoration: TextDecoration.underline,
+                    ),
+                    recognizer: TapGestureRecognizer()..onTap = _navigateToSignUp,
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
-        ),
+          const SizedBox(height: 8.0), // Add some spacing between the two lines
+          Center(
+            child: RichText(
+              text: TextSpan(
+                text: "Forgot your password? ",
+                style: TextStyle(color: Colors.black, fontSize: 16),
+                children: [
+                  TextSpan(
+                    text: "Reset it",
+                    style: TextStyle(
+                      color: Colors.blue,
+                      fontWeight: FontWeight.bold,
+                      decoration: TextDecoration.underline,
+                    ),
+                    recognizer: TapGestureRecognizer()..onTap = _navigateToForgetPass,
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
+
 }
