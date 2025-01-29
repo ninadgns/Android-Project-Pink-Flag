@@ -137,7 +137,7 @@ class MealPlanService {
 
         // Calculate the actual date for this meal
         final DateTime mealDate = startDate.add(Duration(days: dayNumber - 1));
-        final String formattedDate = '${mealDate.day}/${mealDate.month}';
+        final String formattedDate = '${mealDate.day}/${mealDate.month}/${mealDate.year}';
 
         mealsByDay[dayNumber]!.add(MealPlan(
           dayOfWeek: formattedDate,
