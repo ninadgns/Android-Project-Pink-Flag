@@ -9,7 +9,7 @@ class CookTimeSlider extends StatefulWidget {
 }
 
 class _CookTimeSliderState extends State<CookTimeSlider> {
-  double _sliderValue = 45;
+  double _sliderValue = 180;
 
   @override
   Widget build(BuildContext context) {
