@@ -1,3 +1,4 @@
+import 'package:dim/screens/Profile/PreferencesScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -74,6 +75,14 @@ class _MealPlanScreenState extends State<MealPlanScreen> {
     return formatter.format(now);
   }
 
+  void _navigateToNextScreen() {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => const PreferencesScreen(), // Replace with your screen
+      ),
+    );
+  }
+
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
 
@@ -126,13 +135,41 @@ class _MealPlanScreenState extends State<MealPlanScreen> {
             ],
           ),
         ),
-        body: _isLoading
-            ? const Center(child: CircularProgressIndicator())
-            : RefreshIndicator(
-          onRefresh: _loadMealPlan,
-          child: Column(
-            children: [
-              Expanded(
+        body:Column(
+          children: [
+            // Navigation button below AppBar
+            Padding(
+              padding: EdgeInsets.symmetric(
+                vertical: screenSize.height * 0.02,
+                horizontal: screenSize.width * 0.04,
+              ),
+              child: SizedBox(
+                width: screenSize.width * 0.6,
+                height: screenSize.height * 0.06,
+                child: ElevatedButton(
+                  onPressed: _navigateToNextScreen,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF8CB5B5),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(screenSize.width * 0.02),
+                    ),
+                  ),
+                  child: Text(
+                    'My Preferences',
+                    style: TextStyle(
+                      fontSize: screenSize.width * 0.04,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            // Main content with RefreshIndicator
+            Expanded(
+              child: _isLoading
+                  ? const Center(child: CircularProgressIndicator())
+                  : RefreshIndicator(
+                onRefresh: _loadMealPlan,
                 child: ListView.builder(
                   padding: EdgeInsets.symmetric(
                       vertical: screenSize.height * 0.02
@@ -144,9 +181,9 @@ class _MealPlanScreenState extends State<MealPlanScreen> {
                   },
                 ),
               ),
-              SizedBox(height: screenSize.height * 0.1),
-            ],
-          ),
+            ),
+            SizedBox(height: screenSize.height * 0.1),
+          ],
         ),
       ),
     );
