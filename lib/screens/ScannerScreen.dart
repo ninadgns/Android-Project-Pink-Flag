@@ -379,7 +379,7 @@ class _ScannerScreenState extends State<ScannerScreen> {
                   ElevatedButton(
                     onPressed: () => _addToAvailableList(context),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFFF8E8C4),
+                      backgroundColor: Colors.black,
                       padding: const EdgeInsets.symmetric(vertical: 10),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(16),
@@ -389,7 +389,7 @@ class _ScannerScreenState extends State<ScannerScreen> {
                       'Add to Kitchen Inventory',
                       style: TextStyle(
                         fontSize: 18,
-                        color: Colors.black45,
+                        color: Colors.white,
                       ),
                     ),
                   ),
