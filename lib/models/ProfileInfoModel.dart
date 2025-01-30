@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 import 'package:intl/intl.dart';
+import 'package:share_plus/share_plus.dart';
 
 class SocialMediaHandle {
   String platform;
@@ -60,7 +61,6 @@ class ProfileInfoModel {
     required this.socialMediaHandles,
   });
 
-
   Map<String, dynamic> toMap() {
     return {
       'id': id,
@@ -68,7 +68,9 @@ class ProfileInfoModel {
       'full_name': fullName,
       'email': email,
       'phone_number': phoneNumber,
-      'date_of_birth': dateofBirth != null ? DateFormat('yyyy-MM-dd').format(dateofBirth!) : null,
+      'date_of_birth': dateofBirth != null
+          ? DateFormat('yyyy-MM-dd').format(dateofBirth!)
+          : null,
       'bio': bio,
       'city': city,
       'work_place': workplace,
@@ -77,10 +79,10 @@ class ProfileInfoModel {
       'follower_Count': followerCount,
       'following_Count': followingCount,
       'recipes_Count': recipesCount,
-      'social_Media_Handles': socialMediaHandles.map((x) => x.toJSON()).toList(),
+      'social_Media_Handles':
+          socialMediaHandles.map((x) => x.toJSON()).toList(),
     };
   }
-
 
   factory ProfileInfoModel.fromMap(Map<String, dynamic> map) {
     return ProfileInfoModel(
@@ -100,7 +102,7 @@ class ProfileInfoModel {
       recipesCount: map['recipes_Count']?.toInt() ?? 0,
       socialMediaHandles: List<SocialMediaHandle>.from(
         (map['social_Media_Handles'] ?? []).map(
-              (x) => SocialMediaHandle.fromJSON(x),
+          (x) => SocialMediaHandle.fromJSON(x),
         ),
       ),
     );

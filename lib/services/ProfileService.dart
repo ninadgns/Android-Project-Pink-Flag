@@ -107,6 +107,7 @@ class ProfileService {
 
   Future<void> updateProfile(ProfileInfoModel profile) async {
     try {
+      
       final Map<String, dynamic> updateMap = {
         'user_name': profile.userName,
         'full_name': profile.fullName,
@@ -116,8 +117,8 @@ class ProfileService {
         'bio': profile.bio,
         'city': profile.city,
         'workplace': profile.workplace,
-       // 'profile_image_path': profile.profileImagePath,
-       // 'profile_image_bytes': profile.profileImageBytes,
+       'profile_image_path': profile.profileImagePath,
+       'profile_image_bytes': profile.profileImageBytes,
         'follower_count': profile.followerCount,
         'following_count': profile.followingCount,
         'recipes_count': profile.recipesCount,

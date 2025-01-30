@@ -68,12 +68,45 @@ class _ProfileDetailInfoScreenState extends State<ProfileDetailInfoScreen>
   Future<void> _pickImage() async {
     final picker = ImagePicker();
     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+
     if (pickedFile != null) {
-      final bytes = await pickedFile.readAsBytes();
-      setState(() {
-        profileinfo?.profileImageBytes = bytes;
-        profileinfo?.profileImagePath = pickedFile.path;
-      });
+      try {
+        final supabase = Supabase.instance.client;
+        final fileBytes = await pickedFile.readAsBytes();
+        final fileName = 'profile_${DateTime.now().millisecondsSinceEpoch}.jpg';
+
+        // Upload to Supabase Storage
+        final response =
+            await supabase.storage.from('profile_image').uploadBinary(
+                  fileName,
+                  fileBytes,
+                  fileOptions: const FileOptions(
+                    upsert: true, // Replace existing file if same name
+                    contentType: 'image/jpeg',
+                  ),
+                );
+
+        if (response.isEmpty) {
+          throw Exception("Upload failed!");
+        }
+
+        // Get the public URL of the uploaded file
+        final publicUrl =
+            supabase.storage.from('profile_image').getPublicUrl(fileName);
+
+        // Update the user's profile image URL in Supabase
+        await supabase
+            .from('users')
+            .update({'photo_url': publicUrl}).eq('id', profileinfo!.id);
+        setState(() {
+          profileinfo?.profileImagePath = publicUrl;
+          profileinfo?.profileImageBytes = fileBytes;
+        });
+
+        debugPrint("Image uploaded successfully: $publicUrl");
+      } catch (e) {
+        debugPrint("Error uploading image: $e");
+      }
     }
   }
 
@@ -271,7 +304,8 @@ class _ProfileDetailInfoScreenState extends State<ProfileDetailInfoScreen>
               style: TextButton.styleFrom(
                 foregroundColor: const Color(0xFF00ACC1),
               ),
-              child: Text('Done', style: TextStyle(fontSize: screenSize.width * 0.035)),
+              child: Text('Done',
+                  style: TextStyle(fontSize: screenSize.width * 0.035)),
             ),
           ],
         );
@@ -446,7 +480,6 @@ class _ProfileDetailInfoScreenState extends State<ProfileDetailInfoScreen>
   //   );
   // }
 
-
   @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
@@ -552,7 +585,9 @@ class _ProfileDetailInfoScreenState extends State<ProfileDetailInfoScreen>
                                           Uri.tryParse(widget.imagePath)
                                                   ?.hasAbsolutePath ==
                                               true)
-                                      ? NetworkImage(widget.imagePath)
+                                      ? NetworkImage(
+                                          profileinfo?.profileImagePath ??
+                                              widget.imagePath)
                                       : AssetImage('assets/images/profile.png')
                                           as ImageProvider),
                               if (isEditMode)

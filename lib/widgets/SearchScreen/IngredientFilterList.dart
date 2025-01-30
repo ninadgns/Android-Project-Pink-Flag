@@ -1,25 +1,20 @@
 import 'package:dim/screens/AddPost/fetchRecipes.dart';
 import 'package:dim/widgets/Recipe/MealItem.dart';
 import 'package:dim/widgets/SearchScreen/ReicipeListView.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../../models/RecipeModel.dart';
 
-class Filterlistview extends StatefulWidget {
-  final double sliderValue;
-  final List<String> selectedDifficulty;
-  final List<String> selectedDishType;
-
-  const Filterlistview({
-    required this.sliderValue,
-    required this.selectedDifficulty,
-    required this.selectedDishType,
+class IngredientFilterList extends StatefulWidget {
+  const IngredientFilterList({
+    super.key,
   });
   @override
-  State<Filterlistview> createState() => _RecipeListViewState();
+  State<IngredientFilterList> createState() => _RecipeListViewState();
 }
 
-class _RecipeListViewState extends State<Filterlistview> {
+class _RecipeListViewState extends State<IngredientFilterList> {
   bool _isLoading = true; // Start with loading state
   List<Recipe> recipeList = []; // Moved here for better encapsulation
 
@@ -29,11 +24,8 @@ class _RecipeListViewState extends State<Filterlistview> {
     });
 
     try {
-      final response = await filterRecipes(
-        widget.sliderValue,
-        widget.selectedDifficulty,
-        widget.selectedDishType,
-      );
+      final response =
+          await findMatchingRecipes(FirebaseAuth.instance.currentUser!.uid);
       final parsedRecipes = parseRecipes(response);
       setState(() {
         recipeList = parsedRecipes;
@@ -51,16 +43,6 @@ class _RecipeListViewState extends State<Filterlistview> {
   void initState() {
     super.initState();
     fetchAndSetRecipes();
-  }
-
-  @override
-  void didUpdateWidget(Filterlistview oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (oldWidget.sliderValue != widget.sliderValue ||
-        oldWidget.selectedDifficulty != widget.selectedDifficulty ||
-        oldWidget.selectedDishType != widget.selectedDishType) {
-      fetchAndSetRecipes();
-    }
   }
 
   @override
