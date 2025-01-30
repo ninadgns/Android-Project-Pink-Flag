@@ -38,7 +38,10 @@ class RecipeCard extends StatelessWidget {
     required this.onLike,
     required this.user,
     required this.recipeId,
-    required this.createdAt, required void Function() showComments, required this.steps, this.averageRating,
+    required this.createdAt,
+    required void Function() showComments,
+    required this.steps,
+    this.averageRating,
   });
 
   @override
@@ -59,8 +62,9 @@ class RecipeCard extends StatelessWidget {
               children: [
                 Text(
                   title,
+                  overflow: TextOverflow.ellipsis,
                   style: TextStyle(
-                    fontSize: 18.0,
+                    fontSize: 14.0,
                     fontWeight: FontWeight.bold,
                     color: Colors.black,
                   ),
@@ -72,10 +76,11 @@ class RecipeCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  _formatDate(createdAt),  // Use formatted date
+                  _formatDate(createdAt), // Use formatted date
                   style: const TextStyle(color: Colors.black54),
                 ),
-                Row(  // Corrected 'child' to 'Row'
+                Row(
+                  // Corrected 'child' to 'Row'
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     const Icon(Icons.star, size: 16, color: Colors.amber),
@@ -90,7 +95,6 @@ class RecipeCard extends StatelessWidget {
                 ),
               ],
             ),
-
             trailing: IconButton(
               icon: const Icon(Icons.more_vert),
               onPressed: () {
@@ -118,7 +122,6 @@ class RecipeCard extends StatelessWidget {
                           },
                         ),
                       ],
-
                     ],
                   ),
                 );
@@ -162,46 +165,55 @@ class RecipeCard extends StatelessWidget {
                           const SizedBox(height: 8),
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
-                            children: steps.map((step) => Padding(
-                              padding: const EdgeInsets.only(bottom: 8.0),
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  CircleAvatar(
-                                    radius: 12,
-                                    backgroundColor: Colors.grey[200],
-                                    child: Text(
-                                      step['step_order'].toString(),
-                                      style: const TextStyle(
-                                        fontSize: 12,
-                                        color: Colors.black,
-                                      ),
-                                    ),
-                                  ),
-                                  const SizedBox(width: 8),
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          step['description'],
-                                          style: Theme.of(context).textTheme.bodyMedium,
-                                        ),
-                                        Text(
-                                          '${step['time']} minutes',
-                                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                            color: Colors.grey[600],
+                            children: steps
+                                .map((step) => Padding(
+                                      padding:
+                                          const EdgeInsets.only(bottom: 8.0),
+                                      child: Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          CircleAvatar(
+                                            radius: 12,
+                                            backgroundColor: Colors.grey[200],
+                                            child: Text(
+                                              step['step_order'].toString(),
+                                              style: const TextStyle(
+                                                fontSize: 12,
+                                                color: Colors.black,
+                                              ),
+                                            ),
                                           ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            )).toList(),
+                                          const SizedBox(width: 8),
+                                          Expanded(
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  step['description'],
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .bodyMedium,
+                                                ),
+                                                Text(
+                                                  '${step['time']} minutes',
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .bodySmall
+                                                      ?.copyWith(
+                                                        color: Colors.grey[600],
+                                                      ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ))
+                                .toList(),
                           ),
                         ],
-
                       ],
                     ),
                   ),
@@ -243,9 +255,11 @@ class RecipeCard extends StatelessWidget {
                                 color: Colors.grey[200],
                                 child: Center(
                                   child: CircularProgressIndicator(
-                                    value: loadingProgress.expectedTotalBytes != null
-                                        ? loadingProgress.cumulativeBytesLoaded /
-                                        loadingProgress.expectedTotalBytes!
+                                    value: loadingProgress.expectedTotalBytes !=
+                                            null
+                                        ? loadingProgress
+                                                .cumulativeBytesLoaded /
+                                            loadingProgress.expectedTotalBytes!
                                         : null,
                                   ),
                                 ),
@@ -286,7 +300,8 @@ class RecipeCard extends StatelessWidget {
                               MaterialPageRoute(
                                 builder: (context) => ReviewScreen(
                                   recipeId: recipeId,
-                                  userId: FirebaseAuth.instance.currentUser!.uid,
+                                  userId:
+                                      FirebaseAuth.instance.currentUser!.uid,
                                 ),
                               ),
                             );
@@ -309,8 +324,8 @@ class RecipeCard extends StatelessWidget {
 String _formatDate(String dateTimeString) {
   try {
     final dateTime = DateTime.parse(dateTimeString);
-    return DateFormat('yyyy-MM-dd').format(dateTime);  // Format as YYYY-MM-DD
+    return DateFormat('yyyy-MM-dd').format(dateTime); // Format as YYYY-MM-DD
   } catch (e) {
-    return dateTimeString;  // Return the original string if parsing fails
+    return dateTimeString; // Return the original string if parsing fails
   }
 }
