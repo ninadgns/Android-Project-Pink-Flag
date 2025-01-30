@@ -211,72 +211,72 @@ Widget _buildPaymentForm(
     GlobalKey<FormState> formKey,
     ) {
   return Form(
-      key: formKey,
-      child: Column(
-        children: [
-          CustomFormField(
-            controller: cardNumberController,
-            label: 'Card number (16 digits)',
-            hint: 'XXXX XXXX XXXX XXXX',
-            inputType: TextInputType.number,
-            formatter: FilteringTextInputFormatter.allow(RegExp(r'^\d{0,16}$')),
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Please enter card number';
-              }
-              if (value.length != 16) {
-                return 'Card number must be 16 digits';
-              }
-              return null;
-            },
-          ),
-          SizedBox(height: size.height * 0.015),
-          Row(
-            children: [
-              Expanded(
-                child: CustomFormField(
-                  controller: expiryController,
-                  label: 'Expiry',
-                  hint: 'MM / YY',
-                  inputType: TextInputType.datetime,
-                  formatter: FilteringTextInputFormatter.allow(RegExp(r'^\d{0,2}(\/\d{0,2})?$')),
-                ),
+    key: formKey,
+    child: Column(
+      children: [
+        CustomFormField(
+          controller: cardNumberController,
+          label: 'Card number (16 digits)',
+          hint: 'XXXX XXXX XXXX XXXX',
+          inputType: TextInputType.number,
+          formatter: FilteringTextInputFormatter.allow(RegExp(r'^\d{0,16}$')),
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return 'Please enter card number';
+            }
+            if (value.length != 16) {
+              return 'Card number must be 16 digits';
+            }
+            return null;
+          },
+        ),
+        SizedBox(height: size.height * 0.015),
+        Row(
+          children: [
+            Expanded(
+              child: CustomFormField(
+                controller: expiryController,
+                label: 'Expiry',
+                hint: 'MM / YY',
+                inputType: TextInputType.datetime,
+                formatter: FilteringTextInputFormatter.allow(RegExp(r'^\d{0,2}(\/\d{0,2})?$')),
               ),
-              SizedBox(width: size.width * 0.04),
-              Expanded(
-                child: CustomFormField(
-                  controller: cvcController,
-                  label: 'CVC/CVV',
-                  inputType: TextInputType.number,
-                  formatter: FilteringTextInputFormatter.allow(RegExp(r'^\d{0,4}$')),
-                ),
+            ),
+            SizedBox(width: size.width * 0.04),
+            Expanded(
+              child: CustomFormField(
+                controller: cvcController,
+                label: 'CVC/CVV',
+                inputType: TextInputType.number,
+                formatter: FilteringTextInputFormatter.allow(RegExp(r'^\d{0,4}$')),
               ),
-            ],
-          ),
-          SizedBox(height: size.height * 0.015),
-          CustomFormField(
-            controller: nameController,
-            label: "Card Holder's Full Name",
-            inputType: TextInputType.name,
-            formatter: FilteringTextInputFormatter.allow(RegExp(r"[a-zA-Z\s\.\']")),
-          ),
-          SizedBox(height: size.height * 0.015),
-          CustomFormField(
-            controller: zipController,
-            label: 'ZIP or Postal Code',
-            inputType: TextInputType.number,
-            formatter: FilteringTextInputFormatter.allow(RegExp(r'^\d{0,5}$')),
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Please enter the ZIP/Postal Code';
-              } else if (value.length != 5 || !RegExp(r'^\d{5}$').hasMatch(value)) {
-                return 'ZIP/Postal Code must be 5 digits';
-              }
-              return null;
-            },
-          ),
-        ],
-      ),
+            ),
+          ],
+        ),
+        SizedBox(height: size.height * 0.015),
+        CustomFormField(
+          controller: nameController,
+          label: "Card Holder's Full Name",
+          inputType: TextInputType.name,
+          formatter: FilteringTextInputFormatter.allow(RegExp(r"[a-zA-Z\s\.\']")),
+        ),
+        SizedBox(height: size.height * 0.015),
+        CustomFormField(
+          controller: zipController,
+          label: 'ZIP or Postal Code',
+          inputType: TextInputType.number,
+          formatter: FilteringTextInputFormatter.allow(RegExp(r'^\d{0,5}$')),
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return 'Please enter the ZIP/Postal Code';
+            } else if (value.length != 5 || !RegExp(r'^\d{5}$').hasMatch(value)) {
+              return 'ZIP/Postal Code must be 5 digits';
+            }
+            return null;
+          },
+        ),
+      ],
+    ),
   );
 }
 
@@ -332,7 +332,7 @@ Widget _buildPayButton(
               zipCode: zipController.text,
               isSave: isSave,
             ),
-            );
+          );
           // Clear form
           cardNumberController.clear();
           expiryController.clear();
