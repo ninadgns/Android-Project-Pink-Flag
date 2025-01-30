@@ -7,56 +7,42 @@ import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+
+
 import 'available_list_screen.dart';
 
-class ScannerScreen extends StatefulWidget {
-  const ScannerScreen({super.key});
-
-  @override
-  State<ScannerScreen> createState() => _ScannerScreenState();
-}
-
-class _ScannerScreenState extends State<ScannerScreen> {
+class ScannerScreen extends StatelessWidget {
   final ImagePicker _picker = ImagePicker();
   final TextEditingController _manualInputController = TextEditingController();
 
   final List<Map<String, dynamic>> _ingredients = [];
   Uint8List? _imageBytes;
 
-  Future<void> _pickImage(BuildContext context) async {
+  ScannerScreen({super.key});
+
+  Future<void> _pickImage(BuildContext context, Function updateState) async {
     final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
 
     if (pickedFile != null) {
       final bytes = await pickedFile.readAsBytes();
-      setState(() {
+      updateState(() {
         _imageBytes = bytes;
       });
     }
   }
 
-  void _clearAll() {
-    if (mounted) {
-      // Check if widget is still mounted
-      setState(() {
-        _ingredients.clear();
-        _imageBytes = null;
-        _manualInputController.clear();
-      });
-    }
-  }
-
-  Future<void> _takePhoto(BuildContext context) async {
+  Future<void> _takePhoto(BuildContext context, Function updateState) async {
     final pickedFile = await _picker.pickImage(source: ImageSource.camera);
 
     if (pickedFile != null) {
       final bytes = await pickedFile.readAsBytes();
-      setState(() {
+      updateState(() {
         _imageBytes = bytes;
       });
     }
   }
 
-  Future<void> _uploadImage(BuildContext context) async {
+  Future<void> _uploadImage(BuildContext context, Function updateState) async {
     if (_imageBytes == null) {
       _showErrorDialog(context, "No image selected.");
       return;
@@ -103,7 +89,7 @@ class _ScannerScreenState extends State<ScannerScreen> {
         final predictions = responseData['outputs'][0]['data']['concepts'];
         print(predictions);
 
-        setState(() {
+        updateState(() {
           _ingredients.clear();
           _ingredients.addAll(predictions
               .where((prediction) =>
@@ -115,83 +101,96 @@ class _ScannerScreenState extends State<ScannerScreen> {
         _showErrorDialog(
             context, "Error: ${response.statusCode} - ${response.body}");
       }
-      setState(() {
-        _ingredients.clear(); // Clear ingredients list
-        _imageBytes = null; // Clear image
-        _manualInputController.clear(); // Clear text input
-      });
     } catch (e) {
       _showErrorDialog(context, "An error occurred: $e");
     }
   }
 
-  void _addManualIngredient(String name) {
-    setState(() {
+  void _addManualIngredient(String name, Function updateState) {
+    updateState(() {
       _ingredients.add({'name': name, 'confidence': null});
     });
     _manualInputController.clear();
   }
 
-  void _removeIngredient(int index) {
-    setState(() {
+  void _removeIngredient(int index, Function updateState) {
+    updateState(() {
       _ingredients.removeAt(index);
     });
   }
 
+
+
   Future<void> _addToAvailableList(BuildContext context) async {
     final user = FirebaseAuth.instance.currentUser;
+
+    print("Firebase User: $user");
 
     if (user == null) {
       _showErrorDialog(context, "You must be logged in to add ingredients.");
       return;
     }
 
-    final userId = user.uid;
-
+    final userId = user.uid; // Get Firebase User ID
+    print("Firebase User ID: $userId");
     try {
+      // Fetch elements table to match ingredient names
       final elementsResponse = await Supabase.instance.client
           .from('elements')
           .select('ingredient_id, name');
 
-      List<Map<String, dynamic>> elements =
-      List<Map<String, dynamic>>.from(elementsResponse);
+      List<Map<String, dynamic>> elements = List<Map<String, dynamic>>.from(elementsResponse);
 
       for (var ingredient in _ingredients) {
         final name = ingredient['name'].toString().toLowerCase();
 
+        // Match with elements table (case insensitive)
         final matchedElement = elements.firstWhere(
               (element) => element['name'].toString().toLowerCase() == name,
           orElse: () => {},
         );
 
-        final ingredientId =
-        matchedElement.isNotEmpty ? matchedElement['ingredient_id'] : null;
+        final ingredientId = matchedElement.isNotEmpty ? matchedElement['ingredient_id'] : null;
 
+        // Insert into available_ingredients with Firebase User ID
         await Supabase.instance.client.from('available_ingredients').insert({
-          'user_id': userId,
+          'user_id': userId, // Store Firebase User ID
           'ingredient_name': ingredient['name'],
-          'ingredient_id': ingredientId,
+          'ingredient_id': ingredientId, // Foreign key (null if not found)
           'created_at': DateTime.now().toIso8601String(),
         });
       }
 
-      if (mounted) {
+      if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Ingredients added successfully!'),
             backgroundColor: Colors.green,
+
           ),
         );
 
-        // Clear all items
-        _clearAll();
+        // Clear all items using updateState
+
+        _ingredients.clear();  // Clear ingredients list
+        _imageBytes = null;    // Clear image
+        _manualInputController.clear();  // Clear text input
+
       }
     } catch (e) {
-      if (mounted) {
-        _showErrorDialog(context, "Failed to add ingredients: $e");
-      }
+      _showErrorDialog(context, "Failed to add ingredients: $e");
     }
+
+    // _showSuccessDialog(context, "Ingredients added successfully!");
+    // setState(() {
+    //   _ingredients.clear();
+    // });
+
   }
+
+
+
+
 
   void _showErrorDialog(BuildContext context, String message) {
     showDialog(
@@ -218,241 +217,244 @@ class _ScannerScreenState extends State<ScannerScreen> {
     const double minHeight = 900.0;
     const double itemHeight = 60.0;
     final double totalHeight = minHeight + (_ingredients.length * itemHeight);
-
-    return Scaffold(
-      // appBar: AppBar(
-      //   backgroundColor: Colors.transparent,
-      //   title: const Text('Food Item Recognition'),
-      // ),
-      body: Stack(
-        children: [
-          SingleChildScrollView(
-            child: Container(
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                image: DecorationImage(
-                  image: AssetImage('assets/images/mix.jpg'),
-                  repeat: ImageRepeat.repeat,
-                  opacity: 0.16,
+    return StatefulBuilder(builder: (context, updateState) {
+      return Scaffold(
+        // appBar: AppBar(
+        //   backgroundColor: Colors.transparent,
+        //   title: const Text('Food Item Recognition'),
+        // ),
+        body: Stack(
+          children:[
+            SingleChildScrollView(
+              child: Container(
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                  image: DecorationImage(
+                    image: AssetImage('assets/images/mix.jpg'),
+                    repeat: ImageRepeat.repeat,
+                    opacity: 0.16,
+                  ),
                 ),
-              ),
-              height: totalHeight,
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  const SizedBox(height: 10),
-                  Text('Food Item ',
-                      style: Theme.of(context).textTheme.displayMedium),
-                  const SizedBox(height: 10),
-                  Text('Recognition',
-                      style: Theme.of(context).textTheme.displayMedium),
-                  const SizedBox(height: 20),
-                  DragTarget<Uint8List>(
-                    onAcceptWithDetails: (data) {
-                      setState(() {
-                        _imageBytes = data.data;
-                      });
-                    },
-                    builder: (context, candidateData, rejectedData) {
-                      return Container(
-                        height: 200,
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Colors.grey),
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        child: _imageBytes != null
-                            ? Stack(
-                          alignment: Alignment.topRight,
-                          children: [
-                            Center(
-                              child: Image.memory(
-                                _imageBytes!,
-                                fit: BoxFit.contain,
-                                width: double.infinity,
-                                height: 200,
+                height: totalHeight,
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    const SizedBox(height: 10),
+                    Text('Food Item ',
+                        style: Theme.of(context).textTheme.displayMedium),
+                    const SizedBox(height: 10),
+                    Text('Recognition',
+                        style: Theme.of(context).textTheme.displayMedium),
+                    const SizedBox(height: 20),
+                    DragTarget<Uint8List>(
+                      onAcceptWithDetails: (data) {
+                        updateState(() {
+                          _imageBytes = data.data;
+                        });
+                      },
+                      builder: (context, candidateData, rejectedData) {
+                        return Container(
+                          height: 200,
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.grey),
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          child: _imageBytes != null
+                              ? Stack(
+                            alignment: Alignment.topRight,
+                            children: [
+                              Center(
+                                child: Image.memory(
+                                  _imageBytes!,
+                                  fit: BoxFit.contain,
+                                  width: double.infinity,
+                                  height: 200,
+                                ),
                               ),
-                            ),
-                            IconButton(
-                              icon: const Icon(
-                                Icons.delete,
-                                color: Colors.red,
+                              IconButton(
+                                icon: const Icon(
+                                  Icons.delete,
+                                  color: Colors.red,
+                                ),
+                                onPressed: () {
+                                  updateState(() {
+                                    _imageBytes = null;
+                                  });
+                                },
                               ),
-                              onPressed: () {
-                                setState(() {
-                                  _imageBytes = null;
-                                });
-                              },
-                            ),
-                          ],
-                        )
-                            : const Center(
-                          child: Text(
-                            'Your image will be shown here',
-                            style: TextStyle(color: Colors.grey),
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                  const SizedBox(height: 25),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: ElevatedButton(
-                          onPressed: () => _pickImage(context),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFFF8E8C4),
-                            padding: const EdgeInsets.symmetric(vertical: 10),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(16),
-                            ),
-                          ),
-                          child: const Text(
-                            'Pick Image',
-                            style: TextStyle(
-                              fontSize: 18,
-                              color: Colors.black45,
-                            ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 10),
-                      Expanded(
-                        child: ElevatedButton.icon(
-                          onPressed: () => _takePhoto(context),
-                          icon: const Icon(Icons.camera_alt,
-                              color: Colors.black45),
-                          label: const Text(
-                            'Camera',
-                            style: TextStyle(
-                              fontSize: 18,
-                              color: Colors.black45,
-                            ),
-                          ),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFFF8E8C4),
-                            padding: const EdgeInsets.symmetric(vertical: 10),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(16),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 20),
-                  ElevatedButton(
-                    onPressed: () => _uploadImage(context),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFFF8E8C4),
-                      padding: const EdgeInsets.symmetric(vertical: 10),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                    ),
-                    child: const Text(
-                      'Upload and Predict',
-                      style: TextStyle(
-                        fontSize: 18,
-                        color: Colors.black45,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  TextField(
-                    controller: _manualInputController,
-                    decoration: InputDecoration(
-                      labelText: 'Add Ingredient Manually',
-                      border: const OutlineInputBorder(),
-                      suffixIcon: IconButton(
-                        icon: const Icon(Icons.add),
-                        onPressed: () {
-                          if (_manualInputController.text.isNotEmpty) {
-                            _addManualIngredient(_manualInputController.text);
-                          }
-                        },
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  ElevatedButton(
-                    onPressed: () => _addToAvailableList(context),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.black,
-                      padding: const EdgeInsets.symmetric(vertical: 10),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                    ),
-                    child: const Text(
-                      'Add to Kitchen Inventory',
-                      style: TextStyle(
-                        fontSize: 18,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  Expanded(
-                    child: ListView.builder(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: _ingredients.length,
-                      itemBuilder: (context, index) {
-                        final ingredient = _ingredients[index];
-                        return Card(
-                          margin: const EdgeInsets.symmetric(vertical: 8.0),
-                          child: ListTile(
-                            title: Text(ingredient['name']),
-                            subtitle: ingredient['confidence'] != null
-                                ? Text(
-                                'Confidence: ${(ingredient['confidence'] * 100).toStringAsFixed(2)}%')
-                                : null,
-                            trailing: IconButton(
-                              icon: const Icon(Icons.delete, color: Colors.red),
-                              onPressed: () => _removeIngredient(index),
+                            ],
+                          )
+                              : const Center(
+                            child: Text(
+                              'Your image will be shown here',
+                              style: TextStyle(color: Colors.grey),
                             ),
                           ),
                         );
                       },
                     ),
-                  ),
-                  const SizedBox(height: 50),
-                ],
-              ),
-            ),
-          ),
-          Align(
-            alignment: Alignment.topRight,
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => AvailableListScreen(),
+                    const SizedBox(height: 25),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: ElevatedButton(
+                            onPressed: () => _pickImage(context, updateState),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xFFF8E8C4),
+                              padding: const EdgeInsets.symmetric(vertical: 10),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(16),
+                              ),
+                            ),
+                            child: const Text(
+                              'Pick Image',
+                              style: TextStyle(
+                                fontSize: 18,
+                                color: Colors.black45,
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: ElevatedButton.icon(
+                            onPressed: () => _takePhoto(context, updateState),
+                            icon:
+                            const Icon(Icons.camera_alt, color: Colors.black45),
+                            label: const Text(
+                              'Camera',
+                              style: TextStyle(
+                                fontSize: 18,
+                                color: Colors.black45,
+                              ),
+                            ),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xFFF8E8C4),
+                              padding: const EdgeInsets.symmetric(vertical: 10),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(16),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                  );
-                },
-                style: ElevatedButton.styleFrom(
-                  padding:
-                  const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                  backgroundColor: const Color(0xFFF8E8C4),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                ),
-                child: const Text(
-                  'Kitchen Inventory',
-                  style: TextStyle(color: Colors.black45, fontSize: 14),
+                    const SizedBox(height: 20),
+                    ElevatedButton(
+                      onPressed: () => _uploadImage(context, updateState),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFFF8E8C4),
+                        padding: const EdgeInsets.symmetric(vertical: 10),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                      ),
+                      child: const Text(
+                        'Upload and Predict',
+                        style: TextStyle(
+                          fontSize: 18,
+                          color: Colors.black45,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    TextField(
+                      controller: _manualInputController,
+                      decoration: InputDecoration(
+                        labelText: 'Add Ingredient Manually',
+                        border: const OutlineInputBorder(),
+                        suffixIcon: IconButton(
+                          icon: const Icon(Icons.add),
+                          onPressed: () {
+                            if (_manualInputController.text.isNotEmpty) {
+                              _addManualIngredient(
+                                  _manualInputController.text, updateState);
+                            }
+                          },
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    ElevatedButton(
+                      onPressed: () => _addToAvailableList(context),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFFF8E8C4),
+                        padding: const EdgeInsets.symmetric(vertical: 10),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                      ),
+                      child: const Text(
+                        'Add to available list',
+                        style: TextStyle(
+                          fontSize: 18,
+                          color: Colors.black45,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    Expanded(
+                      child: ListView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: _ingredients.length,
+                        itemBuilder: (context, index) {
+                          final ingredient = _ingredients[index];
+                          return Card(
+                            margin: const EdgeInsets.symmetric(vertical: 8.0),
+                            child: ListTile(
+                              title: Text(ingredient['name']),
+                              subtitle: ingredient['confidence'] != null
+                                  ? Text(
+                                  'Confidence: ${(ingredient['confidence'] * 100).toStringAsFixed(2)}%')
+                                  : null,
+                              trailing: IconButton(
+                                icon: const Icon(Icons.delete, color: Colors.red),
+                                onPressed: () =>
+                                    _removeIngredient(index, updateState),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                    const SizedBox(height: 50),
+                  ],
                 ),
               ),
             ),
-          ),
-        ],
-      ),
-    );
+            Align(
+              alignment: Alignment.topRight,
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => AvailableListScreen(),
+                      ),
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    backgroundColor: const Color(0xFFF8E8C4),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                  ),
+                  child: const Text(
+                    'Available List',
+                    style: TextStyle(color: Colors.black45, fontSize: 14),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+
+      );
+    });
   }
 }
