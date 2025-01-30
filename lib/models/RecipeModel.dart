@@ -162,6 +162,6 @@ class Recipe {
   }
 }
 
-List<Recipe> parseRecipes(List<Map<String, dynamic>> response) {
-  return response.map((recipeMap) => Recipe.fromMap(recipeMap)).toList();
+List<Recipe> parseRecipes(List<Map<String, dynamic>?> response) {
+  return response.map((recipeMap) => Recipe.fromMap(recipeMap!)).toList();
 }

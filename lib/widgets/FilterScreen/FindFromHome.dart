@@ -1,4 +1,4 @@
-
+import 'package:dim/widgets/SearchScreen/IngredientFilterList.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -6,7 +6,6 @@ class FindFromHome extends StatelessWidget {
   const FindFromHome({
     super.key,
   });
-
 
   @override
   Widget build(BuildContext context) {
@@ -25,21 +24,31 @@ class FindFromHome extends StatelessWidget {
           borderRadius: BorderRadius.circular(15),
           color: const Color(0xffaed6ce),
         ),
-        child: const Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              'Find recipes based on what\nyou already have at home',
-              style: TextStyle(
-                color: Colors.black,
-                fontSize: 12,
+        child: InkWell(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => IngredientFilterList(),
               ),
-            ),
-            Icon(
-              CupertinoIcons.chevron_right,
-              size: 25,
-            )
-          ],
+            );
+          },
+          child: const Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Find recipes based on what\nyou already have at home',
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 12,
+                ),
+              ),
+              Icon(
+                CupertinoIcons.chevron_right,
+                size: 25,
+              ),
+            ],
+          ),
         ),
       ),
     );

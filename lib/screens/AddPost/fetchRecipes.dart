@@ -283,3 +283,91 @@ Future<List<Map<String, dynamic>>> filterRecipes(
     throw Exception('Failed to fetch recipes for the given tag.');
   }
 }
+
+Future<List<String>> fetchAvailableIngredients(String userId) async {
+  // Initialize Supabase client
+  final supabase = Supabase.instance.client;
+
+  // Fetch data from the available_ingredients table
+  final response = await supabase
+      .from('available_ingredients')
+      .select('ingredient_name')
+      .eq('user_id', userId);
+
+  // Extract ingredient names into a List<String>
+  List<String> ingredients = [];
+  for (var item in response) {
+    ingredients.add(item['ingredient_name'] as String);
+  }
+
+  return ingredients;
+}
+
+Future<List<Map<String, dynamic>?>> findMatchingRecipes(String userId) async {
+  // Fetch available ingredients for the user
+  List<String> availableIngredients = await fetchAvailableIngredients(userId);
+  print('Available Ingredients: $availableIngredients');
+
+  final supabase = Supabase.instance.client;
+  try {
+    // Step 1: Call the RPC to get matching recipe IDs
+    final rpcResponse =
+        await supabase.rpc('find_recipes_partial_match', params: {
+      'inventory_ingredients': availableIngredients,
+    });
+
+    if (rpcResponse == null) {
+      throw Exception('RPC Error: ${rpcResponse}');
+    }
+
+    // Extract recipe IDs from the RPC response
+    List<String> recipeIds = (rpcResponse as List<dynamic>)
+        .map<String>((item) => item['recipe_id'] as String)
+        .toList();
+    print('Matching Recipe IDs: $recipeIds');
+
+    if (recipeIds.isEmpty) {
+      print('No matching recipes found.');
+      return [];
+    }
+
+    // Step 2: Fetch detailed recipe information using the recipe IDs
+    final queryResponse = await supabase.from('recipes').select('''
+        id,
+        title,
+        description,
+        difficulty,
+        total_duration,
+        serving_count,
+        created_at,
+        title_photo,
+        nutrition(protein, carbs, fat),
+        ingredients(name, quantity, unit),
+        steps(description, time, step_order)
+      ''').inFilter('id', recipeIds).order('created_at', ascending: false);
+
+    // Step 3: Sort the recipes to match the order of recipeIds
+    final sortedRecipes = _sortRecipesByRecipeIds(queryResponse, recipeIds);
+
+    return sortedRecipes;
+  } catch (e) {
+    debugPrint('Failed to find matching recipes: $e');
+    throw Exception('Failed to find matching recipes: $e');
+  }
+}
+
+// Helper function to sort recipes based on the order of recipeIds
+List<Map<String, dynamic>?> _sortRecipesByRecipeIds(
+    List<dynamic> recipes, List<String> recipeIds) {
+  // Create a map for quick lookup of recipes by their ID
+  final Map<String, Map<String, dynamic>> recipeMap = {
+    for (var recipe in recipes)
+      recipe['id'] as String: recipe as Map<String, dynamic>
+  };
+
+  // Sort recipes in the order of recipeIds
+  return recipeIds
+      .map((id) => recipeMap[id])
+      .where((recipe) => recipe != null)
+      .toList();
+}
