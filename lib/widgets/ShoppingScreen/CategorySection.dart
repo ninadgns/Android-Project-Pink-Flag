@@ -24,23 +24,29 @@ class CategorySection extends StatelessWidget {
   Widget build(BuildContext context) {
     return FutureBuilder<List<GroceryItem>>(
       future: groceryService.getGroceryListByCategory(category),
-      builder: (BuildContext context, AsyncSnapshot<List<GroceryItem>> snapshot) {
+      builder:
+          (BuildContext context, AsyncSnapshot<List<GroceryItem>> snapshot) {
         final items = snapshot.data ?? [];
         final size = MediaQuery.of(context).size;
         final textScale = MediaQuery.of(context).textScaleFactor;
 
         // Dynamic sizes based on screen dimensions
-        final double minCategoryHeight = size.height * 0.1;  // 10% of screen height
-        final double itemHeight = size.height * 0.08;        // 8% of screen height
-        final double maxCategoryHeight = size.height * 0.4;  // 40% of screen height
-        final double horizontalPadding = size.width * 0.04;  // 4% of screen width
-        final double verticalPadding = size.height * 0.01;   // 1% of screen height
-        final double iconSize = size.width * 0.06;           // 6% of screen width
-        final double titleSize = size.width * 0.045;         // 4.5% of screen width
+        final double minCategoryHeight =
+            size.height * 0.1; // 10% of screen height
+        final double itemHeight = size.height * 0.08; // 8% of screen height
+        final double maxCategoryHeight =
+            size.height * 0.4; // 40% of screen height
+        final double horizontalPadding =
+            size.width * 0.04; // 4% of screen width
+        final double verticalPadding =
+            size.height * 0.01; // 1% of screen height
+        final double iconSize = size.width * 0.06; // 6% of screen width
+        final double titleSize = size.width * 0.045; // 4.5% of screen width
 
         final double categoryHeight = items.isEmpty
             ? minCategoryHeight
-            : min(maxCategoryHeight, minCategoryHeight + (items.length * itemHeight));
+            : min(maxCategoryHeight,
+                minCategoryHeight + (items.length * itemHeight));
 
         return LayoutBuilder(
           builder: (context, constraints) {
@@ -87,7 +93,7 @@ class CategorySection extends StatelessWidget {
                             category,
                             'ADD',
                             groceryService,
-                            onUpdate,
+                            onAddItem,
                             null,
                           ),
                         ),
