@@ -431,6 +431,19 @@ Future<void> _handlePayment(
     }
 
     // Create payment method
+    String token = 'tok_visa';
+
+    if (paymentData.cardType == 'MASTERCARD') {
+      token = 'tok_mastercard';
+    }
+    if (paymentData.cardType == 'JCB') {
+      token = 'tok_jcb';
+    }
+    if (paymentData.cardType == 'AMEX') {
+      token = 'tok_amex';
+    }
+
+    // Create payment method
     final paymentMethodResult = await http.post(
       Uri.parse('$backendURL/create-payment-method'),
       headers: {
@@ -438,11 +451,11 @@ Future<void> _handlePayment(
         'Content-Type': 'application/json'
       },
       body: jsonEncode({
-        'token':
-            'tok_visa', // Use test tokens like tok_visa, tok_mastercard, etc.
+        'token': token, // Use test tokens
         'customer_id': userId,
       }),
     );
+    ;
 
     if (paymentMethodResult.statusCode != 200) {
       final errorBody = jsonDecode(paymentMethodResult.body);
