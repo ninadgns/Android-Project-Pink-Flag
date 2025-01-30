@@ -65,8 +65,10 @@ class _IngredientsListState extends State<IngredientsList> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text('Ingredients*',
-            style: TextStyle(fontWeight: FontWeight.bold)),
+        const Text('🥣  Ingredients*',
+            style: TextStyle(fontWeight: FontWeight.bold,
+              fontSize: 16,  // Adjust the font size if needed
+              color: Colors.black,)),
         const SizedBox(height: 4),
         Row(
           children: [

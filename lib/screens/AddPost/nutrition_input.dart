@@ -17,6 +17,12 @@ class _NutritionInputState extends State<NutritionInput> {
     'Fat': 0,
   };
 
+  final Map<String, String> _nutritionIcons = {
+    'Protein': '🍗',  // Chicken leg emoji for protein
+    'Carbs': '🍞',    // Bread emoji for carbs
+    'Fat': '🥑',      // Avocado emoji for fat
+  };
+
   void _updateData(String type, int value) {
     setState(() {
       _nutritionData[type] = value;
@@ -29,13 +35,17 @@ class _NutritionInputState extends State<NutritionInput> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text('Nutrition', style: TextStyle(fontWeight: FontWeight.bold)),
+        const Text('Nutrition', style: TextStyle(fontWeight: FontWeight.bold,
+          fontSize:18,
+          color: Colors.black,)),
         const SizedBox(height: 8),
         ..._nutritionData.entries.map((entry) {
           String type = entry.key;
           return Row(
             children: [
-              Expanded(flex: 2, child: Text(type)),
+              Expanded(flex: 2, child: Text('${_nutritionIcons[type]} $type',
+                  style: const TextStyle(fontWeight: FontWeight.bold,
+                    color: Colors.black,)),),
               const SizedBox(width: 8),
               Expanded(
                 flex: 3,

@@ -34,7 +34,17 @@ class _ImageUploaderState extends State<ImageUploader> {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          '📷  Recipe Image',
+          style: TextStyle(fontWeight: FontWeight.bold,
+            fontSize: 16,  // Adjust the font size if needed
+            color: Colors.black,),
+        ),
+        const SizedBox(height: 8),
+     GestureDetector(
       onTap: _pickImage,
       child: Container(
         height: 150,
@@ -47,7 +57,9 @@ class _ImageUploaderState extends State<ImageUploader> {
             ? const Center(
           child: Text(
             'Tap to upload a photo',
-            style: TextStyle(color: Colors.grey),
+            style: TextStyle(fontWeight: FontWeight.bold,
+              fontSize: 16,  // Adjust the font size if needed
+              color: Colors.grey,),
           ),
         )
             : Stack(
@@ -86,6 +98,9 @@ class _ImageUploaderState extends State<ImageUploader> {
           ],
         ),
       ),
+    ),
+      ],
     );
+
   }
 }

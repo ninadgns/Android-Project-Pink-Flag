@@ -293,13 +293,23 @@ class _CreateRecipePostScreenState extends State<CreateRecipePostScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color(0xFF7DA9CE),
-        title: const Text('Create Recipe Post'),
-        elevation: 0,
+        backgroundColor: Colors.transparent,  // No background color
+        title: const Text(
+          'Create Recipe Post',
+          style: TextStyle(
+            color: Colors.black,  // Set the title text color to black
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        elevation: 0,  // Remove shadow
+        iconTheme: const IconThemeData(
+          color: Colors.black,  // Set the color of icons to black
+        ),
         actions: [
           IconButton(
             icon: const Icon(Icons.preview),
             onPressed: _showPreview,
+            color: Colors.black,  // Set the icon color to black
           ),
         ],
       ),
@@ -310,11 +320,11 @@ class _CreateRecipePostScreenState extends State<CreateRecipePostScreen> {
             end: Alignment.bottomCenter,
             colors: [
               Colors.white.withOpacity(0.9),
-              const Color(0xFFEEF4FA),
-              const Color(0xFFE6EDF8),
-              const Color(0xFFE1EBF4),
-              const Color(0xFFD1E0ED),
-              const Color(0xFFD0DFF0),
+              const Color(0xfffaf6f2),
+              const Color(0xfffaf6f2),
+              const Color(0xfffaf6f2),
+              const Color(0xfffaf6f2),
+              const Color(0xfffaf6f2),
             ],
           ),
         ),
@@ -330,7 +340,9 @@ class _CreateRecipePostScreenState extends State<CreateRecipePostScreen> {
                   cursorColor: Colors.black,
                   decoration: const InputDecoration(
                     labelText: 'Recipe Title*',
-                    labelStyle: TextStyle(color: Colors.black),
+                    labelStyle: TextStyle(fontWeight: FontWeight.bold,
+                      fontSize: 16,  // Adjust the font size if needed
+                      color: Colors.black,),
                     focusedBorder: UnderlineInputBorder(
                       borderSide: BorderSide(color: Colors.black, width: 1),
                     ),
@@ -356,7 +368,7 @@ class _CreateRecipePostScreenState extends State<CreateRecipePostScreen> {
                         fontWeight: FontWeight.bold,
                       ),
                       selected: isSelected,
-                      selectedColor: const Color(0xFF7DA9CE),
+                      selectedColor: const Color(0xFF141415),
                       backgroundColor: Colors.grey[200],
                       onSelected: (selected) {
                         setState(() {
@@ -379,9 +391,11 @@ class _CreateRecipePostScreenState extends State<CreateRecipePostScreen> {
                   controller: _descriptionController,
                   cursorColor: Colors.black,
                   decoration: const InputDecoration(
-                    labelText: 'Description',
+                    labelText: '📝  Description',
                     hintText: "Brief Description about the recipe",
-                    labelStyle: TextStyle(color: Colors.black),
+                    labelStyle: TextStyle(fontWeight: FontWeight.bold,
+                      fontSize: 16,  // Adjust the font size if needed
+                      color: Colors.black,),
                     focusedBorder: UnderlineInputBorder(
                       borderSide: BorderSide(color: Colors.black, width: 1),
                     ),
@@ -393,8 +407,10 @@ class _CreateRecipePostScreenState extends State<CreateRecipePostScreen> {
                   controller: _servingCountController,
                   cursorColor: Colors.black,
                   decoration: const InputDecoration(
-                    labelText: 'Number of Servings',
-                    labelStyle: TextStyle(color: Colors.black),
+                    labelText: '🍽️  Number of Servings',
+                    labelStyle: TextStyle(fontWeight: FontWeight.bold,
+                      fontSize: 16,  // Adjust the font size if needed
+                      color: Colors.black,),
                     focusedBorder: UnderlineInputBorder(
                       borderSide: BorderSide(color: Colors.black, width: 1),
                     ),
@@ -459,7 +475,7 @@ class _CreateRecipePostScreenState extends State<CreateRecipePostScreen> {
                 ElevatedButton(
                   onPressed: _createPost,
                   style: TextButton.styleFrom(
-                    foregroundColor: const Color(0xFF7DA9CE),
+                    foregroundColor: const Color(0xFF000000),
                   ),
                   child: const Text('Create Post'),
                 ),
