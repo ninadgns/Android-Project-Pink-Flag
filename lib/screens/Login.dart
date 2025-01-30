@@ -135,9 +135,9 @@ class _LogInState extends State<LogIn> {
         PasswordField(labelText: "Password", controller: passwordController),
         SizedBox(height: screenHeight / 40),
         _buildLogInButton(),
-        SizedBox(height: screenHeight / 40),
+        SizedBox(height: screenHeight / 50),
         _buildOrDivider(screenHeight),
-        SizedBox(height: screenHeight / 40),
+        SizedBox(height: screenHeight / 50),
         _buildGoogleButton(),
         SizedBox(height: screenHeight / 40),
         _buildSignUpPrompt(),
@@ -282,12 +282,12 @@ class _LogInState extends State<LogIn> {
               ),
             ),
           ),
-          const SizedBox(height: 8.0), // Add some spacing between the two lines
+          const SizedBox(height: 12.0), // Add some spacing between the two lines
           Center(
             child: RichText(
               text: TextSpan(
-                text: "Forgot your password? ",
-                style: TextStyle(color: Colors.black, fontSize: 16),
+                text: "Forgot password? ",
+                style: TextStyle(color: Colors.grey, fontSize: 14),
                 children: [
                   TextSpan(
                     text: "Reset it",

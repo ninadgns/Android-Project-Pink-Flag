@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:liquid_swipe/liquid_swipe.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -47,21 +46,28 @@ class _OnboardingState extends State<Onboarding> {
             ),
 
             Positioned(
-                top: 50,
-                right: 20,
-                child:TextButton(
-                  onPressed: _navigateToGetStarted,
-                  child: Text(
-                    'Skip',
-                    style: TextStyle(
-                      color: const Color(0xFF000000),
-                      fontWeight: FontWeight.bold,
+              top: 8,
+              right: 8,
+              child: TextButton(
+                onPressed: _navigateToGetStarted,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    const Text(
+                      'Skip',
+                      textAlign: TextAlign.end,
+                      style: TextStyle(
+                        color: Colors.grey,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),
-                )
-              // No skip button on last page
-            ),
-            // Text overlay
+                    const SizedBox(width: 4),
+                    const Icon(Icons.skip_next_rounded, color: Colors.grey,),
+                  ],
+                ),
+              ),
+            ), // Text overlay            // Text overlay
             Positioned(
               top: screenHeight / 5, // Start at 1/5 of the screen height
               left: screenWidth / 20, // Align text to the left side
@@ -85,13 +91,14 @@ class _OnboardingState extends State<Onboarding> {
                     ),
                   ),
                   Text(
-                    "Cooking Diary",
+                    "Kitchen Mate",
                     style: GoogleFonts.satisfy(
                       fontSize: screenHeight / 15,
                       fontWeight: FontWeight.bold,
                       color: const Color(0xFF39786D),
                     ),
                   ),
+                  // SizedBox(height: screenHeight / 100),
                   Text(
                     "Show your cooking skills",
                     style: GoogleFonts.shadowsIntoLight(
@@ -121,19 +128,27 @@ class _OnboardingState extends State<Onboarding> {
             ),
 
             Positioned(
-              top: 50,
-              right: 20,
-              child:TextButton(
+              top: 8,
+              right: 8,
+              child: TextButton(
                 onPressed: _navigateToGetStarted,
-                child: Text(
-                  'Skip',
-                  style: TextStyle(
-                    color: const Color(0xFF000000),
-                    fontWeight: FontWeight.bold,
-                  ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    const Text(
+                      'Skip',
+                      textAlign: TextAlign.end,
+                      style: TextStyle(
+                        color: Colors.grey,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(width: 4),
+                    const Icon(Icons.skip_next_rounded, color: Colors.grey,),
+                  ],
                 ),
-              )
-                   // No skip button on last page
+              ),
             ),
             // Text overlay
             Positioned(
@@ -195,19 +210,27 @@ class _OnboardingState extends State<Onboarding> {
             ),
             // Text overlay
             Positioned(
-                top: 50,
-                right: 20,
-                child:TextButton(
-                  onPressed: _navigateToGetStarted,
-                  child: Text(
-                    'Skip',
-                    style: TextStyle(
-                      color: const Color(0xFF000000),
-                      fontWeight: FontWeight.bold,
+              top: 8,
+              right: 8,
+              child: TextButton(
+                onPressed: _navigateToGetStarted,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    const Text(
+                      'Skip',
+                      textAlign: TextAlign.end,
+                      style: TextStyle(
+                        color: Colors.grey,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),
-                )
-              // No skip button on last page
+                    const SizedBox(width: 4),
+                    const Icon(Icons.skip_next_rounded, color: Colors.grey,),
+                  ],
+                ),
+              ),
             ),
             Positioned(
               top: screenHeight / 5, // Start at 1/5 of the screen height
@@ -301,7 +324,6 @@ class _OnboardingState extends State<Onboarding> {
                       fontSize: screenHeight / 40,
                       fontWeight: FontWeight.bold,
                       color: const Color(0xFFC15F6B),
-
                     ),
                   ),
                 ],
@@ -309,9 +331,7 @@ class _OnboardingState extends State<Onboarding> {
             ),
             Align(
               alignment: const Alignment(0, 0.85),
-
               child: ElevatedButton(
-
                 onPressed: () {
                   // TODO: Implement navigation to the main app screen
                   // Example:
@@ -325,9 +345,8 @@ class _OnboardingState extends State<Onboarding> {
                 style: ElevatedButton.styleFrom(
                   minimumSize: const Size(200, 50),
                   padding:
-                  const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
-                  backgroundColor:
-                  const Color(0xFFC15F6B), // Button color
+                      const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+                  backgroundColor: const Color(0xFFC15F6B), // Button color
                   textStyle: const TextStyle(fontSize: 18),
                   iconColor: const Color(0xFFFFFFFF),
                   shape: RoundedRectangleBorder(
@@ -335,7 +354,7 @@ class _OnboardingState extends State<Onboarding> {
                   ),
                 ),
                 child: const Text(
-                    "Get Started",
+                  "Get Started",
                   style: TextStyle(
                     //fontSize: 16,
                     fontWeight: FontWeight.bold,
@@ -370,7 +389,8 @@ class _OnboardingState extends State<Onboarding> {
               pages: pages,
               enableSideReveal: false,
               enableLoop: false, // Add this line to prevent looping
-              ignoreUserGestureWhileAnimating: true, // Add this to prevent gesture issues during animation
+              ignoreUserGestureWhileAnimating:
+                  true, // Add this to prevent gesture issues during animation
               fullTransitionValue: 300,
               slideIconWidget: currentPage == pages.length - 1
                   ? null
@@ -383,7 +403,9 @@ class _OnboardingState extends State<Onboarding> {
               waveType: WaveType.liquidReveal,
               positionSlideIcon: 0.5,
               liquidController: _liquidController,
-              disableUserGesture: currentPage == pages.length - 1, // Add this line to disable gestures on last page
+              disableUserGesture: currentPage ==
+                  pages.length -
+                      1, // Add this line to disable gestures on last page
             ),
             Positioned(
               bottom: 30,
@@ -393,7 +415,7 @@ class _OnboardingState extends State<Onboarding> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: List.generate(
                   pages.length,
-                      (index) => AnimatedContainer(
+                  (index) => AnimatedContainer(
                     duration: const Duration(milliseconds: 300),
                     margin: const EdgeInsets.symmetric(horizontal: 5),
                     width: currentPage == index ? 12 : 8,
@@ -416,8 +438,6 @@ class _OnboardingState extends State<Onboarding> {
   }
 }
 
-
-
 class SoftPastelBackgroundPainter extends CustomPainter {
   // Normalized positions (as fractions of width and height) and radii
   final List<Offset> normalizedPositions = [
@@ -439,15 +459,30 @@ class SoftPastelBackgroundPainter extends CustomPainter {
   ];
 
   final List<double> normalizedRadii = [
-    0.1, 0.22, 0.09, 0.41, 0.08, 0.13, 0.1, 0.08, 0.51, 0.12, 0.09, 0.1, 0.08, 0.13, 0.21,
+    0.1,
+    0.22,
+    0.09,
+    0.41,
+    0.08,
+    0.13,
+    0.1,
+    0.08,
+    0.51,
+    0.12,
+    0.09,
+    0.1,
+    0.08,
+    0.13,
+    0.21,
   ];
 
   @override
   void paint(Canvas canvas, Size size) {
     // Step 1: Draw the background color
-    final backgroundPaint =
-    Paint()..color = const Color(0xfffaf6f2); // Soft background color
-    canvas.drawRect(Rect.fromLTWH(0, 0, size.width, size.height), backgroundPaint);
+    final backgroundPaint = Paint()
+      ..color = const Color(0xfffaf6f2); // Soft background color
+    canvas.drawRect(
+        Rect.fromLTWH(0, 0, size.width, size.height), backgroundPaint);
 
     // Step 2: Define a list of pastel colors
     final colors = [
@@ -469,7 +504,8 @@ class SoftPastelBackgroundPainter extends CustomPainter {
       );
 
       // Scale normalized radius to screen size
-      final radius = normalizedRadii[i] * size.width; // Assuming radius scales with width
+      final radius =
+          normalizedRadii[i] * size.width; // Assuming radius scales with width
 
       // Randomize color
       final paint = paints[i % paints.length];
@@ -482,7 +518,6 @@ class SoftPastelBackgroundPainter extends CustomPainter {
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
-
 
 class SoftPastelBackgroundCooker extends CustomPainter {
   // Normalized positions (as fractions of width and height) and sizes
@@ -498,15 +533,23 @@ class SoftPastelBackgroundCooker extends CustomPainter {
   ];
 
   final List<double> normalizedSizes = [
-    0.1, 0.12, 0.09, 0.11, 0.08, 0.13, 0.1, 0.08,
+    0.1,
+    0.12,
+    0.09,
+    0.11,
+    0.08,
+    0.13,
+    0.1,
+    0.08,
   ];
 
   @override
   void paint(Canvas canvas, Size size) {
     // Step 1: Draw the background color
-    final backgroundPaint =
-    Paint()..color = const Color(0xfffaf6f2); // Soft background color
-    canvas.drawRect(Rect.fromLTWH(0, 0, size.width, size.height), backgroundPaint);
+    final backgroundPaint = Paint()
+      ..color = const Color(0xfffaf6f2); // Soft background color
+    canvas.drawRect(
+        Rect.fromLTWH(0, 0, size.width, size.height), backgroundPaint);
 
     // Step 2: Define a list of pastel colors
     final colors = [
@@ -538,7 +581,8 @@ class SoftPastelBackgroundCooker extends CustomPainter {
       );
 
       // Scale normalized size to screen size
-      final iconSize = normalizedSizes[i] * size.width; // Size scales with screen width
+      final iconSize =
+          normalizedSizes[i] * size.width; // Size scales with screen width
 
       // Randomize color and icon
       final color = colors[i % colors.length];
@@ -577,15 +621,23 @@ class SoftPastelBackgroundOrganize extends CustomPainter {
   ];
 
   final List<double> normalizedSizes = [
-    0.1, 0.12, 0.09, 0.11, 0.08, 0.13, 0.1, 0.08,
+    0.1,
+    0.12,
+    0.09,
+    0.11,
+    0.08,
+    0.13,
+    0.1,
+    0.08,
   ];
 
   @override
   void paint(Canvas canvas, Size size) {
     // Step 1: Draw the background color
-    final backgroundPaint =
-    Paint()..color = const Color(0xffd7edf8); // Soft background color
-    canvas.drawRect(Rect.fromLTWH(0, 0, size.width, size.height), backgroundPaint);
+    final backgroundPaint = Paint()
+      ..color = const Color(0xffd7edf8); // Soft background color
+    canvas.drawRect(
+        Rect.fromLTWH(0, 0, size.width, size.height), backgroundPaint);
 
     // Step 2: Define a list of pastel colors
     final colors = [
@@ -617,7 +669,8 @@ class SoftPastelBackgroundOrganize extends CustomPainter {
       );
 
       // Scale normalized size to screen size
-      final iconSize = normalizedSizes[i] * size.width; // Size scales with screen width
+      final iconSize =
+          normalizedSizes[i] * size.width; // Size scales with screen width
 
       // Randomize color and icon
       final color = colors[i % colors.length];
@@ -656,15 +709,23 @@ class SoftPastelBackgroundCommunity extends CustomPainter {
   ];
 
   final List<double> normalizedSizes = [
-    0.1, 0.12, 0.09, 0.11, 0.08, 0.13, 0.1, 0.08,
+    0.1,
+    0.12,
+    0.09,
+    0.11,
+    0.08,
+    0.13,
+    0.1,
+    0.08,
   ];
 
   @override
   void paint(Canvas canvas, Size size) {
     // Step 1: Draw the background color
-    final backgroundPaint =
-    Paint()..color = const Color(0xfff8d7dc); // Soft background color
-    canvas.drawRect(Rect.fromLTWH(0, 0, size.width, size.height), backgroundPaint);
+    final backgroundPaint = Paint()
+      ..color = const Color(0xfff8d7dc); // Soft background color
+    canvas.drawRect(
+        Rect.fromLTWH(0, 0, size.width, size.height), backgroundPaint);
 
     // Step 2: Define a list of pastel colors
     final colors = [
@@ -696,7 +757,8 @@ class SoftPastelBackgroundCommunity extends CustomPainter {
       );
 
       // Scale normalized size to screen size
-      final iconSize = normalizedSizes[i] * size.width; // Size scales with screen width
+      final iconSize =
+          normalizedSizes[i] * size.width; // Size scales with screen width
 
       // Randomize color and icon
       final color = colors[i % colors.length];
