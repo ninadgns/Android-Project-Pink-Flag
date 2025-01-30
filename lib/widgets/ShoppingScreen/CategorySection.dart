@@ -30,18 +30,13 @@ class CategorySection extends StatelessWidget {
         final size = MediaQuery.of(context).size;
         final textScale = MediaQuery.of(context).textScaleFactor;
 
-        // Dynamic sizes based on screen dimensions
-        final double minCategoryHeight =
-            size.height * 0.1; // 10% of screen height
-        final double itemHeight = size.height * 0.08; // 8% of screen height
-        final double maxCategoryHeight =
-            size.height * 0.4; // 40% of screen height
-        final double horizontalPadding =
-            size.width * 0.04; // 4% of screen width
-        final double verticalPadding =
-            size.height * 0.01; // 1% of screen height
-        final double iconSize = size.width * 0.06; // 6% of screen width
-        final double titleSize = size.width * 0.045; // 4.5% of screen width
+        final double minCategoryHeight = size.height * 0.1;
+        final double itemHeight = size.height * 0.08;
+        final double maxCategoryHeight = size.height * 0.4;
+        final double horizontalPadding = size.width * 0.04;
+        final double verticalPadding = size.height * 0.01;
+        final double iconSize = size.width * 0.06;
+        final double titleSize = size.width * 0.045;
 
         final double categoryHeight = items.isEmpty
             ? minCategoryHeight

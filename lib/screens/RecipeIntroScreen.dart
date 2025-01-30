@@ -294,7 +294,6 @@ class _RecipeIntroState extends State<RecipeIntro> {
                         shape: WidgetStateProperty.all(const CircleBorder()),
                       ),
                     ),
-
                   ],
                 )),
           ),
