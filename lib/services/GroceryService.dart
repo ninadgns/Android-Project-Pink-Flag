@@ -1,3 +1,5 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../models/GroceryModel.dart';
@@ -7,10 +9,37 @@ class GroceryService {
   static final List<GroceryItem> _groceryItems = [];
 
   Future<List<GroceryItem>> getGroceryListByCategory(String category) async {
-    await Future.delayed(const Duration(milliseconds: 500));
-    return _groceryItems
-        .where((item) => item.category.toLowerCase() == category.toLowerCase())
-        .toList();
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return [];
+
+    try {
+      final response = await Supabase.instance.client
+          .from('shopping_list')
+          .select('*')
+          .eq('category', category)
+          .eq('user_id', user.uid);
+
+      var a = response
+          .map<GroceryItem>((item) => GroceryItem(
+                id: item['id'],
+                name: item['name'],
+                quantity: (item['quantity'] as num?)?.toDouble() ??
+                    0.0, // Default: 0.0
+                unit: item['unit'] ?? '', // Default: Empty String
+                description: item['description'] ?? '', // Default: Empty String
+                category: item['category'],
+                icon: item['icon'],
+                isPurchased: item['is_purchased'] ?? false, // Default: false
+                addedDate: DateTime.parse(item['created_at']),
+                userId: item['user_id'],
+              ))
+          .toList();
+      print("Grocery items: $a");
+      return a;
+    } catch (e) {
+      print("Failed to fetch grocery items: $e");
+      return [];
+    }
   }
 
   Future<void> addGroceryItem(GroceryItem item) async {
@@ -20,7 +49,7 @@ class GroceryService {
         'id': item.id,
         'name': item.name,
         'category': item.category,
-        'user_id': item.userId,
+        'user_id': FirebaseAuth.instance.currentUser!.uid,
       });
     } catch (e) {
       print("Failed to add item to shopping list: $e");

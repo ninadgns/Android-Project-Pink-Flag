@@ -70,18 +70,18 @@ class _ShoppingScreenState extends State<ShoppingScreen>
             ),
 
             // Action Buttons
-            Row(
-              children: [
-                IconButton(
-                  icon: const Icon(Icons.share_outlined, color: Colors.black),
-                  onPressed: _saveInDB,
-                ),
-                IconButton(
-                  icon: const Icon(Icons.check, color: Colors.black),
-                  onPressed: _shareShoppingList,
-                ),
-              ],
-            ),
+            // Row(
+            //   children: [
+            //     IconButton(
+            //       icon: const Icon(Icons.share_outlined, color: Colors.black),
+            //       onPressed: _saveInDB,
+            //     ),
+            //     IconButton(
+            //       icon: const Icon(Icons.check, color: Colors.black),
+            //       onPressed: _shareShoppingList,
+            //     ),
+            //   ],
+            // ),
           ],
         ),
       ),
@@ -94,28 +94,17 @@ class _ShoppingScreenState extends State<ShoppingScreen>
                 constraints: BoxConstraints(
                   minHeight: constraints.maxHeight,
                 ),
-                child: Container(
-                  // decoration: const BoxDecoration(
-                  //   color: Colors.white,
-                  //   image: DecorationImage(
-                  //     image: AssetImage('assets/images/tealwhite.jpeg'),
-                  //     repeat: ImageRepeat.repeat,
-                  //     opacity: 0.15,
-                  //   ),
-                  //),
-                  child: Column(
-                    children: [
-                      ...categoryColors.keys.map((category) => CategorySection(
-                            category: category,
-                            backgroundColor: categoryColors[category]!,
-                            groceryService: _groceryService,
-                            onAddItem: () => setState(() {}),
-                            onUpdate: () => setState(() {}),
-                          )),
-                      SizedBox(
-                          height: MediaQuery.of(context).size.height * 0.15),
-                    ],
-                  ),
+                child: Column(
+                  children: [
+                    ...categoryColors.keys.map((category) => CategorySection(
+                          category: category,
+                          backgroundColor: categoryColors[category]!,
+                          groceryService: _groceryService,
+                          onAddItem: () => setState(() {}),
+                          onUpdate: () => setState(() {}),
+                        )),
+                    SizedBox(height: MediaQuery.of(context).size.height * 0.15),
+                  ],
                 ),
               ),
             );

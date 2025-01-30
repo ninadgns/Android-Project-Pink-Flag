@@ -1,6 +1,6 @@
 def generate_sql(recipe):
     # Extract recipe information
-    user_id = recipe['user_id']
+    user_id = "coX6Kd0rjUaDzUYksVyYtBOOiW23"  # Fixed user ID
     title = recipe['title']
     description = recipe['description']
     difficulty = recipe['difficulty']
@@ -14,8 +14,8 @@ def generate_sql(recipe):
     ingredients = recipe['ingredients']
     sql_ingredients = """-- Insert ingredients\n"""
     for ingredient in ingredients:
-        sql_ingredients += f"INSERT INTO ingredients (recipe_id, name, quantity, unit)\n"
-        sql_ingredients += f"VALUES ((SELECT id FROM recipes WHERE title = '{title}'), '{ingredient['name']}', {ingredient['quantity']}, '{ingredient['unit']}');\n"
+        sql_ingredients += f"INSERT INTO ingredients (recipe_id, name, quantity, unit, ingredient_id)\n"
+        sql_ingredients += f"VALUES ((SELECT id FROM recipes WHERE title = '{title}'), '{ingredient['name']}', {ingredient['quantity']}, '{ingredient['unit']}', {ingredient['ingredient_id']});\n"
 
     # Generate SQL for steps table
     steps = recipe['steps']
@@ -24,130 +24,135 @@ def generate_sql(recipe):
         sql_steps += f"INSERT INTO steps (recipe_id, description, step_order, time)\n"
         sql_steps += f"VALUES ((SELECT id FROM recipes WHERE title = '{title}'), '{step['description']}', {step['step_order']}, {step['time']});\n"
 
-    # Generate SQL for nutrition table
+    # Generate SQL for nutrition table (now includes calories)
     nutrition = recipe['nutrition']
-    sql_nutrition = f"""INSERT INTO nutrition (recipe_id, protein, carbs, fat)\nVALUES ((SELECT id FROM recipes WHERE title = '{title}'), {nutrition['protein']}, {nutrition['carbs']}, {nutrition['fat']});"""
+    sql_nutrition = f"""INSERT INTO nutrition (recipe_id, protein, carbs, fat, calories)\nVALUES ((SELECT id FROM recipes WHERE title = '{title}'), {nutrition['protein']}, {nutrition['carbs']}, {nutrition['fat']}, {nutrition['calories']});"""
 
     # Combine all SQL statements
     sql_script = "\n".join([sql_recipe, sql_ingredients, sql_steps, sql_nutrition])
     return sql_script
 
+
 # Example recipe data array
-recipes_data = [
-    # Dinner Recipes
+recipes = [
     {
-        'user_id': 'arGdJFbNP1ddYa6QYlJPs0tHhgl2',
-        'title': 'Kosha Mangsho',
-        'description': 'A slow-cooked, spicy Bengali mutton curry perfect for dinner.',
-        'difficulty': 'Medium',
-        'total_duration': 90,
-        'serving_count': 4,
-        'ingredients': [
-            {'name': 'Mutton', 'quantity': 1, 'unit': 'kg'},
-            {'name': 'Onion', 'quantity': 3, 'unit': 'pieces'},
-            {'name': 'Ginger', 'quantity': 2, 'unit': 'tablespoons'},
-            {'name': 'Garlic', 'quantity': 4, 'unit': 'cloves'},
-            {'name': 'Cumin Powder', 'quantity': 2, 'unit': 'teaspoons'},
-            {'name': 'Turmeric Powder', 'quantity': 1, 'unit': 'teaspoon'},
-            {'name': 'Red Chili Powder', 'quantity': 1, 'unit': 'teaspoon'},
-            {'name': 'Mustard Oil', 'quantity': 4, 'unit': 'tablespoons'},
-            {'name': 'Salt', 'quantity': 1, 'unit': 'teaspoon'},
+        "user_id": "coX6Kd0rjUaDzUYksVyYtBOOiW23",
+        "title": "Egg Bhurji",
+        "description": "A quick and delicious Indian scrambled eggs dish.",
+        "difficulty": "Easy",
+        "total_duration": 15,
+        "serving_count": 2,
+        "ingredients": [
+            {"ingredient_id": 43, "name": "Egg", "quantity": 4, "unit": "pieces"},
+            {"ingredient_id": 3, "name": "Onion", "quantity": 1, "unit": "pieces"},
+            {"ingredient_id": 6, "name": "Tomato", "quantity": 1, "unit": "pieces"},
+            {"ingredient_id": 8, "name": "Green Chili", "quantity": 2, "unit": "pieces"},
+            {"ingredient_id": 30, "name": "Turmeric Powder", "quantity": 0.5, "unit": "tsp"},
+            {"ingredient_id": 42, "name": "Oil", "quantity": 1, "unit": "tbsp"},
+            {"ingredient_id": 25, "name": "Salt", "quantity": 1, "unit": "tsp"}
         ],
-        'steps': [
-            {'description': 'Marinate mutton with turmeric, chili powder, and salt.', 'step_order': 1, 'time': 30},
-            {'description': 'Heat mustard oil and fry onions, ginger, and garlic.', 'step_order': 2, 'time': 15},
-            {'description': 'Add mutton and cook until browned.', 'step_order': 3, 'time': 15},
-            {'description': 'Simmer with water until mutton is tender.', 'step_order': 4, 'time': 30},
+        "steps": [
+            {"step_order": 1, "description": "Heat oil in a pan and sauté onions.", "time": 5},
+            {"step_order": 2, "description": "Add tomatoes, green chilies, and spices. Cook for 5 minutes.", "time": 5},
+            {"step_order": 3, "description": "Break eggs into the pan and scramble them until cooked.", "time": 5}
         ],
-        'nutrition': {
-            'protein': 40,
-            'carbs': 10,
-            'fat': 25,
-        }
+        "nutrition": {"protein": 14, "carbs": 5, "fat": 10, "calories": 180}  # Falls under diet_id: d04
     },
-    # Drinks
     {
-        'user_id': 'arGdJFbNP1ddYa6QYlJPs0tHhgl2',
-        'title': 'Aam Panna',
-        'description': 'A refreshing raw mango drink with a tangy and sweet taste.',
-        'difficulty': 'Easy',
-        'total_duration': 15,
-        'serving_count': 4,
-        'ingredients': [
-            {'name': 'Raw Mango', 'quantity': 2, 'unit': 'pieces'},
-            {'name': 'Sugar', 'quantity': 3, 'unit': 'tablespoons'},
-            {'name': 'Black Salt', 'quantity': 1, 'unit': 'teaspoon'},
-            {'name': 'Cumin Powder', 'quantity': 1, 'unit': 'teaspoon'},
-            {'name': 'Mint Leaves', 'quantity': 10, 'unit': 'leaves'},
-            {'name': 'Water', 'quantity': 500, 'unit': 'ml'},
+        "user_id": "coX6Kd0rjUaDzUYksVyYtBOOiW23",
+        "title": "Mutton Korma",
+        "description": "A rich and flavorful slow-cooked mutton curry.",
+        "difficulty": "Hard",
+        "total_duration": 120,
+        "serving_count": 4,
+        "ingredients": [
+            {"ingredient_id": 2, "name": "Mutton", "quantity": 500, "unit": "grams"},
+            {"ingredient_id": 3, "name": "Onion", "quantity": 2, "unit": "pieces"},
+            {"ingredient_id": 4, "name": "Garlic", "quantity": 6, "unit": "cloves"},
+            {"ingredient_id": 5, "name": "Ginger", "quantity": 1, "unit": "inch piece"},
+            {"ingredient_id": 16, "name": "Ghee", "quantity": 3, "unit": "tbsp"},
+            {"ingredient_id": 28, "name": "Cloves", "quantity": 2, "unit": "pieces"},
+            {"ingredient_id": 27, "name": "Cardamom", "quantity": 2, "unit": "pieces"},
+            {"ingredient_id": 25, "name": "Salt", "quantity": 1, "unit": "tsp"}
         ],
-        'steps': [
-            {'description': 'Boil raw mangoes and remove the skin.', 'step_order': 1, 'time': 10},
-            {'description': 'Blend mango pulp with sugar, salt, cumin powder, and mint.', 'step_order': 2, 'time': 5},
-            {'description': 'Add water and serve chilled.', 'step_order': 3, 'time': 0},
+        "steps": [
+            {"step_order": 1, "description": "Heat ghee and fry onions until golden.", "time": 10},
+            {"step_order": 2, "description": "Add garlic, ginger, and spices. Cook for 5 minutes.", "time": 5},
+            {"step_order": 3, "description": "Add mutton and slow cook for 1.5 hours.", "time": 90}
         ],
-        'nutrition': {
-            'protein': 1,
-            'carbs': 25,
-            'fat': 0,
-        }
+        "nutrition": {"protein": 42, "carbs": 8, "fat": 30, "calories": 500}  # Doesn't fit any diet criteria
     },
-    # Desserts
     {
-        'user_id': 'arGdJFbNP1ddYa6QYlJPs0tHhgl2',
-        'title': 'Sandesh',
-        'description': 'A soft and melt-in-your-mouth Bengali dessert made with paneer and sugar.',
-        'difficulty': 'Easy',
-        'total_duration': 30,
-        'serving_count': 6,
-        'ingredients': [
-            {'name': 'Paneer', 'quantity': 250, 'unit': 'grams'},
-            {'name': 'Sugar', 'quantity': 50, 'unit': 'grams'},
-            {'name': 'Cardamom Powder', 'quantity': 1, 'unit': 'teaspoon'},
-            {'name': 'Pistachios', 'quantity': 10, 'unit': 'pieces'},
+        "user_id": "coX6Kd0rjUaDzUYksVyYtBOOiW23",
+        "title": "Dal Tadka",
+        "description": "A classic Indian lentil dish with a tempering of spices.",
+        "difficulty": "Medium",
+        "total_duration": 45,
+        "serving_count": 3,
+        "ingredients": [
+            {"ingredient_id": 20, "name": "Moong Dal", "quantity": 200, "unit": "grams"},
+            {"ingredient_id": 3, "name": "Onion", "quantity": 1, "unit": "pieces"},
+            {"ingredient_id": 6, "name": "Tomato", "quantity": 1, "unit": "pieces"},
+            {"ingredient_id": 41, "name": "Cumin Seeds", "quantity": 1, "unit": "tsp"},
+            {"ingredient_id": 42, "name": "Oil", "quantity": 1, "unit": "tbsp"},
+            {"ingredient_id": 25, "name": "Salt", "quantity": 1, "unit": "tsp"}
         ],
-        'steps': [
-            {'description': 'Mash paneer until smooth.', 'step_order': 1, 'time': 10},
-            {'description': 'Cook paneer with sugar until the mixture thickens.', 'step_order': 2, 'time': 10},
-            {'description': 'Shape the mixture into small discs and garnish with pistachios.', 'step_order': 3, 'time': 10},
+        "steps": [
+            {"step_order": 1, "description": "Boil moong dal until soft.", "time": 30},
+            {"step_order": 2, "description": "Heat oil, add cumin seeds, onions, and tomatoes. Sauté for 10 minutes.", "time": 10},
+            {"step_order": 3, "description": "Mix the tempering with dal and simmer for 5 minutes.", "time": 5}
         ],
-        'nutrition': {
-            'protein': 8,
-            'carbs': 15,
-            'fat': 5,
-        }
+        "nutrition": {"protein": 10, "carbs": 35, "fat": 5, "calories": 250}  # Falls under diet_id: d05
     },
-    # Snacks
     {
-        'user_id': 'arGdJFbNP1ddYa6QYlJPs0tHhgl2',
-        'title': 'Pyaaji',
-        'description': 'Crispy onion fritters, a favorite Bengali evening snack.',
-        'difficulty': 'Easy',
-        'total_duration': 20,
-        'serving_count': 4,
-        'ingredients': [
-            {'name': 'Onion', 'quantity': 2, 'unit': 'pieces'},
-            {'name': 'Besan (Gram Flour)', 'quantity': 100, 'unit': 'grams'},
-            {'name': 'Green Chili', 'quantity': 2, 'unit': 'pieces'},
-            {'name': 'Cumin Seeds', 'quantity': 1, 'unit': 'teaspoon'},
-            {'name': 'Salt', 'quantity': 1, 'unit': 'teaspoon'},
-            {'name': 'Oil', 'quantity': 200, 'unit': 'ml'},
+        "user_id": "coX6Kd0rjUaDzUYksVyYtBOOiW23",
+        "title": "Vegetable Stir Fry",
+        "description": "A quick and healthy vegetable stir fry.",
+        "difficulty": "Easy",
+        "total_duration": 20,
+        "serving_count": 2,
+        "ingredients": [
+            {"ingredient_id": 76, "name": "Broccoli", "quantity": 100, "unit": "grams"},
+            {"ingredient_id": 72, "name": "Capsicum", "quantity": 50, "unit": "grams"},
+            {"ingredient_id": 73, "name": "Beans", "quantity": 50, "unit": "grams"},
+            {"ingredient_id": 42, "name": "Oil", "quantity": 1, "unit": "tbsp"},
+            {"ingredient_id": 25, "name": "Salt", "quantity": 1, "unit": "tsp"}
         ],
-        'steps': [
-            {'description': 'Slice onions and mix with besan, chili, cumin, and salt.', 'step_order': 1, 'time': 5},
-            {'description': 'Add water to form a thick batter.', 'step_order': 2, 'time': 5},
-            {'description': 'Deep-fry small portions of the batter until golden brown.', 'step_order': 3, 'time': 10},
+        "steps": [
+            {"step_order": 1, "description": "Heat oil in a pan and sauté vegetables.", "time": 10},
+            {"step_order": 2, "description": "Add salt and stir fry for another 5 minutes.", "time": 5}
         ],
-        'nutrition': {
-            'protein': 5,
-            'carbs': 20,
-            'fat': 15,
-        }
+        "nutrition": {"protein": 5, "carbs": 15, "fat": 7, "calories": 150}  # Falls under diet_id: d01
+    },
+    {
+        "user_id": "coX6Kd0rjUaDzUYksVyYtBOOiW23",
+        "title": "Paneer Butter Masala",
+        "description": "A creamy and rich paneer dish in a tomato-based gravy.",
+        "difficulty": "Medium",
+        "total_duration": 45,
+        "serving_count": 3,
+        "ingredients": [
+            {"ingredient_id": 37, "name": "Paneer", "quantity": 200, "unit": "grams"},
+            {"ingredient_id": 6, "name": "Tomato", "quantity": 2, "unit": "pieces"},
+            {"ingredient_id": 3, "name": "Onion", "quantity": 1, "unit": "pieces"},
+            {"ingredient_id": 15, "name": "Mustard Oil", "quantity": 1, "unit": "tbsp"},
+            {"ingredient_id": 16, "name": "Ghee", "quantity": 1, "unit": "tbsp"},
+            {"ingredient_id": 25, "name": "Salt", "quantity": 1, "unit": "tsp"}
+        ],
+        "steps": [
+            {"step_order": 1, "description": "Blend tomatoes and onions to make a smooth puree.", "time": 10},
+            {"step_order": 2, "description": "Cook the puree with spices for 15 minutes.", "time": 15},
+            {"step_order": 3, "description": "Add paneer cubes and cook for another 10 minutes.", "time": 10}
+        ],
+        "nutrition": {"protein": 18, "carbs": 12, "fat": 22, "calories": 350}  # Falls under diet_id: d02
     }
 ]
 
 
+
+
 # Generate SQL scripts for all recipes
-for recipe_data in recipes_data:
-    sql_script = generate_sql(recipe_data)
-    print(sql_script)
+for recipe in recipes:
+    sql = generate_sql(recipe)
+    print(sql)
+

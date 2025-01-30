@@ -386,7 +386,7 @@ class _ScannerScreenState extends State<ScannerScreen> {
                       ),
                     ),
                     child: const Text(
-                      'Add to available list',
+                      'Add to Kitchen Inventory',
                       style: TextStyle(
                         fontSize: 18,
                         color: Colors.black45,
@@ -445,7 +445,7 @@ class _ScannerScreenState extends State<ScannerScreen> {
                   ),
                 ),
                 child: const Text(
-                  'Available List',
+                  'Kitchen Inventory',
                   style: TextStyle(color: Colors.black45, fontSize: 14),
                 ),
               ),
