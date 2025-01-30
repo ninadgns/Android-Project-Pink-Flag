@@ -387,7 +387,7 @@ Future<void> _handlePayment(
   final supabase = Supabase.instance.client;
 
   try {
-    final backendURL = 'https://ce65-103-94-135-27.ngrok-free.app';
+    final backendURL = 'https://268d-103-221-253-100.ngrok-free.app';
     final apiKey = 'ekta_stripe_backend';
     final String? userId = FirebaseAuth.instance.currentUser?.uid;
     if (userId == null) throw Exception('User not authenticated');
@@ -411,9 +411,13 @@ Future<void> _handlePayment(
 
       final customerResult = await http.post(
         Uri.parse('$backendURL/create-customer'),
-        headers: {'Authorization': 'Bearer $apiKey'},
+        headers: {
+          'Authorization': 'Bearer $apiKey',
+          'Content-Type': 'application/json' // Ensure JSON content type
+        },
         body: jsonEncode({'email': userEmail, 'custom_id': userId}),
       );
+      ;
 
       if (customerResult.statusCode != 200) {
         throw Exception('Failed to create customer: ${customerResult.body}');
