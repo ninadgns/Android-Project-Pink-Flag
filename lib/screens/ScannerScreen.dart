@@ -10,38 +10,55 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'available_list_screen.dart';
 
-class ScannerScreen extends StatelessWidget {
+class ScannerScreen extends StatefulWidget {
+  const ScannerScreen({super.key});
+
+  @override
+  State<ScannerScreen> createState() => _ScannerScreenState();
+}
+
+class _ScannerScreenState extends State<ScannerScreen> {
   final ImagePicker _picker = ImagePicker();
   final TextEditingController _manualInputController = TextEditingController();
 
   final List<Map<String, dynamic>> _ingredients = [];
   Uint8List? _imageBytes;
 
-  ScannerScreen({super.key});
 
-  Future<void> _pickImage(BuildContext context, Function updateState) async {
+
+  Future<void> _pickImage(BuildContext context) async {
     final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
 
     if (pickedFile != null) {
       final bytes = await pickedFile.readAsBytes();
-      updateState(() {
+      setState(() {
         _imageBytes = bytes;
       });
     }
   }
 
-  Future<void> _takePhoto(BuildContext context, Function updateState) async {
+  void _clearAll() {
+    if (mounted) {  // Check if widget is still mounted
+      setState(() {
+        _ingredients.clear();
+        _imageBytes = null;
+        _manualInputController.clear();
+      });
+    }
+  }
+
+  Future<void> _takePhoto(BuildContext context) async {
     final pickedFile = await _picker.pickImage(source: ImageSource.camera);
 
     if (pickedFile != null) {
       final bytes = await pickedFile.readAsBytes();
-      updateState(() {
+      setState(() {
         _imageBytes = bytes;
       });
     }
   }
 
-  Future<void> _uploadImage(BuildContext context, Function updateState) async {
+  Future<void> _uploadImage(BuildContext context) async {
     if (_imageBytes == null) {
       _showErrorDialog(context, "No image selected.");
       return;
@@ -88,7 +105,7 @@ class ScannerScreen extends StatelessWidget {
         final predictions = responseData['outputs'][0]['data']['concepts'];
         print(predictions);
 
-        updateState(() {
+        setState(() {
           _ingredients.clear();
           _ingredients.addAll(predictions
               .where((prediction) =>
@@ -99,21 +116,27 @@ class ScannerScreen extends StatelessWidget {
       } else {
         _showErrorDialog(
             context, "Error: ${response.statusCode} - ${response.body}");
+
       }
+      setState(() {
+        _ingredients.clear();  // Clear ingredients list
+        _imageBytes = null;    // Clear image
+        _manualInputController.clear();  // Clear text input
+      });
     } catch (e) {
       _showErrorDialog(context, "An error occurred: $e");
     }
   }
 
-  void _addManualIngredient(String name, Function updateState) {
-    updateState(() {
+  void _addManualIngredient(String name) {
+    setState(() {
       _ingredients.add({'name': name, 'confidence': null});
     });
     _manualInputController.clear();
   }
 
-  void _removeIngredient(int index, Function updateState) {
-    updateState(() {
+  void _removeIngredient(int index) {
+    setState(() {
       _ingredients.removeAt(index);
     });
   }
@@ -121,18 +144,14 @@ class ScannerScreen extends StatelessWidget {
   Future<void> _addToAvailableList(BuildContext context) async {
     final user = FirebaseAuth.instance.currentUser;
 
-    print("Firebase User: $user");
-
     if (user == null) {
       _showErrorDialog(context, "You must be logged in to add ingredients.");
       return;
     }
 
-    final userId = user.uid; // Get Firebase User ID
-    print("Firebase User ID: $userId");
+    final userId = user.uid;
 
     try {
-      // Fetch elements table to match ingredient names
       final elementsResponse = await Supabase.instance.client
           .from('elements')
           .select('ingredient_id, name');
@@ -143,7 +162,6 @@ class ScannerScreen extends StatelessWidget {
       for (var ingredient in _ingredients) {
         final name = ingredient['name'].toString().toLowerCase();
 
-        // Match with elements table (case insensitive)
         final matchedElement = elements.firstWhere(
           (element) => element['name'].toString().toLowerCase() == name,
           orElse: () => {},
@@ -152,16 +170,15 @@ class ScannerScreen extends StatelessWidget {
         final ingredientId =
             matchedElement.isNotEmpty ? matchedElement['ingredient_id'] : null;
 
-        // Insert into available_ingredients with Firebase User ID
         await Supabase.instance.client.from('available_ingredients').insert({
-          'user_id': userId, // Store Firebase User ID
+          'user_id': userId,
           'ingredient_name': ingredient['name'],
-          'ingredient_id': ingredientId, // Foreign key (null if not found)
+          'ingredient_id': ingredientId,
           'created_at': DateTime.now().toIso8601String(),
         });
       }
 
-      if (context.mounted) {
+      if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Ingredients added successfully!'),
@@ -211,7 +228,7 @@ class ScannerScreen extends StatelessWidget {
     const double itemHeight = 60.0;
     final double totalHeight = minHeight + (_ingredients.length * itemHeight);
 
-    return StatefulBuilder(builder: (context, updateState) {
+
       return Scaffold(
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -457,6 +474,6 @@ class ScannerScreen extends StatelessWidget {
           ],
         ),
       );
-    });
+
   }
 }

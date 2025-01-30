@@ -356,10 +356,11 @@ class _EditRecipePostScreenState extends State<EditRecipePostScreen> {
         ),
       );
     }
+    final List<String> difficultyLevels = ['Easy', 'Moderate', 'Hard'];
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color(0xFF7DA9CE),
+        backgroundColor: const Color(0xFF40B6A3),
         title: const Text('Edit Recipe'),
         elevation: 0,
       ),
@@ -370,11 +371,11 @@ class _EditRecipePostScreenState extends State<EditRecipePostScreen> {
             end: Alignment.bottomCenter,
             colors: [
               Colors.white.withOpacity(0.9),
-              const Color(0xFFEEF4FA),
-              const Color(0xFFE6EDF8),
-              const Color(0xFFE1EBF4),
-              const Color(0xFFD1E0ED),
-              const Color(0xFFD0DFF0),
+              const Color(0xFFD7E8E2),
+              const Color(0xFFCFEFE9),
+              const Color(0xFFC5F8EE),
+              const Color(0xFFAEF1DF),
+              const Color(0xFF99EDDD),
             ],
           ),
         ),
@@ -391,19 +392,32 @@ class _EditRecipePostScreenState extends State<EditRecipePostScreen> {
                   validator: (value) => value?.isEmpty ?? true ? 'Title is required' : null,
                 ),
                 const SizedBox(height: 16),
-                DropdownButtonFormField<String>(
-                  value: _difficulty,
-                  decoration: const InputDecoration(labelText: 'Difficulty*'),
-                  items: ['Easy', 'Moderate', 'Hard']
-                      .map((level) => DropdownMenuItem(
-                    value: level,
-                    child: Text(level),
-                  ))
-                      .toList(),
-                  onChanged: (value) => setState(() => _difficulty = value),
-                  validator: (value) => value == null ? 'Difficulty is required' : null,
-                ),
-                const SizedBox(height: 16),
+
+              Wrap(
+              spacing: 8.0,
+              runSpacing: 4.0,
+              children: difficultyLevels.map((level) {
+        final isSelected = _difficulty == level;
+
+        return ChoiceChip(
+        label: Text(level),
+        labelStyle: TextStyle(
+        color: isSelected ? Colors.white : Colors.black,
+        fontWeight: FontWeight.bold,
+        ),
+        selected: isSelected,
+        selectedColor: Colors.teal,
+        backgroundColor: Colors.grey[200],
+        onSelected: (selected) {
+        setState(() {
+        _difficulty = selected ? level : null;
+        });
+        },
+        );
+        }).toList(),
+      ),
+
+      const SizedBox(height: 16),
                 ImageUploader(
                   onImageSelected: _handleImageSelection,
                   //initialImageUrl: _existingImageUrl,
@@ -427,7 +441,7 @@ class _EditRecipePostScreenState extends State<EditRecipePostScreen> {
                 const SizedBox(height: 16),
                 IngredientsList(
                   onChanged: _handleIngredients,
-                  //initialIngredients: _ingredients,
+                  initialIngredients: _ingredients,
                 ),
                 const SizedBox(height: 16),
                 NutritionInput(
@@ -443,7 +457,7 @@ class _EditRecipePostScreenState extends State<EditRecipePostScreen> {
                 ElevatedButton(
                   onPressed: _updateRecipe,
                   style: TextButton.styleFrom(
-                    foregroundColor: const Color(0xFF7DA9CE),
+                    foregroundColor: const Color(0xFF478177),
                   ),
                   child: const Text('Update Recipe'),
                 ),

@@ -287,6 +287,7 @@ class _CreateRecipePostScreenState extends State<CreateRecipePostScreen> {
       }
     }
   }
+  final List<String> difficultyLevels = ['Easy', 'Moderate', 'Hard'];
 
   @override
   Widget build(BuildContext context) {
@@ -342,29 +343,28 @@ class _CreateRecipePostScreenState extends State<CreateRecipePostScreen> {
                   },
                 ),
                 const SizedBox(height: 16),
-                DropdownButtonFormField<String>(
-                  dropdownColor: const Color(0xFFD0DFF0),
-                  decoration: const InputDecoration(
-                    labelText: 'Difficulty*',
-                    labelStyle: TextStyle(color: Colors.black),
-                    focusedBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.black, width: 1),
-                    ),
-                  ),
-                  value: _difficulty,
-                  onChanged: (value) => setState(() => _difficulty = value),
-                  items: ['Easy', 'Moderate', 'Hard']
-                      .map((level) => DropdownMenuItem(
-                            value: level,
-                            child: Text(level),
-                          ))
-                      .toList(),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Difficulty is required';
-                    }
-                    return null;
-                  },
+                Wrap(
+                  spacing: 8.0,
+                  runSpacing: 4.0,
+                  children: difficultyLevels.map((level) {
+                    final isSelected = _difficulty == level;
+
+                    return ChoiceChip(
+                      label: Text(level),
+                      labelStyle: TextStyle(
+                        color: isSelected ? Colors.white : Colors.black,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      selected: isSelected,
+                      selectedColor: const Color(0xFF7DA9CE),
+                      backgroundColor: Colors.grey[200],
+                      onSelected: (selected) {
+                        setState(() {
+                          _difficulty = selected ? level : null;
+                        });
+                      },
+                    );
+                  }).toList(),
                 ),
                 const SizedBox(height: 16),
                 ImageUploader(onImageSelected: _handleImageSelection),

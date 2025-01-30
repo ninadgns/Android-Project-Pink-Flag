@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:dim/screens/AddPost/CreateRecipePostScreen.dart';
+import '../../services/love_react_service.dart';
+import '../../services/review_service.dart';
+import '../review_screen.dart';
 import 'RecipeCard.dart';
 import 'CommentSection.dart';
 import 'demoPostData.dart';
@@ -46,71 +49,7 @@ class _PostsScreenState extends State<PostsScreen> {
                 ),
               ),
 
-              // Custom Tab Bar
-              // Padding(
-              //   padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              //   child: Container(
-              //     height: 45,
-              //     decoration: BoxDecoration(
-              //       color: Colors.white.withOpacity(0.5),
-              //       borderRadius: BorderRadius.circular(25),
-              //     ),
-              //     child: Row(
-              //       children: [
-              //         Expanded(
-              //           child: GestureDetector(
-              //             onTap: () => setState(() => selectedIndex = 0),
-              //             child: Container(
-              //               decoration: BoxDecoration(
-              //                 color: selectedIndex == 0
-              //                     ? Colors.black
-              //                     : Colors.transparent,
-              //                 borderRadius: BorderRadius.circular(25),
-              //               ),
-              //               child: Center(
-              //                 child: Text(
-              //                   'My Posts',
-              //                   style: TextStyle(
-              //                     color: selectedIndex == 0
-              //                         ? Colors.white
-              //                         : Colors.black54,
-              //                     fontWeight: FontWeight.w500,
-              //                   ),
-              //                 ),
-              //               ),
-              //             ),
-              //           ),
-              //         ),
-              //         // Expanded(
-              //         //   child: GestureDetector(
-              //         //     onTap: () => setState(() => selectedIndex = 1),
-              //         //     child: Container(
-              //         //       decoration: BoxDecoration(
-              //         //         color: selectedIndex == 1
-              //         //             ? Colors.black
-              //         //             : Colors.transparent,
-              //         //         borderRadius: BorderRadius.circular(25),
-              //         //       ),
-              //         //       child: Center(
-              //         //         child: Text(
-              //         //           'All Posts',
-              //         //           style: TextStyle(
-              //         //             color: selectedIndex == 1
-              //         //                 ? Colors.white
-              //         //                 : Colors.black54,
-              //         //             fontWeight: FontWeight.w500,
-              //         //           ),
-              //         //         ),
-              //         //       ),
-              //         //     ),
-              //         //   ),
-              //         // ),
-              //       ],
-              //     ),
-              //   ),
-              // ),
 
-              // Content
               Expanded(
                 child: IndexedStack(
                   index: selectedIndex,
@@ -160,6 +99,7 @@ class RecipePost extends StatefulWidget {
   final String? createdAt;
   final bool initialIsLiked;
   final Map<String, dynamic> user;
+  final List<Map<String, dynamic>> steps;
 
   const RecipePost({
     super.key,
@@ -174,6 +114,7 @@ class RecipePost extends StatefulWidget {
     required this.onDelete,
     required this.onSave,
     required this.user,
+    required this.steps,
     this.id,
     this.createdAt,
     this.initialIsLiked = false,
@@ -191,6 +132,7 @@ class RecipePost extends StatefulWidget {
       createdAt: json['createdAt'],
       initialIsLiked: json['isLiked'] ?? false,
       user: json['user'],
+      steps: List<Map<String, dynamic>>.from(json['steps'] ?? []),
       isMyPost: false,
       onEdit: () {},
       onDelete: () {},
@@ -207,6 +149,10 @@ class _RecipePostState extends State<RecipePost> {
   late int likeCount;
   late List<Map<String, dynamic>> commentsList;
   final TextEditingController _commentController = TextEditingController();
+  final LoveReactService _loveReactService = LoveReactService();
+  bool _isInitialized = false;
+  final ReviewService _reviewService = ReviewService();
+  double? averageRating;
 
   @override
   void initState() {
@@ -214,6 +160,51 @@ class _RecipePostState extends State<RecipePost> {
     isLiked = widget.initialIsLiked;
     likeCount = widget.likes;
     commentsList = List.from(widget.comments);
+    _initializeLikeStatus();
+    _fetchAverageRating();
+  }
+  Future<void> _fetchAverageRating() async {
+    try {
+      final rating = await _reviewService.fetchAverageRating(widget.id!);
+      if (mounted) {
+        setState(() {
+          averageRating = rating;
+        });
+      }
+    } catch (e) {
+      print('Error fetching average rating: $e');
+    }
+  }
+
+  Future<void> _initializeLikeStatus() async {
+    try {
+      final userId = FirebaseAuth.instance.currentUser?.uid;
+      if (userId != null && widget.id != null) {
+        // Fetch like status and count in parallel
+        final Future<bool> hasLovedFuture = _loveReactService.hasUserLoved(widget.id!, userId);
+        final Future<List<Map<String, dynamic>>> lovesFuture = _loveReactService.fetchLoveReacts(widget.id!);
+
+        // Wait for both futures to complete
+        final results = await Future.wait([hasLovedFuture, lovesFuture]);
+        final bool hasLoved = results[0] as bool;
+        final List<Map<String, dynamic>> loves = results[1] as List<Map<String, dynamic>>;
+
+        if (mounted) {
+          setState(() {
+            isLiked = hasLoved;
+            likeCount = loves.length;
+            _isInitialized = true;
+          });
+        }
+      }
+    } catch (e) {
+      print('Error initializing like status: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error loading like status: ${e.toString()}')),
+        );
+      }
+    }
   }
 
   @override
@@ -223,62 +214,57 @@ class _RecipePostState extends State<RecipePost> {
   }
 
   Future<void> _handleLike() async {
-    setState(() {
-      isLiked = !isLiked;
-      likeCount = isLiked ? likeCount + 1 : likeCount - 1;
-    });
+    if (!_isInitialized) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please wait while we load the like status')),
+      );
+      return;
+    }
+
+    final userId = FirebaseAuth.instance.currentUser?.uid;
+    if (userId == null || widget.id == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('You must be logged in to like recipes')),
+      );
+      return;
+    }
 
     try {
-      await Future.delayed(const Duration(seconds: 1));
-      print('Like updated for post ${widget.id}: isLiked=$isLiked');
-    } catch (e) {
+      // Optimistically update UI
       setState(() {
         isLiked = !isLiked;
         likeCount = isLiked ? likeCount + 1 : likeCount - 1;
       });
 
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Failed to update like. Please try again.'),
-            duration: Duration(seconds: 2),
-          ),
+      if (isLiked) {
+        await _loveReactService.addLoveReact(
+          widget.id!,
+          userId,
+          FirebaseAuth.instance.currentUser?.displayName ?? 'Anonymous',
         );
+      } else {
+        await _loveReactService.removeLoveReact(widget.id!, userId);
       }
-    }
-  }
 
-  Future<void> _handleAddComment() async {
-    if (_commentController.text.isEmpty) return;
-
-    final newComment = {
-      "id": commentsList.length + 1,
-      "userId": "currentUser",
-      "userName": "Current User",
-      "userAvatar": "assets/images/profile.png",
-      "text": _commentController.text,
-      "createdAt": DateTime.now().toIso8601String()
-    };
-
-    setState(() {
-      commentsList.add(newComment);
-      _commentController.clear(); // Clear the input field immediately
-    });
-
-    try {
-      await Future.delayed(const Duration(seconds: 1)); // Simulated API call
-      print('Comment added to post ${widget.id}');
-    } catch (e) {
-      // If the API call fails, remove the comment
+      // Fetch actual count after operation
+      final loves = await _loveReactService.fetchLoveReacts(widget.id!);
       if (mounted) {
         setState(() {
-          commentsList.removeLast();
+          likeCount = loves.length;
+        });
+      }
+    } catch (e) {
+      // Revert on error
+      if (mounted) {
+        setState(() {
+          isLiked = !isLiked;
+          likeCount = isLiked ? likeCount + 1 : likeCount - 1;
         });
 
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Failed to add comment. Please try again.'),
-            duration: Duration(seconds: 2),
+          SnackBar(
+            content: Text('Failed to update like: ${e.toString()}'),
+            duration: const Duration(seconds: 2),
           ),
         );
       }
@@ -296,56 +282,34 @@ class _RecipePostState extends State<RecipePost> {
       imageUrl: widget.imageUrl,
       isLiked: isLiked,
       likeCount: likeCount,
-      commentsList: commentsList,
       onEdit: widget.onEdit,
       onDelete: widget.onDelete,
       onSave: widget.onSave,
       user: widget.user,
       createdAt: widget.createdAt!,
       onLike: _handleLike,
-      showComments: _showComments,
-      getTimeAgo: _getTimeAgo,
+      recipeId: widget.id ?? '',  // ✅ Pass the correct recipe ID
+      showComments: () => _openReviewScreen(context),  // ✅ Open review screen instead of comments
+      steps: widget.steps,
+      averageRating: averageRating,
     );
   }
 
-  void _showComments(BuildContext context) {
-    final commentSection = CommentSection(
-      commentsList: commentsList,
-      commentController: _commentController,
-      handleAddComment: _handleAddComment,
-      getTimeAgo: _getTimeAgo,
+  void _openReviewScreen(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ReviewScreen(
+          recipeId: widget.id ?? '',  // Pass recipe ID correctly
+          userId: FirebaseAuth.instance.currentUser!.uid,
+        ),
+      ),
     );
-    commentSection.show(context);
-
   }
 
-  String _getTimeAgo(DateTime dateTime) {
-    // Convert the UTC time to local time
-    final localDateTime = dateTime.toLocal();
-    final now = DateTime.now();
-    final difference = now.difference(localDateTime);
 
-    // Debug prints to help understand the time calculation
-    print('Server time (UTC): $dateTime');
-    print('Local time: $localDateTime');
-    print('Current time: $now');
-    print('Difference in hours: ${difference.inHours}');
-
-    if (difference.inMinutes < 60) {
-      return '${difference.inMinutes}m ago';
-    } else if (difference.inHours < 24) {
-      return '${difference.inHours}h ago';
-    } else if (difference.inDays < 30) {
-      return '${difference.inDays}d ago';
-    } else if (difference.inDays < 365) {
-      final months = (difference.inDays / 30).floor();
-      return '${months}mo ago';
-    } else {
-      final years = (difference.inDays / 365).floor();
-      return '${years}y ago';
-    }
-  }
 }
+
 
 final List<RecipePost> mockRecipesList = mockRecipes
     .map((json) => RecipePost.fromJson(json))
@@ -376,6 +340,8 @@ class AllPostsTab extends StatelessWidget {
           id: post.id,
           createdAt: post.createdAt,
           initialIsLiked: post.initialIsLiked,
+          steps: [],
+
         );
       },
     );
@@ -412,35 +378,40 @@ class _MyPostsTabState extends State<MyPostsTab> {
         throw Exception('User not authenticated');
       }
 
-      // Fetch recipes with related data
       final response = await Supabase.instance.client
           .from('recipes')
           .select('''
-            *,
-            nutrition(protein, carbs, fat),
-            ingredients(name, quantity, unit),
-            steps(description, time, step_order)
-          ''')
+          *,
+          nutrition(protein, carbs, fat),
+          ingredients(name, quantity, unit),
+          steps(description, time, step_order)
+        ''')
           .eq('user_id', currentUserId)
           .order('created_at', ascending: false);
 
-      debugPrint('Fetched recipes: $response'); // Debug print
+      debugPrint('Fetched recipes: $response');
 
-      // Convert the response to RecipePost objects
       final List<RecipePost> recipes = response.map<RecipePost>((recipeData) {
         // Transform ingredients data to string list
         final ingredients = (recipeData['ingredients'] as List)
             .map((ing) => "${ing['quantity']} ${ing['unit']} ${ing['name']}")
             .toList();
 
-        // Get the complete image URL from Supabase storage
-        String imageUrl = recipeData['title_photo'] ?? '';
+        // Transform steps data
+        final steps = (recipeData['steps'] as List).map((step) => {
+          'description': step['description'],
+          'time': step['time'],
+          'step_order': step['step_order'],
+        }).toList();
 
-        // If the URL doesn't start with 'http', it's a storage path
+        // Sort steps by step_order
+        steps.sort((a, b) => (a['step_order'] as int).compareTo(b['step_order'] as int));
+
+        String imageUrl = recipeData['title_photo'] ?? '';
         if (!imageUrl.startsWith('http')) {
           imageUrl = Supabase.instance.client.storage
-              .from('recipe') // your bucket name
-              .getPublicUrl(imageUrl.replaceFirst('recipe/', '')); // remove bucket prefix if present
+              .from('recipe')
+              .getPublicUrl(imageUrl.replaceFirst('recipe/', ''));
         }
 
         return RecipePost(
@@ -449,9 +420,11 @@ class _MyPostsTabState extends State<MyPostsTab> {
           title: recipeData['title'] ?? '',
           description: recipeData['description'] ?? '',
           ingredients: ingredients.cast<String>(),
-          imageUrl: imageUrl, // Use the complete URL
+          imageUrl: imageUrl,
           likes: 0,
+          initialIsLiked: false,
           comments: [],
+          steps: steps, // Add steps here
           user: {
             'id': currentUserId,
             'name': 'Current User',
@@ -476,6 +449,9 @@ class _MyPostsTabState extends State<MyPostsTab> {
       });
     }
   }
+
+
+
   Future<void> _handleDeleteRecipe(String recipeId) async {
     try {
       final shouldDelete = await showDialog<bool>(
@@ -497,12 +473,14 @@ class _MyPostsTabState extends State<MyPostsTab> {
       );
 
       if (shouldDelete ?? false) {
+        // Perform delete from database
         await Supabase.instance.client
             .from('recipes')
             .delete()
             .match({'id': recipeId});
 
-        _fetchUserRecipes(); // Refresh the list
+        // Refresh list after deletion
+        _fetchUserRecipes();
 
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -518,6 +496,7 @@ class _MyPostsTabState extends State<MyPostsTab> {
       }
     }
   }
+
 
   void _handleEditRecipe(String recipeId) {
     Navigator.push(

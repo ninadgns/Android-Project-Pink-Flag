@@ -1,5 +1,9 @@
+import 'package:dim/screens/review_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import '../../services/review_service.dart';
+import 'package:intl/intl.dart';
 
 class RecipeCard extends StatelessWidget {
   final bool isMyPost;
@@ -9,15 +13,15 @@ class RecipeCard extends StatelessWidget {
   final String imageUrl;
   final bool isLiked;
   final int likeCount;
-  final List<Map<String, dynamic>> commentsList;
+  final String createdAt;
   final VoidCallback onEdit;
   final VoidCallback onDelete;
   final VoidCallback onSave;
+  final VoidCallback onLike;
   final Map<String, dynamic> user;
-  final String createdAt;
-  final Function() onLike;
-  final Function(BuildContext) showComments;
-  final String Function(DateTime) getTimeAgo;
+  final String recipeId;
+  final List<Map<String, dynamic>> steps;
+  final double? averageRating;
 
   const RecipeCard({
     super.key,
@@ -28,19 +32,19 @@ class RecipeCard extends StatelessWidget {
     required this.imageUrl,
     required this.isLiked,
     required this.likeCount,
-    required this.commentsList,
     required this.onEdit,
     required this.onDelete,
     required this.onSave,
-    required this.user,
-    required this.createdAt,
     required this.onLike,
-    required this.showComments,
-    required this.getTimeAgo,
+    required this.user,
+    required this.recipeId,
+    required this.createdAt, required void Function() showComments, required this.steps, this.averageRating,
   });
 
   @override
   Widget build(BuildContext context) {
+    final reviewService = ReviewService();
+
     return Card(
       margin: const EdgeInsets.only(bottom: 16),
       child: Column(
@@ -57,20 +61,36 @@ class RecipeCard extends StatelessWidget {
                   title,
                   style: TextStyle(
                     fontSize: 18.0,
-                    fontWeight: FontWeight.bold, // Optional: make text bold
-                    color: Colors.black, // Optional: set text color
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
                   ),
                 ),
                 const SizedBox(width: 8),
-                // Text(
-                //   'by ${user['name']}',
-                //   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                //     color: Colors.grey[600],
-                //   ),
-                // ),
               ],
             ),
-            subtitle: Text(getTimeAgo(DateTime.parse(createdAt))),
+            subtitle: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  _formatDate(createdAt),  // Use formatted date
+                  style: const TextStyle(color: Colors.black54),
+                ),
+                Row(  // Corrected 'child' to 'Row'
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const Icon(Icons.star, size: 16, color: Colors.amber),
+                    const SizedBox(width: 4),
+                    Text(
+                      averageRating != null
+                          ? '${averageRating!.toStringAsFixed(1)}'
+                          : 'Not rated',
+                      style: const TextStyle(color: Colors.grey),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+
             trailing: IconButton(
               icon: const Icon(Icons.more_vert),
               onPressed: () {
@@ -98,14 +118,7 @@ class RecipeCard extends StatelessWidget {
                           },
                         ),
                       ],
-                      ListTile(
-                        leading: const Icon(Icons.bookmark_border),
-                        title: const Text('Save Post'),
-                        onTap: () {
-                          Navigator.pop(context);
-                          onSave();
-                        },
-                      ),
+
                     ],
                   ),
                 );
@@ -138,14 +151,57 @@ class RecipeCard extends StatelessWidget {
                           overflow: TextOverflow.ellipsis,
                         ),
                         const SizedBox(height: 8),
-                        TextButton(
-                          onPressed: () {},
-                          style: TextButton.styleFrom(
-                            foregroundColor: Colors.black,
-                            padding: EdgeInsets.zero,
+                        if (steps.isNotEmpty) ...[
+                          const Text(
+                            'Steps:',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
                           ),
-                          child: const Text('Show Details'),
-                        ),
+                          const SizedBox(height: 8),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: steps.map((step) => Padding(
+                              padding: const EdgeInsets.only(bottom: 8.0),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  CircleAvatar(
+                                    radius: 12,
+                                    backgroundColor: Colors.grey[200],
+                                    child: Text(
+                                      step['step_order'].toString(),
+                                      style: const TextStyle(
+                                        fontSize: 12,
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          step['description'],
+                                          style: Theme.of(context).textTheme.bodyMedium,
+                                        ),
+                                        Text(
+                                          '${step['time']} minutes',
+                                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                            color: Colors.grey[600],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            )).toList(),
+                          ),
+                        ],
+
                       ],
                     ),
                   ),
@@ -165,7 +221,7 @@ class RecipeCard extends StatelessWidget {
                         shape: BoxShape.circle,
                       ),
                       child: AspectRatio(
-                        aspectRatio: 1, // This ensures a perfect circle
+                        aspectRatio: 1,
                         child: ClipOval(
                           child: Image.network(
                             imageUrl,
@@ -187,11 +243,9 @@ class RecipeCard extends StatelessWidget {
                                 color: Colors.grey[200],
                                 child: Center(
                                   child: CircularProgressIndicator(
-                                    value: loadingProgress.expectedTotalBytes !=
-                                            null
-                                        ? loadingProgress
-                                                .cumulativeBytesLoaded /
-                                            loadingProgress.expectedTotalBytes!
+                                    value: loadingProgress.expectedTotalBytes != null
+                                        ? loadingProgress.cumulativeBytesLoaded /
+                                        loadingProgress.expectedTotalBytes!
                                         : null,
                                   ),
                                 ),
@@ -219,16 +273,44 @@ class RecipeCard extends StatelessWidget {
                 ),
                 Text('$likeCount'),
                 const SizedBox(width: 16),
-                IconButton(
-                  icon: const Icon(Icons.add_comment_outlined),
-                  onPressed: () => showComments(context),
+                FutureBuilder<int>(
+                  future: reviewService.fetchReviewCount(recipeId),
+                  builder: (context, snapshot) {
+                    return Row(
+                      children: [
+                        IconButton(
+                          icon: const Icon(Icons.rate_review_outlined),
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ReviewScreen(
+                                  recipeId: recipeId,
+                                  userId: FirebaseAuth.instance.currentUser!.uid,
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                        Text(snapshot.data?.toString() ?? '0'),
+                      ],
+                    );
+                  },
                 ),
-                Text('${commentsList.length}'),
               ],
             ),
           ),
         ],
       ),
     );
+  }
+}
+
+String _formatDate(String dateTimeString) {
+  try {
+    final dateTime = DateTime.parse(dateTimeString);
+    return DateFormat('yyyy-MM-dd').format(dateTime);  // Format as YYYY-MM-DD
+  } catch (e) {
+    return dateTimeString;  // Return the original string if parsing fails
   }
 }

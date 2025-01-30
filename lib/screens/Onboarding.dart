@@ -17,6 +17,13 @@ class _OnboardingState extends State<Onboarding> {
   int currentPage = 0;
   final LiquidController _liquidController = LiquidController();
 
+  void _navigateToGetStarted() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const Getstarted()),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     // Obtain screen dimensions inside build
@@ -37,6 +44,22 @@ class _OnboardingState extends State<Onboarding> {
                 painter: SoftPastelBackgroundPainter(),
                 child: Container(),
               ),
+            ),
+
+            Positioned(
+                top: 50,
+                right: 20,
+                child:TextButton(
+                  onPressed: _navigateToGetStarted,
+                  child: Text(
+                    'Skip',
+                    style: TextStyle(
+                      color: const Color(0xFF000000),
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                )
+              // No skip button on last page
             ),
             // Text overlay
             Positioned(
@@ -95,6 +118,22 @@ class _OnboardingState extends State<Onboarding> {
                 painter: SoftPastelBackgroundCooker(),
                 child: Container(),
               ),
+            ),
+
+            Positioned(
+              top: 50,
+              right: 20,
+              child:TextButton(
+                onPressed: _navigateToGetStarted,
+                child: Text(
+                  'Skip',
+                  style: TextStyle(
+                    color: const Color(0xFF000000),
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              )
+                   // No skip button on last page
             ),
             // Text overlay
             Positioned(
@@ -155,6 +194,21 @@ class _OnboardingState extends State<Onboarding> {
               ),
             ),
             // Text overlay
+            Positioned(
+                top: 50,
+                right: 20,
+                child:TextButton(
+                  onPressed: _navigateToGetStarted,
+                  child: Text(
+                    'Skip',
+                    style: TextStyle(
+                      color: const Color(0xFF000000),
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                )
+              // No skip button on last page
+            ),
             Positioned(
               top: screenHeight / 5, // Start at 1/5 of the screen height
               left: screenWidth / 20, // Align text to the left side
