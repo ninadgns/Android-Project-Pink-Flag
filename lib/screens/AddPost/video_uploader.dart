@@ -79,8 +79,10 @@ class _VideoUploaderState extends State<VideoUploader> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Text(
-          'Recipe Video',
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+          '▶️  Recipe Video',
+          style: TextStyle(fontWeight: FontWeight.bold,
+            fontSize: 16,  // Adjust the font size if needed
+            color: Colors.black,),
         ),
         const SizedBox(height: 8),
         GestureDetector(

@@ -222,12 +222,36 @@ class _RecipeIntroState extends State<RecipeIntro> {
                 ),
                 child: IconButton(
                   onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const VideoPlayerWindow(),
-                      ),
-                    );
+                    print(widget.recipe.videoInstruction);
+                    if (widget.recipe.videoInstruction != null &&
+                        widget.recipe.videoInstruction!.isNotEmpty)
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => VideoPlayerWindow(
+                            recipeName: widget.recipe.name,
+                            recipeVideoUrl: widget.recipe.videoInstruction!,
+                          ),
+                        ),
+                      );
+                    else
+                      showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: const Text('No Video Available'),
+                              content: const Text(
+                                  'Sorry, there is no video available for this recipe.'),
+                              actions: <Widget>[
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: const Text('OK'),
+                                ),
+                              ],
+                            );
+                          });
                   },
                   icon: Image.asset(
                     'assets/play_icon.png',

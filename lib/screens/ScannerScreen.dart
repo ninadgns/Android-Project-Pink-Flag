@@ -107,7 +107,7 @@ class _ScannerScreenState extends State<ScannerScreen> {
           _ingredients.clear();
           _ingredients.addAll(predictions
               .where((prediction) =>
-                  prediction.containsKey('value') && prediction['value'] >= 0.2)
+          prediction.containsKey('value') && prediction['value'] >= 0.2)
               .map<Map<String, dynamic>>(
                   (prediction) => {'name': prediction['name']}));
         });
@@ -154,18 +154,18 @@ class _ScannerScreenState extends State<ScannerScreen> {
           .select('ingredient_id, name');
 
       List<Map<String, dynamic>> elements =
-          List<Map<String, dynamic>>.from(elementsResponse);
+      List<Map<String, dynamic>>.from(elementsResponse);
 
       for (var ingredient in _ingredients) {
         final name = ingredient['name'].toString().toLowerCase();
 
         final matchedElement = elements.firstWhere(
-          (element) => element['name'].toString().toLowerCase() == name,
+              (element) => element['name'].toString().toLowerCase() == name,
           orElse: () => {},
         );
 
         final ingredientId =
-            matchedElement.isNotEmpty ? matchedElement['ingredient_id'] : null;
+        matchedElement.isNotEmpty ? matchedElement['ingredient_id'] : null;
 
         await Supabase.instance.client.from('available_ingredients').insert({
           'user_id': userId,
@@ -263,35 +263,35 @@ class _ScannerScreenState extends State<ScannerScreen> {
                         ),
                         child: _imageBytes != null
                             ? Stack(
-                                alignment: Alignment.topRight,
-                                children: [
-                                  Center(
-                                    child: Image.memory(
-                                      _imageBytes!,
-                                      fit: BoxFit.contain,
-                                      width: double.infinity,
-                                      height: 200,
-                                    ),
-                                  ),
-                                  IconButton(
-                                    icon: const Icon(
-                                      Icons.delete,
-                                      color: Colors.red,
-                                    ),
-                                    onPressed: () {
-                                      setState(() {
-                                        _imageBytes = null;
-                                      });
-                                    },
-                                  ),
-                                ],
-                              )
-                            : const Center(
-                                child: Text(
-                                  'Your image will be shown here',
-                                  style: TextStyle(color: Colors.grey),
-                                ),
+                          alignment: Alignment.topRight,
+                          children: [
+                            Center(
+                              child: Image.memory(
+                                _imageBytes!,
+                                fit: BoxFit.contain,
+                                width: double.infinity,
+                                height: 200,
                               ),
+                            ),
+                            IconButton(
+                              icon: const Icon(
+                                Icons.delete,
+                                color: Colors.red,
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  _imageBytes = null;
+                                });
+                              },
+                            ),
+                          ],
+                        )
+                            : const Center(
+                          child: Text(
+                            'Your image will be shown here',
+                            style: TextStyle(color: Colors.grey),
+                          ),
+                        ),
                       );
                     },
                   ),
@@ -407,7 +407,7 @@ class _ScannerScreenState extends State<ScannerScreen> {
                             title: Text(ingredient['name']),
                             subtitle: ingredient['confidence'] != null
                                 ? Text(
-                                    'Confidence: ${(ingredient['confidence'] * 100).toStringAsFixed(2)}%')
+                                'Confidence: ${(ingredient['confidence'] * 100).toStringAsFixed(2)}%')
                                 : null,
                             trailing: IconButton(
                               icon: const Icon(Icons.delete, color: Colors.red),
@@ -438,7 +438,7 @@ class _ScannerScreenState extends State<ScannerScreen> {
                 },
                 style: ElevatedButton.styleFrom(
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                   backgroundColor: const Color(0xFFF8E8C4),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(16),

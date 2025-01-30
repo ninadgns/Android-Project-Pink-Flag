@@ -148,11 +148,11 @@ class _SignUpState extends State<SignUp> {
             controller: confirmPasswordController),
         SizedBox(height: screenHeight / 40),
         _buildSignUpButton(),
-        SizedBox(height: screenHeight / 40),
+        SizedBox(height: screenHeight / 50),
         _buildOrDivider(screenHeight),
-        SizedBox(height: screenHeight / 40),
+        SizedBox(height: screenHeight / 50),
         _buildGoogleButton(),
-        SizedBox(height: screenHeight / 40),
+        SizedBox(height: screenHeight / 35),
         _buildLogInPrompt(),
       ],
     );
@@ -298,7 +298,7 @@ class _SignUpState extends State<SignUp> {
         child: RichText(
           text: TextSpan(
             text: "Already have an account? ",
-            style: TextStyle(color: Colors.black, fontSize: 16),
+            style: TextStyle(color: Colors.black, fontSize: 14),
             children: [
               TextSpan(
                 text: "Log in",

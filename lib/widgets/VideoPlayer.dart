@@ -3,8 +3,10 @@ import 'package:video_player/video_player.dart';
 import 'package:chewie/chewie.dart';
 
 class VideoPlayerWindow extends StatefulWidget {
-  const VideoPlayerWindow({super.key});
-
+  VideoPlayerWindow(
+      {super.key, required this.recipeName, required this.recipeVideoUrl});
+  String recipeName;
+  String recipeVideoUrl;
   @override
   _VideoPlayerWindowState createState() => _VideoPlayerWindowState();
 }
@@ -20,8 +22,8 @@ class _VideoPlayerWindowState extends State<VideoPlayerWindow> {
     super.initState();
 
     // Initialize the VideoPlayerController with the network video.
-    _videoPlayerController = VideoPlayerController.network(
-        'https://www.sample-videos.com/video321/mp4/720/big_buck_bunny_720p_1mb.mp4')
+    _videoPlayerController = VideoPlayerController.network(widget
+            .recipeVideoUrl )
       ..initialize().then((_) {
         // Ensure the first frame is shown after the video is initialized.
         setState(() {});
@@ -101,8 +103,8 @@ class _VideoPlayerWindowState extends State<VideoPlayerWindow> {
               Container(
                 color: Colors.transparent,
                 // padding: EdgeInsets.all(16.0),
-                child: const Text(
-                  'Pumpkin Soup Recipe',
+                child: Text(
+                  widget.recipeName,
                   style: TextStyle(
                     color: Colors.black,
                     fontSize: 24,

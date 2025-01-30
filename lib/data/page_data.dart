@@ -28,7 +28,7 @@ final List<PageInfo> pageData = [
     backgroundColor: Colors.amber.shade100,
     titleFontSize: 28,
     descriptionFontSize: 16,
-    title: "Welcome to Cooking Diary",
+    title: "Welcome to Kitchen Mate",
     titleColor: Colors.brown.shade800,
     descriptionColor: Colors.brown.shade600,
   ),

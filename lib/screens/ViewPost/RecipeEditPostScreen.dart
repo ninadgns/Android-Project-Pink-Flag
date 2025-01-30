@@ -360,9 +360,19 @@ class _EditRecipePostScreenState extends State<EditRecipePostScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color(0xFF40B6A3),
-        title: const Text('Edit Recipe'),
-        elevation: 0,
+        backgroundColor: Colors.transparent,  // No background color
+        title: const Text(
+          'Edit Recipe',
+          style: TextStyle(
+            color: Colors.black,  // Set the title text color to black
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        elevation: 0,  // Remove shadow
+        iconTheme: const IconThemeData(
+          color: Colors.black,  // Set the color of icons to black
+        ),
+
       ),
       body: Container(
         decoration: BoxDecoration(
@@ -371,11 +381,11 @@ class _EditRecipePostScreenState extends State<EditRecipePostScreen> {
             end: Alignment.bottomCenter,
             colors: [
               Colors.white.withOpacity(0.9),
-              const Color(0xFFD7E8E2),
-              const Color(0xFFCFEFE9),
-              const Color(0xFFC5F8EE),
-              const Color(0xFFAEF1DF),
-              const Color(0xFF99EDDD),
+              const Color(0xfffaf6f2),
+              const Color(0xfffaf6f2),
+              const Color(0xfffaf6f2),
+              const Color(0xfffaf6f2),
+              const Color(0xfffaf6f2),
             ],
           ),
         ),
@@ -388,7 +398,13 @@ class _EditRecipePostScreenState extends State<EditRecipePostScreen> {
               children: [
                 TextFormField(
                   controller: _titleController,
-                  decoration: const InputDecoration(labelText: 'Recipe Title*'),
+                  decoration: const InputDecoration(labelText: 'Recipe Title*',
+                    labelStyle: TextStyle(fontWeight: FontWeight.bold,
+                      fontSize: 16,  // Adjust the font size if needed
+                      color: Colors.black,),
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.black, width: 1),
+                    ),),
                   validator: (value) => value?.isEmpty ?? true ? 'Title is required' : null,
                 ),
                 const SizedBox(height: 16),
@@ -406,10 +422,10 @@ class _EditRecipePostScreenState extends State<EditRecipePostScreen> {
         fontWeight: FontWeight.bold,
         ),
         selected: isSelected,
-        selectedColor: Colors.teal,
+        selectedColor: Colors.black,
         backgroundColor: Colors.grey[200],
         onSelected: (selected) {
-        setState(() {
+        setState(() {;
         _difficulty = selected ? level : null;
         });
         },
@@ -426,15 +442,27 @@ class _EditRecipePostScreenState extends State<EditRecipePostScreen> {
                 TextFormField(
                   controller: _descriptionController,
                   decoration: const InputDecoration(
-                    labelText: 'Description',
+                    labelText: '📝  Description',
                     hintText: "Brief Description about the recipe",
+                    labelStyle: TextStyle(fontWeight: FontWeight.bold,
+                      fontSize: 16,  // Adjust the font size if needed
+                      color: Colors.black,),
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.black, width: 1),
+                    ),
                   ),
                   maxLines: 3,
                 ),
                 const SizedBox(height: 16),
                 TextFormField(
                   controller: _servingCountController,
-                  decoration: const InputDecoration(labelText: 'Number of Servings'),
+                  decoration: const InputDecoration(labelText: '🍽️  Number of Servings',
+                    labelStyle: TextStyle(fontWeight: FontWeight.bold,
+                      fontSize: 16,  // Adjust the font size if needed
+                      color: Colors.black,),
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.black, width: 1),
+                    ),),
                   keyboardType: TextInputType.number,
                   inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                 ),
@@ -457,7 +485,7 @@ class _EditRecipePostScreenState extends State<EditRecipePostScreen> {
                 ElevatedButton(
                   onPressed: _updateRecipe,
                   style: TextButton.styleFrom(
-                    foregroundColor: const Color(0xFF478177),
+                    foregroundColor: const Color(0xFF000000),
                   ),
                   child: const Text('Update Recipe'),
                 ),

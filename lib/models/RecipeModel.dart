@@ -134,7 +134,7 @@ class Recipe {
       servings: map['serving_count'] ?? 0,
       difficulty: map['difficulty'] ?? '',
       titlePhoto: map['title_photo'] ?? '',
-      videoInstruction: map['videoInstruction'] ?? '',
+      videoInstruction: map['video_url'] ?? '',
     );
     // print(recipe.titlePhoto);
     return recipe;
@@ -153,7 +153,7 @@ class Recipe {
       'servings': servings,
       'difficulty': difficulty,
       'title_photo': titlePhoto,
-      'videoInstruction': videoInstruction,
+      'video_url': videoInstruction,
     };
   }
 

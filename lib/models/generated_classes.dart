@@ -113,7 +113,7 @@ class Recipe implements SupadartClass<Recipe> {
   static String get c_ingredients => 'ingredients';
   static String get c_steps => 'steps';
   static String get c_titlePhoto => 'title_photo';
-  static String get c_videoInstruction => 'video_instruction';
+  static String get c_videoInstruction => 'video_url';
 
   static List<Recipe> converter(List<Map<String, dynamic>> data) {
     return data.map(Recipe.fromJson).toList();
@@ -155,7 +155,7 @@ class Recipe implements SupadartClass<Recipe> {
       if (ingredients != null) 'ingredients': ingredients,
       if (steps != null) 'steps': steps,
       if (titlePhoto != null) 'title_photo': titlePhoto,
-      if (videoInstruction != null) 'video_instruction': videoInstruction,
+      if (videoInstruction != null) 'video_url': videoInstruction,
     };
   }
 
@@ -260,8 +260,8 @@ class Recipe implements SupadartClass<Recipe> {
           : <String, dynamic>{},
       titlePhoto:
           jsonn['title_photo'] != null ? jsonn['title_photo'].toString() : '',
-      videoInstruction: jsonn['video_instruction'] != null
-          ? jsonn['video_instruction'].toString()
+      videoInstruction: jsonn['video_url'] != null
+          ? jsonn['video_url'].toString()
           : '',
     );
   }
