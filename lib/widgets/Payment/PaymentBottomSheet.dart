@@ -11,9 +11,8 @@ import 'CardTypeOption.dart';
 import 'CustomFormField.dart';
 import 'package:intl/intl.dart';
 
-
-double Amount= 0.0;
-String planID='';
+double Amount = 0.0;
+String planID = '';
 
 void showPaymentBottomSheet({
   required BuildContext context,
@@ -22,11 +21,16 @@ void showPaymentBottomSheet({
   required VoidCallback onPaymentComplete,
   required PaymentMethod? selectedMethod,
 }) {
-  final TextEditingController cardNumberController = TextEditingController(text: selectedMethod?.cardNumber ?? '');
-  final TextEditingController expiryController = TextEditingController(text: selectedMethod?.expiryDate ?? '');
-  final TextEditingController cvcController = TextEditingController(text: selectedMethod?.cvc ?? '');
-  final TextEditingController nameController = TextEditingController(text: selectedMethod?.cardHolderName ?? '');
-  final TextEditingController zipController = TextEditingController(text: selectedMethod?.zipCode ?? '');
+  final TextEditingController cardNumberController =
+      TextEditingController(text: selectedMethod?.cardNumber ?? '');
+  final TextEditingController expiryController =
+      TextEditingController(text: selectedMethod?.expiryDate ?? '');
+  final TextEditingController cvcController =
+      TextEditingController(text: selectedMethod?.cvc ?? '');
+  final TextEditingController nameController =
+      TextEditingController(text: selectedMethod?.cardHolderName ?? '');
+  final TextEditingController zipController =
+      TextEditingController(text: selectedMethod?.zipCode ?? '');
   String? selectedCardType = selectedMethod?.cardType;
   bool isSave = false;
   final formKey = GlobalKey<FormState>();
@@ -74,7 +78,7 @@ void showPaymentBottomSheet({
                         _buildCardTypeSelector(
                           setModalState,
                           selectedCardType,
-                              (value) {
+                          (value) {
                             setModalState(() => selectedCardType = value);
                           },
                           size,
@@ -92,7 +96,7 @@ void showPaymentBottomSheet({
                         ),
                         _buildSaveCardCheckbox(
                           isSave,
-                              (value) => setModalState(() => isSave = value!),
+                          (value) => setModalState(() => isSave = value!),
                           size,
                         ),
                         SizedBox(height: size.height * 0.02),
@@ -144,11 +148,11 @@ Widget _buildHeader(BuildContext context, double amount, Size size) {
 }
 
 Widget _buildCardTypeSelector(
-    StateSetter setModalState,
-    String? selectedCardType,
-    Function(String?) onCardTypeChanged,
-    Size size,
-    ) {
+  StateSetter setModalState,
+  String? selectedCardType,
+  Function(String?) onCardTypeChanged,
+  Size size,
+) {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
@@ -201,15 +205,15 @@ Widget _buildCardTypeSelector(
 }
 
 Widget _buildPaymentForm(
-    BuildContext context,
-    TextEditingController cardNumberController,
-    TextEditingController expiryController,
-    TextEditingController cvcController,
-    TextEditingController nameController,
-    TextEditingController zipController,
-    Size size,
-    GlobalKey<FormState> formKey,
-    ) {
+  BuildContext context,
+  TextEditingController cardNumberController,
+  TextEditingController expiryController,
+  TextEditingController cvcController,
+  TextEditingController nameController,
+  TextEditingController zipController,
+  Size size,
+  GlobalKey<FormState> formKey,
+) {
   return Form(
     key: formKey,
     child: Column(
@@ -239,7 +243,8 @@ Widget _buildPaymentForm(
                 label: 'Expiry',
                 hint: 'MM / YY',
                 inputType: TextInputType.datetime,
-                formatter: FilteringTextInputFormatter.allow(RegExp(r'^\d{0,2}(\/\d{0,2})?$')),
+                formatter: FilteringTextInputFormatter.allow(
+                    RegExp(r'^\d{0,2}(\/\d{0,2})?$')),
               ),
             ),
             SizedBox(width: size.width * 0.04),
@@ -248,7 +253,8 @@ Widget _buildPaymentForm(
                 controller: cvcController,
                 label: 'CVC/CVV',
                 inputType: TextInputType.number,
-                formatter: FilteringTextInputFormatter.allow(RegExp(r'^\d{0,4}$')),
+                formatter:
+                    FilteringTextInputFormatter.allow(RegExp(r'^\d{0,4}$')),
               ),
             ),
           ],
@@ -258,7 +264,8 @@ Widget _buildPaymentForm(
           controller: nameController,
           label: "Card Holder's Full Name",
           inputType: TextInputType.name,
-          formatter: FilteringTextInputFormatter.allow(RegExp(r"[a-zA-Z\s\.\']")),
+          formatter:
+              FilteringTextInputFormatter.allow(RegExp(r"[a-zA-Z\s\.\']")),
         ),
         SizedBox(height: size.height * 0.015),
         CustomFormField(
@@ -269,7 +276,8 @@ Widget _buildPaymentForm(
           validator: (value) {
             if (value == null || value.isEmpty) {
               return 'Please enter the ZIP/Postal Code';
-            } else if (value.length != 5 || !RegExp(r'^\d{5}$').hasMatch(value)) {
+            } else if (value.length != 5 ||
+                !RegExp(r'^\d{5}$').hasMatch(value)) {
               return 'ZIP/Postal Code must be 5 digits';
             }
             return null;
@@ -280,7 +288,8 @@ Widget _buildPaymentForm(
   );
 }
 
-Widget _buildSaveCardCheckbox(bool isSave, Function(bool?) onChanged, Size size) {
+Widget _buildSaveCardCheckbox(
+    bool isSave, Function(bool?) onChanged, Size size) {
   return Row(
     children: [
       Checkbox(
@@ -302,19 +311,19 @@ Widget _buildSaveCardCheckbox(bool isSave, Function(bool?) onChanged, Size size)
 }
 
 Widget _buildPayButton(
-    BuildContext context,
-    double amount,
-    TextEditingController cardNumberController,
-    TextEditingController nameController,
-    String? selectedCardType,
-    TextEditingController expiryController,
-    TextEditingController cvcController,
-    TextEditingController zipController,
-    bool isSave,
-    VoidCallback onPaymentComplete,
-    Size size,
-    GlobalKey<FormState> formKey,
-    ) {
+  BuildContext context,
+  double amount,
+  TextEditingController cardNumberController,
+  TextEditingController nameController,
+  String? selectedCardType,
+  TextEditingController expiryController,
+  TextEditingController cvcController,
+  TextEditingController zipController,
+  bool isSave,
+  VoidCallback onPaymentComplete,
+  Size size,
+  GlobalKey<FormState> formKey,
+) {
   return SizedBox(
     width: double.infinity,
     height: size.height * 0.06,
@@ -372,13 +381,13 @@ Widget _buildPayButton(
 }
 
 Future<void> _handlePayment(
-    BuildContext context,
-    PaymentData paymentData,
-    ) async {
+  BuildContext context,
+  PaymentData paymentData,
+) async {
   final supabase = Supabase.instance.client;
 
   try {
-    final backendURL= 'https://ce65-103-94-135-27.ngrok-free.app';
+    final backendURL = 'https://ce65-103-94-135-27.ngrok-free.app';
     final apiKey = 'ekta_stripe_backend';
     final String? userId = FirebaseAuth.instance.currentUser?.uid;
     if (userId == null) throw Exception('User not authenticated');
@@ -412,9 +421,9 @@ Future<void> _handlePayment(
 
       final customerData = jsonDecode(customerResult.body);
 
-      await supabase.from('users').update({
-        'is_customer': true
-      }).eq('id', userId);
+      await supabase
+          .from('users')
+          .update({'is_customer': true}).eq('id', userId);
     }
 
     // Create payment method
@@ -425,14 +434,16 @@ Future<void> _handlePayment(
         'Content-Type': 'application/json'
       },
       body: jsonEncode({
-        'token': 'tok_visa', // Use test tokens like tok_visa, tok_mastercard, etc.
+        'token':
+            'tok_visa', // Use test tokens like tok_visa, tok_mastercard, etc.
         'customer_id': userId,
       }),
     );
 
     if (paymentMethodResult.statusCode != 200) {
       final errorBody = jsonDecode(paymentMethodResult.body);
-      throw Exception('Failed to create payment method: ${errorBody['detail']}');
+      throw Exception(
+          'Failed to create payment method: ${errorBody['detail']}');
     }
 
     final paymentMethodData = jsonDecode(paymentMethodResult.body);
@@ -458,7 +469,8 @@ Future<void> _handlePayment(
     );
 
     if (paymentIntentResult.statusCode != 200) {
-      throw Exception('Failed to create payment intent: ${paymentIntentResult.body}');
+      throw Exception(
+          'Failed to create payment intent: ${paymentIntentResult.body}');
     }
 
     final paymentIntentData = jsonDecode(paymentIntentResult.body);
@@ -485,12 +497,12 @@ Future<void> _handlePayment(
     if (confirmData['status'] == 'succeeded') {
       final DateTime now = DateTime.now();
       final DateTime expiresAt = now.add(Duration(days: 30)); // Add one month
-      final String formattedExpiresAt = expiresAt.toIso8601String(); // Format as ISO 8601 string
+      final String formattedExpiresAt =
+          expiresAt.toIso8601String(); // Format as ISO 8601 string
 
       await supabase.from('user_subscriptions').update({
         'is_active': false,
       }).eq('user_id', userId);
-
 
       await supabase.from('user_subscriptions').insert({
         'user_id': userId,
@@ -515,15 +527,15 @@ Future<void> _handlePayment(
           .eq('user_id', userId)
           .maybeSingle();
       print(a);
-      bool isHISTORY= a?['id'] ?? false;
+      bool isHISTORY = a?['id'] ?? false;
 
-      if(!isHISTORY){
+      if (!isHISTORY) {
         await supabase.from('user_subscription_history').insert({
           'user_id': userId,
           'subscription_plan_id': planID,
           'user_subscription_id': userSubId,
         });
-      }else{
+      } else {
         await supabase.from('user_subscription_history').update({
           'subscription_plan_id': planID,
           'user_subscription_id': userSubId,
@@ -536,7 +548,8 @@ Future<void> _handlePayment(
             id: paymentMethodId,
             cardHolderName: paymentData.cardHolderName,
             cardType: paymentData.cardType,
-            last4: paymentData.cardNumber.substring(paymentData.cardNumber.length - 4),
+            last4: paymentData.cardNumber
+                .substring(paymentData.cardNumber.length - 4),
             cardNumber: paymentData.cardNumber,
             expiryDate: paymentData.expiryDate,
             cvc: paymentData.cvc,
