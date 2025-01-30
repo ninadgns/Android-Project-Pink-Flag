@@ -1,6 +1,8 @@
-# dim
+# KitchenMate
 
-A new Flutter project.
+Your Friend in Kitchen
+
+[Download APK](https://drive.google.com/file/d/1EJyu9nxRnjpTxby6flj3AivaaWajxVO9/view?usp=sharing)
 
 ## Getting Started
 
