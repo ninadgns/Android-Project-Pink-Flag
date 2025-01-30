@@ -1,20 +1,11 @@
 // ignore_for_file: prefer_const_constructors, avoid_print
 
-import 'package:dim/data/constants.dart';
 import 'package:dim/screens/GetStarted.dart';
-import 'package:dim/screens/GoogleAuth.dart';
-import 'package:dim/screens/SignUp.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import 'HomeScreen.dart';
-import 'PasswordField.dart';
 import 'curve.dart';
-import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'curve.dart'; // Import the same curve/clipping file you used for LogIn
 
 class ForgotPassword extends StatefulWidget {
   const ForgotPassword({Key? key}) : super(key: key);
@@ -25,29 +16,22 @@ class ForgotPassword extends StatefulWidget {
 
 class _ForgotPasswordState extends State<ForgotPassword> {
   final TextEditingController emailController = TextEditingController();
-  final TextEditingController otpController = TextEditingController();
-  final TextEditingController newPasswordController = TextEditingController();
 
-  void _sendOTP() {
-    // Logic to send OTP to email
-    print("OTP sent to ${emailController.text.trim()}");
-    _showSnackBar("OTP sent to your email.");
-  }
-
-  void _resetPassword() {
+  void _resetPassword() async {
     final email = emailController.text.trim();
-    final otp = otpController.text.trim();
-    final newPassword = newPasswordController.text.trim();
 
-    if (email.isEmpty || otp.isEmpty || newPassword.isEmpty) {
-      _showSnackBar("Please fill all fields.");
+    if (email.isEmpty) {
+      _showSnackBar("Please enter your email.");
       return;
     }
 
-    // Logic to verify OTP and reset the password
-    print("Password reset for $email with new password: $newPassword");
-    _showSnackBar("Password reset successful.");
-    Navigator.pop(context); // Navigate back after successful reset
+    try {
+      await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+      _showSnackBar("Password reset email sent! Check your inbox.");
+      Navigator.pop(context); // Navigate back after successful reset
+    } catch (e) {
+      _showSnackBar("Error: ${e.toString()}");
+    }
   }
 
   void _showSnackBar(String message) {
@@ -139,10 +123,6 @@ class _ForgotPasswordState extends State<ForgotPassword> {
         _buildHeader(screenHeight),
         SizedBox(height: screenHeight / 40),
         _buildTextField("Email", emailController, isEmail: true),
-        SizedBox(height: screenHeight / 40),
-        _buildTextField("Enter OTP", otpController),
-        SizedBox(height: screenHeight / 40),
-        _buildTextField("New Password", newPasswordController, isPassword: true),
         SizedBox(height: screenHeight / 20),
         _buildResetButton(),
       ],
@@ -172,7 +152,8 @@ class _ForgotPasswordState extends State<ForgotPassword> {
       decoration: InputDecoration(
         labelText: label,
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(30.0)),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
       ),
     );
   }
@@ -185,7 +166,8 @@ class _ForgotPasswordState extends State<ForgotPassword> {
           padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
           backgroundColor: const Color(0xFF39786D),
           textStyle: const TextStyle(fontSize: 18),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0)),
         ),
         child: const Text(
           "Reset Password",

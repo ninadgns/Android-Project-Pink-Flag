@@ -1,13 +1,12 @@
 import 'dart:convert';
 import 'dart:typed_data';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-
-
 
 import 'available_list_screen.dart';
 
@@ -110,7 +109,7 @@ class _ScannerScreenState extends State<ScannerScreen> {
           _ingredients.clear();
           _ingredients.addAll(predictions
               .where((prediction) =>
-          prediction.containsKey('value') && prediction['value'] >= 0.2)
+                  prediction.containsKey('value') && prediction['value'] >= 0.2)
               .map<Map<String, dynamic>>(
                   (prediction) => {'name': prediction['name']}));
         });
@@ -142,8 +141,6 @@ class _ScannerScreenState extends State<ScannerScreen> {
     });
   }
 
-
-
   Future<void> _addToAvailableList(BuildContext context) async {
     final user = FirebaseAuth.instance.currentUser;
 
@@ -159,17 +156,19 @@ class _ScannerScreenState extends State<ScannerScreen> {
           .from('elements')
           .select('ingredient_id, name');
 
-      List<Map<String, dynamic>> elements = List<Map<String, dynamic>>.from(elementsResponse);
+      List<Map<String, dynamic>> elements =
+          List<Map<String, dynamic>>.from(elementsResponse);
 
       for (var ingredient in _ingredients) {
         final name = ingredient['name'].toString().toLowerCase();
 
         final matchedElement = elements.firstWhere(
-              (element) => element['name'].toString().toLowerCase() == name,
+          (element) => element['name'].toString().toLowerCase() == name,
           orElse: () => {},
         );
 
-        final ingredientId = matchedElement.isNotEmpty ? matchedElement['ingredient_id'] : null;
+        final ingredientId =
+            matchedElement.isNotEmpty ? matchedElement['ingredient_id'] : null;
 
         await Supabase.instance.client.from('available_ingredients').insert({
           'user_id': userId,
@@ -187,17 +186,21 @@ class _ScannerScreenState extends State<ScannerScreen> {
           ),
         );
 
-        // Clear all items
-        _clearAll();
+        // Clear all items using updateState
+
+        _ingredients.clear(); // Clear ingredients list
+        _imageBytes = null; // Clear image
+        _manualInputController.clear(); // Clear text input
       }
     } catch (e) {
-      if (mounted) {
-        _showErrorDialog(context, "Failed to add ingredients: $e");
-      }
+      _showErrorDialog(context, "Failed to add ingredients: $e");
     }
+
+    // _showSuccessDialog(context, "Ingredients added successfully!");
+    // setState(() {
+    //   _ingredients.clear();
+    // });
   }
-
-
 
   void _showErrorDialog(BuildContext context, String message) {
     showDialog(
@@ -225,14 +228,13 @@ class _ScannerScreenState extends State<ScannerScreen> {
     const double itemHeight = 60.0;
     final double totalHeight = minHeight + (_ingredients.length * itemHeight);
 
-
     return Scaffold(
       // appBar: AppBar(
       //   backgroundColor: Colors.transparent,
       //   title: const Text('Food Item Recognition'),
       // ),
       body: Stack(
-        children:[
+        children: [
           SingleChildScrollView(
             child: Container(
               decoration: const BoxDecoration(
@@ -270,35 +272,35 @@ class _ScannerScreenState extends State<ScannerScreen> {
                         ),
                         child: _imageBytes != null
                             ? Stack(
-                          alignment: Alignment.topRight,
-                          children: [
-                            Center(
-                              child: Image.memory(
-                                _imageBytes!,
-                                fit: BoxFit.contain,
-                                width: double.infinity,
-                                height: 200,
-                              ),
-                            ),
-                            IconButton(
-                              icon: const Icon(
-                                Icons.delete,
-                                color: Colors.red,
-                              ),
-                              onPressed: () {
-                                setState(() {
-                                  _imageBytes = null;
-                                });
-                              },
-                            ),
-                          ],
-                        )
+                                alignment: Alignment.topRight,
+                                children: [
+                                  Center(
+                                    child: Image.memory(
+                                      _imageBytes!,
+                                      fit: BoxFit.contain,
+                                      width: double.infinity,
+                                      height: 200,
+                                    ),
+                                  ),
+                                  IconButton(
+                                    icon: const Icon(
+                                      Icons.delete,
+                                      color: Colors.red,
+                                    ),
+                                    onPressed: () {
+                                      setState(() {
+                                        _imageBytes = null;
+                                      });
+                                    },
+                                  ),
+                                ],
+                              )
                             : const Center(
-                          child: Text(
-                            'Your image will be shown here',
-                            style: TextStyle(color: Colors.grey),
-                          ),
-                        ),
+                                child: Text(
+                                  'Your image will be shown here',
+                                  style: TextStyle(color: Colors.grey),
+                                ),
+                              ),
                       );
                     },
                   ),
@@ -328,8 +330,8 @@ class _ScannerScreenState extends State<ScannerScreen> {
                       Expanded(
                         child: ElevatedButton.icon(
                           onPressed: () => _takePhoto(context),
-                          icon:
-                          const Icon(Icons.camera_alt, color: Colors.black45),
+                          icon: const Icon(Icons.camera_alt,
+                              color: Colors.black45),
                           label: const Text(
                             'Camera',
                             style: TextStyle(
@@ -376,8 +378,7 @@ class _ScannerScreenState extends State<ScannerScreen> {
                         icon: const Icon(Icons.add),
                         onPressed: () {
                           if (_manualInputController.text.isNotEmpty) {
-                            _addManualIngredient(
-                                _manualInputController.text);
+                            _addManualIngredient(_manualInputController.text);
                           }
                         },
                       ),
@@ -415,12 +416,11 @@ class _ScannerScreenState extends State<ScannerScreen> {
                             title: Text(ingredient['name']),
                             subtitle: ingredient['confidence'] != null
                                 ? Text(
-                                'Confidence: ${(ingredient['confidence'] * 100).toStringAsFixed(2)}%')
+                                    'Confidence: ${(ingredient['confidence'] * 100).toStringAsFixed(2)}%')
                                 : null,
                             trailing: IconButton(
                               icon: const Icon(Icons.delete, color: Colors.red),
-                              onPressed: () =>
-                                  _removeIngredient(index),
+                              onPressed: () => _removeIngredient(index),
                             ),
                           ),
                         );
@@ -446,23 +446,22 @@ class _ScannerScreenState extends State<ScannerScreen> {
                   );
                 },
                 style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                   backgroundColor: const Color(0xFFF8E8C4),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(16),
                   ),
                 ),
-                child: const Text(
-                  'Available List',
-                  style: TextStyle(color: Colors.black45, fontSize: 14),
-                ),
               ),
-            ),
-          ),
-        ],
-      ),
-
-    );
+            )
+            // Align(
+            //   alignment: Alignment.topRight,
+            //   child: ,
+            // ),
+          ],
+        ),
+      );
 
   }
 }
