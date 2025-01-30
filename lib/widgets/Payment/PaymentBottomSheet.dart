@@ -378,7 +378,7 @@ Future<void> _handlePayment(
   final supabase = Supabase.instance.client;
 
   try {
-    final backendURL= 'https://ce65-103-94-135-27.ngrok-free.app';
+    final backendURL= 'https://4d06-103-221-253-100.ngrok-free.app';
     final apiKey = 'ekta_stripe_backend';
     final String? userId = FirebaseAuth.instance.currentUser?.uid;
     if (userId == null) throw Exception('User not authenticated');
