@@ -1,18 +1,52 @@
-# KitchenMate
+# FastAPI Stripe Integration Setup
 
-Your Friend in Kitchen
+This guide will help you set up a FastAPI backend with Stripe integration and webhook handling.
 
-[Download APK](https://drive.google.com/file/d/1EJyu9nxRnjpTxby6flj3AivaaWajxVO9/view?usp=sharing)
+## Initial Setup
 
-## Getting Started
+1. **Create and activate a Python virtual environment**
 
-This project is a starting point for a Flutter application.
+2. **Install required dependencies to run main.py**
 
-A few resources to get you started if this is your first Flutter project:
+---
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+## Stripe CLI Setup
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+1. **Install the Stripe CLI **
+
+2. **Log in to Stripe**
+
+3. **Start webhook listening:**
+   ```bash
+   stripe listen --forward-to localhost:8000/webhook
+   ```
+
+---
+
+## Environment Configuration
+
+A .env file is already set up. Replace the placeholders with your Stripe credentials:
+
+```env
+STRIPE_SECRET_KEY=your_stripe_secret_key  
+STRIPE_WEBHOOK_SECRET=your_stripe_webhook_secret  
+```
+
+- Replace your_stripe_secret_key with your actual Stripe API key.
+- Replace your_stripe_webhook_secret with your actual Stripe webhook signing secret.
+
+## Run the Application
+
+**Start the FastAPI server with hot reload:**
+
+```bash
+uvicorn main:app --reload
+```
+
+## Public Endpoint (Optional)
+
+**To expose your local server to the internet for testing purposes, use ngrok:**
+
+```bash
+ngrok http 8000
+```
