@@ -295,7 +295,7 @@ class _RecipeDirectionScreenState extends State<RecipeDirectionScreen> {
           Column(
             children: [
               SizedBox(height: height * 0.56),
-              Expanded(
+              Expanded(flex: 2,
                 child: PageView(
                   controller: _pageController,
                   children: [
@@ -306,7 +306,7 @@ class _RecipeDirectionScreenState extends State<RecipeDirectionScreen> {
               ),
             ],
           ),
-          const Spacer(),
+          // const Spacer(),
           Positioned(
             bottom: 0,
             child: Column(
