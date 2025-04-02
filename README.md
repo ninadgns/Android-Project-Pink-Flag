@@ -44,7 +44,8 @@ KitchenMate is a smart cooking assistant built to simplify your culinary adventu
 
 - **Flutter** - Cross-platform UI toolkit
 - **Dart** - Programming language optimized for client applications
-- **Firebase** - Backend services and authentication
+- **Supabase** - Open-source Firebase alternative
+- **Firebase** - Authentication
 
 ## 📸 Screenshots
 
