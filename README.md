@@ -1,6 +1,6 @@
 # KitchenMate 🍳
 
-![KitchenMate Banner](https://drive.google.com/file/d/1t6YfQXa06rdB-LqpE5nLJfmckQT0ykNN/view?usp=sharing)
+![KitchenMate Banner](https://github.com/ninadgns/Android-Project-Pink-Flag/blob/main/assets/forReadme/image-removebg-preview.png)
 
 [![Download APK](https://img.shields.io/badge/Download-APK-blue?style=for-the-badge&logo=android)](https://drive.google.com/file/d/1EJyu9nxRnjpTxby6flj3AivaaWajxVO9/viewZ?usp=sharing)
 
@@ -48,15 +48,15 @@ KitchenMate is a smart cooking assistant built to simplify your culinary adventu
 
 ## 📸 Screenshots
 
-![Home Screen View 1](https://keep.google.com/u/0/media/v2/1X0wwt99x9MUM2Iuww6pvxo7X7saStqcwF_-TMMYpp3boqGU6XWt2B1ol2xxuag/1jF89plOtTdOxyrLYNmC6Mddfugstf1GIcqZO29RUiDUTUJmQXbrOtvkttpXd5gQ?accept=image%2Fgif%2Cimage%2Fjpeg%2Cimage%2Fjpg%2Cimage%2Fpng%2Caudio%2Faac&sz=1138)
+![Home Screen View 1](https://github.com/ninadgns/Android-Project-Pink-Flag/blob/main/assets/forReadme/Pasted%20image.png)
 
-![Home Screen View 2](https://keep.google.com/u/0/media/v2/1mj08qMsKCFaJMoX3rg5B8Dzrpf5Y1oHcWjD2GrhepRBIePSTmiHACWYNr5gkbQ/15zhCy70gbNMsLrQ2BGNKBfeTNZacI1L-qv2e5LjSxQOAYXGNlq3XbgSk15tgaQ?accept=image%2Fgif%2Cimage%2Fjpeg%2Cimage%2Fjpg%2Cimage%2Fpng%2Caudio%2Faac&sz=1140)
+![Home Screen View 2](https://github.com/ninadgns/Android-Project-Pink-Flag/blob/main/assets/forReadme/Pasted%20image%20(2).png)
 
-![Recipe View](https://keep.google.com/u/0/media/v2/1AH1e-e7BktKCqS3afFivh_0XLZTPUc8OaGWoPXSKzcPzfwTrT1__33Xgj19-NSo/19-l8MuQ6aB1_bgSF-baHissoRkKujBFIa68sSZ-xHwsrzgzZxxbuzCGCBaEXLJE?accept=image%2Fgif%2Cimage%2Fjpeg%2Cimage%2Fjpg%2Cimage%2Fpng%2Caudio%2Faac&sz=1280)
+![Recipe View](https://github.com/ninadgns/Android-Project-Pink-Flag/blob/main/assets/forReadme/Pasted%20image%20(3).png)
 
-![Item Recognition View](https://keep.google.com/u/0/media/v2/1w-Ekj7fZIM7pTeRwZzhgBEGZORVZ5vNbUlZqtLsxvc1z2kwcRq2J3Kl2KOz9cA/1bBKhJhJt9RIDD6zEsI7ocS8TvxQORccuUrMUv9P0HYL981nl3hZIgCirV72bdWc?accept=image%2Fgif%2Cimage%2Fjpeg%2Cimage%2Fjpg%2Cimage%2Fpng%2Caudio%2Faac&sz=1142)
+![Item Recognition View](https://github.com/ninadgns/Android-Project-Pink-Flag/blob/main/assets/forReadme/Pasted%20image%20(4).png)
 
-![Filter View](https://keep.google.com/u/0/media/v2/1S65zOJvcj1pUY9wFbLTToZzbxbr1HMhQsIejR5ormE6dhSAt7clgaHr9x1eMJJs/1mSnAmH-Aj4GFJcEIBie4gDVl6Uy1DlvQtvQ6Jk-joV7gkSkylv-ijpBhJrkbzhs?accept=image%2Fgif%2Cimage%2Fjpeg%2Cimage%2Fjpg%2Cimage%2Fpng%2Caudio%2Faac&sz=1280)
+![Filter View](https://github.com/ninadgns/Android-Project-Pink-Flag/blob/main/assets/forReadme/Pasted%20image%20(5).png)
 
 
 
