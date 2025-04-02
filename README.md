@@ -2,9 +2,8 @@
 
 ![KitchenMate Banner](https://drive.google.com/file/d/1t6YfQXa06rdB-LqpE5nLJfmckQT0ykNN/view?usp=sharing)
 
-[![Download APK](https://img.shields.io/badge/Download-APK-blue?style=for-the-badge&logo=android)](https://yourdomain.com/path-to-apk-download)
+[![Download APK](https://img.shields.io/badge/Download-APK-blue?style=for-the-badge&logo=android)](https://drive.google.com/file/d/1EJyu9nxRnjpTxby6flj3AivaaWajxVO9/viewZ?usp=sharing)
 
-[![Flutter](https://img.shields.io/badge/Built%20with-Flutter-02569B?style=for-the-badge&logo=flutter)](https://drive.google.com/file/d/1EJyu9nxRnjpTxby6flj3AivaaWajxVO9/view?usp=sharing)
 
 ## 📱 Your Kitchen Companion
 
